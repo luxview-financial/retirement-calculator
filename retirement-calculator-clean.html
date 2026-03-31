@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retirement Number Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141714;
+    --surface2: #1a1e1a;
+    --border: #2a2f2a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97e;
+    --green: #4caf7d;
+    --red: #e05c5c;
+    --text: #e8e8e4;
+    --muted: #7a8078;
+    --accent: #c9a84c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color: var(--gold-light);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  header p {
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 560px) { .inputs-grid { grid-template-columns: 1fr; } }
+
+  .field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    transition: border-color 0.2s;
+  }
+
+  .field:focus-within { border-color: var(--gold); }
+
+  .field label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .field input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .field input::placeholder { color: var(--border); }
+
+  .btn {
+    width: 100%;
+    background: var(--gold);
+    color: #0d0f0e;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-bottom: 2rem;
+  }
+
+  .btn:hover { background: var(--gold-light); }
+  .btn:active { transform: scale(0.99); }
+
+  /* Results */
+  #results { display: none; }
+
+  .verdict-bar {
+    border-radius: 10px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .verdict-bar.success { background: linear-gradient(135deg, #1a2e1f, #152614); border: 1px solid #2d5a35; }
+  .verdict-bar.danger  { background: linear-gradient(135deg, #2e1a1a, #261515); border: 1px solid #5a2d2d; }
+
+  .verdict-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 0.3rem;
+  }
+
+  .verdict-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+  }
+
+  .verdict-value.pos { color: var(--green); }
+  .verdict-value.neg { color: var(--red); }
+
+  .verdict-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+
+  .verdict-badge.success { background: rgba(76,175,125,0.15); color: var(--green); border: 1px solid rgba(76,175,125,0.3); }
+  .verdict-badge.danger  { background: rgba(224,92,92,0.15); color: var(--red); border: 1px solid rgba(224,92,92,0.3); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 560px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--gold-light);
+  }
+
+  /* Monte Carlo bar */
+  .mc-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mc-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .mc-bar-wrap {
+    background: var(--bg);
+    border-radius: 4px;
+    height: 10px;
+    overflow: hidden;
+    margin-bottom: 0.6rem;
+    position: relative;
+  }
+
+  .mc-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .mc-bar-fill.success { background: linear-gradient(90deg, #2d7a4f, var(--green)); }
+  .mc-bar-fill.danger  { background: linear-gradient(90deg, #7a2d2d, var(--red)); }
+
+  .mc-threshold-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--gold);
+    opacity: 0.7;
+  }
+
+  .mc-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .mc-rate {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  /* Projection table */
+  .projection-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .projection-header {
+    padding: 1rem 1.6rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    text-align: left;
+    padding: 0.6rem 1.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.55rem 1.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr.highlight td { background: rgba(201,168,76,0.05); }
+  tr.depleted td { color: var(--red); opacity: 0.7; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+
+  .tag.ss { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .tag.now { background: rgba(76,175,125,0.15); color: var(--green); }
+
+  .insight {
+    background: var(--surface2);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.4rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #c8cac4;
+  }
+
+  .insight strong { color: var(--gold-light); font-weight: 500; }
+
+  /* Spending Module */
+  .spending-module {
+    background: var(--surface2);
+    border: 1px solid rgba(76,175,125,0.25);
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .spending-module-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.4rem;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .spending-module-header.open { border-bottom-color: var(--border); }
+
+  .spending-module-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+
+  .spending-module-total {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--gold-light);
+  }
+
+  .spending-module-chevron {
+    font-size: 0.75rem;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+
+  .spending-module-chevron.open { transform: rotate(180deg); }
+
+  .spending-module-body {
+    display: none;
+    padding: 1.2rem 1.4rem;
+  }
+
+  .spending-module-body.open { display: block; }
+
+  .spending-categories {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+  }
+
+  @media (max-width: 560px) { .spending-categories { grid-template-columns: 1fr; } }
+
+  .spend-field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    transition: border-color 0.2s;
+  }
+
+  .spend-field:focus-within { border-color: var(--green); }
+
+  .spend-field-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .spend-icon { font-size: 1rem; flex-shrink: 0; }
+
+  .spend-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .spend-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: right;
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .spend-input::placeholder { color: var(--border); }
+
+  .spending-summary {
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .spending-bar-wrap {
+    width: 100%;
+    height: 6px;
+    background: var(--bg);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 2px;
+  }
+
+  .spending-bar-seg {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .apply-btn {
+    width: 100%;
+    background: var(--green);
+    color: #0d0f0e;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .apply-btn:hover { opacity: 0.85; }
+
+  .scenario-toggle {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    padding: 0.9rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .toggle-btn.active {
+    background: var(--surface2);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .toggle-btn:hover:not(.active) { border-color: var(--muted); color: var(--text); }
+
+  .home-fields {
+    background: var(--surface2);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+
+  .home-fields.visible { display: block; }
+
+  .home-fields-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 560px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .compare-card.scenario-a { border-top: 3px solid var(--green); }
+  .compare-card.scenario-b { border-top: 3px solid var(--gold); }
+
+  .compare-card-header {
+    padding: 1rem 1.2rem 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .compare-card.scenario-a .compare-card-header { color: var(--green); }
+  .compare-card.scenario-b .compare-card-header { color: var(--gold); }
+
+  .compare-card-value {
+    padding: 0 1.2rem 0.3rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+  }
+
+  .compare-card-sub {
+    padding: 0 1.2rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+  }
+
+  .compare-rows { border-top: 1px solid var(--border); }
+
+  .compare-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1.2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row span:first-child { color: var(--muted); }
+
+  .delta-banner {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.6rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .delta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .delta-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--red);
+  }
+
+  /* ── Spending Module ─────────────────────────────── */
+  .spend-module {
+    background: var(--surface2);
+    border: 1px solid rgba(76,175,125,0.25);
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .spend-module-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.4rem;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+    user-select: none;
+  }
+
+  .spend-module-header.open { border-color: var(--border); }
+
+  .spend-module-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+
+  .spend-module-summary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold-light);
+  }
+
+  .spend-module-chevron {
+    font-size: 0.7rem;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+
+  .spend-module-chevron.open { transform: rotate(180deg); }
+
+  .spend-module-body { display: none; padding: 1.2rem 1.4rem; }
+  .spend-module-body.open { display: block; }
+
+  .spend-phase-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .spend-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .spend-tab.active { background: var(--surface); border-color: var(--green); color: var(--green); }
+
+  .spend-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+
+  .spend-table th {
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .spend-table td {
+    padding: 0.4rem 0.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    vertical-align: middle;
+  }
+
+  .spend-table tr:last-child td { border-bottom: none; }
+
+  .spend-table td:first-child { color: var(--text); font-size: 0.72rem; }
+
+  .spend-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .spend-input:focus { border-color: var(--green); }
+
+  .spend-pct-input {
+    width: 60px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+    outline: none;
+    transition: border-color 0.15s;
+    text-align: center;
+  }
+
+  .spend-pct-input:focus { border-color: var(--gold); }
+
+  .spend-tag {
+    display: inline-block;
+    font-size: 0.55rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .spend-tag.kids { background: rgba(76,175,125,0.1); color: var(--green); border: 1px solid rgba(76,175,125,0.2); }
+  .spend-tag.retire { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+
+  .spend-total-row td {
+    font-weight: 500;
+    color: var(--gold-light) !important;
+    border-top: 1px solid var(--border);
+    padding-top: 0.6rem;
+  }
+
+  .spend-footer {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+  }
+
+  .spend-apply-btn {
+    background: var(--green);
+    color: #0d0f0e;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .spend-apply-btn:hover { background: #5dc98d; }
+
+  .spend-phase-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
+  }
+
+  @media (max-width: 560px) { .spend-phase-summary { grid-template-columns: 1fr; } }
+
+  .spend-phase-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+  }
+
+  .spend-phase-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .spend-phase-card-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+  }
+
+  .spend-phase-card-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+  }
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--muted);
+    line-height: 1.6;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate { animation: fadeUp 0.5s ease both; }
+  .animate:nth-child(2) { animation-delay: 0.07s; }
+  .animate:nth-child(3) { animation-delay: 0.14s; }
+  .animate:nth-child(4) { animation-delay: 0.21s; }
+  .animate:nth-child(5) { animation-delay: 0.28s; }
+  .animate:nth-child(6) { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Your True Retirement Number</h1>
+    <p>Monte Carlo Simulation · Inflation-Adjusted · Phase-Based Spending · Personalized</p>
+  </header>
+
+  <div class="inputs-grid">
+    <div class="field">
+      <label>Current Age</label>
+      <input type="number" id="currentAge" value="" step="0.5">
+    </div>
+    <div class="field">
+      <label>Life Expectancy (Age)</label>
+      <input type="number" id="lifeExpectancy" value="90">
+    </div>
+    <div class="field">
+      <label>Monthly Spending Budget ($)</label>
+      <input type="number" id="monthlyBudget" value="" placeholder="e.g. 10000">
+    </div>
+    <div class="field">
+      <label>Inflation Rate (%)</label>
+      <input type="number" id="inflation" value="3" step="0.1">
+    </div>
+    <div class="field">
+      <label>Current Savings ($)</label>
+      <input type="number" id="savings" value="" placeholder="e.g. 500000">
+    </div>
+    <div class="field">
+      <label>Monthly Social Security — Household ($)</label>
+      <input type="number" id="socialSecurity" value="" placeholder="e.g. 3500">
+    </div>
+    <div class="field">
+      <label>Social Security Start Age</label>
+      <input type="number" id="ssAge" value="67" step="0.5">
+    </div>
+    <div class="field">
+      <label>Target MC Success Rate (%)</label>
+      <input type="number" id="targetSuccess" value="85" step="1">
+    </div>
+    <div class="field" style="border-color: rgba(201,168,76,0.3);">
+      <label>Your Planned Retirement Age</label>
+      <input type="number" id="retirementAge" value="" step="0.5">
+    </div>
+    <div class="field" style="border-color: rgba(201,168,76,0.3);">
+      <label>Wife's Retirement Age</label>
+      <input type="number" id="wifeRetirementAge" value="" step="0.5">
+    </div>
+    <div class="field" style="border-color: rgba(201,168,76,0.3);">
+      <label>Savings After 1st Spouse Retires (%)</label>
+      <input type="number" id="savingsAfterFirstRetire" value="100" step="1" min="0" max="100">
+    </div>
+    <div class="field" style="border-color: rgba(201,168,76,0.3);">
+      <label>Annual Savings (pre-retirement, $)</label>
+      <input type="number" id="annualSavings" value="" placeholder="e.g. 50000">
+    </div>
+    <div class="field" style="border-color: rgba(224,92,92,0.3);">
+      <label>Accumulation Return % (working years)</label>
+      <input type="number" id="accumReturn" value="6" step="0.1">
+    </div>
+    <div class="field" style="border-color: rgba(224,92,92,0.3);">
+      <label>Distribution Return % (retirement)</label>
+      <input type="number" id="distReturn" value="5.5" step="0.1">
+    </div>
+  </div>
+
+  <div class="scenario-toggle">
+    <div class="toggle-btn active" id="btn-base" onclick="setScenario('base')">📈 Keep Investing — No Home Purchase</div>
+    <div class="toggle-btn" id="btn-home" onclick="setScenario('home')">🏡 Buy Home — Compare Both Scenarios</div>
+  </div>
+
+  <div class="home-fields" id="home-fields">
+    <div class="home-fields-title">🏡 Home Purchase Assumptions</div>
+    <div class="inputs-grid" style="margin-bottom:0">
+      <div class="field">
+        <label>Current Home Value ($)</label>
+        <input type="number" id="currentHomeValue" value="1000000">
+      </div>
+      <div class="field">
+        <label>New Home Price ($)</label>
+        <input type="number" id="newHomePrice" value="1600000">
+      </div>
+      <div class="field">
+        <label>Mortgage Rate (%)</label>
+        <input type="number" id="mortgageRate" value="7" step="0.1">
+      </div>
+      <div class="field">
+        <label>Mortgage Term (years)</label>
+        <input type="number" id="mortgageTerm" value="30">
+      </div>
+      <div class="field">
+        <label>Home Appreciation Rate (%)</label>
+        <input type="number" id="homeAppreciation" value="4" step="0.1">
+      </div>
+      <div class="field">
+        <label>Lost Monthly Brokerage ($)</label>
+        <input type="number" id="lostBrokerage" value="5000">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Spending Module ──────────────────────────── -->
+  <div class="spend-module">
+    <div class="spend-module-header" id="spend-header" onclick="toggleSpendModule()">
+      <div>
+        <div class="spend-module-title">💰 Spending Planner — Phase-Based Budget</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span class="spend-module-summary" id="spend-summary">$0 / mo</span>
+        <span class="spend-module-chevron" id="spend-chevron">▼</span>
+      </div>
+    </div>
+    <div class="spend-module-body" id="spend-body">
+
+      <!-- Phase summary cards -->
+      <div class="spend-phase-summary">
+        <div class="spend-phase-card">
+          <div class="spend-phase-card-label">📅 Phase 1 — Now (Current)</div>
+          <div class="spend-phase-card-value" id="phase1-total">$0</div>
+          <div class="spend-phase-card-sub" id="phase1-sub">Enter your spending below</div>
+        </div>
+        <div class="spend-phase-card">
+          <div class="spend-phase-card-label">🎓 Phase 2 — Kids Done (Age ~57)</div>
+          <div class="spend-phase-card-value" id="phase2-total">$0</div>
+          <div class="spend-phase-card-sub" id="phase2-sub">Post-kids budget</div>
+        </div>
+        <div class="spend-phase-card">
+          <div class="spend-phase-card-label">🌅 Phase 3 — Retirement (Age 65)</div>
+          <div class="spend-phase-card-value" id="phase3-total">$0</div>
+          <div class="spend-phase-card-sub" id="phase3-sub">Retirement budget</div>
+        </div>
+      </div>
+
+      <!-- Phase tabs -->
+      <div class="spend-phase-tabs">
+        <div class="spend-tab active" id="tab-p1" onclick="showPhase(1)">Phase 1 · Current</div>
+        <div class="spend-tab" id="tab-p2" onclick="showPhase(2)">Phase 2 · Post-Kids</div>
+        <div class="spend-tab" id="tab-p3" onclick="showPhase(3)">Phase 3 · Retirement</div>
+      </div>
+
+      <!-- Phase 1 table -->
+      <div id="phase-panel-1">
+        <table class="spend-table">
+          <thead><tr><th>Category</th><th>Monthly ($)</th><th>Annual</th><th>Notes</th></tr></thead>
+          <tbody id="spend-tbody-p1"></tbody>
+          <tfoot><tr class="spend-total-row"><td>Total</td><td id="p1-monthly-total">—</td><td id="p1-annual-total">—</td><td></td></tr></tfoot>
+        </table>
+      </div>
+
+      <!-- Phase 2 table -->
+      <div id="phase-panel-2" style="display:none">
+        <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.8rem">
+          Phase 2 adjustments — set each category as % of Phase 1. Kids &amp; 529 are pre-set to 0%.
+        </p>
+        <table class="spend-table">
+          <thead><tr><th>Category</th><th>% of Phase 1</th><th>Monthly ($)</th><th>Annual</th></tr></thead>
+          <tbody id="spend-tbody-p2"></tbody>
+          <tfoot><tr class="spend-total-row"><td>Total</td><td></td><td id="p2-monthly-total">—</td><td id="p2-annual-total">—</td></tr></tfoot>
+        </table>
+      </div>
+
+      <!-- Phase 3 table -->
+      <div id="phase-panel-3" style="display:none">
+        <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.8rem">
+          Phase 3 adjustments — set each category as % of Phase 1 for retirement spending.
+        </p>
+        <table class="spend-table">
+          <thead><tr><th>Category</th><th>% of Phase 1</th><th>Monthly ($)</th><th>Annual</th></tr></thead>
+          <tbody id="spend-tbody-p3"></tbody>
+          <tfoot><tr class="spend-total-row"><td>Total</td><td></td><td id="p3-monthly-total">—</td><td id="p3-annual-total">—</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="spend-footer">
+        <span id="spend-budget-note">💡 Phase totals feed directly into the Monte Carlo. Click Apply to update.</span>
+        <button class="spend-apply-btn" onclick="applySpending()">Apply to Calculator</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="calculate()">Calculate My True Number</button>
+
+  <div id="results"></div>
+
+  <div class="disclaimer">
+    For illustrative purposes only · Not financial advice · Returns vary · Consult a CFP
+  </div>
+</div>
+
+<script>
+let currentScenario = 'base';
+
+function setScenario(s) {
+  currentScenario = s;
+  document.getElementById('btn-base').classList.toggle('active', s === 'base');
+  document.getElementById('btn-home').classList.toggle('active', s === 'home');
+  document.getElementById('home-fields').classList.toggle('visible', s === 'home');
+}
+
+
+// Returns: fraction of simulations where portfolio survives
+function runMonteCarlo(
+  startPortfolio, annualSpending, annualSS, ssDelay,
+  years, inflationRate, simCount = 2000, meanReturn = 0.055, stdReturn = 0.12
+) {
+
+  let successes = 0;
+
+  for (let s = 0; s < simCount; s++) {
+    let portfolio = startPortfolio;
+    let spending = annualSpending;
+    let survived = true;
+
+    for (let yr = 1; yr <= years; yr++) {
+      // Random return (Box-Muller)
+      const u1 = Math.random(), u2 = Math.random();
+      const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+      const ret = meanReturn + stdReturn * z;
+
+      // SS income kicks in after delay
+      const ssIncome = yr > ssDelay ? annualSS : 0;
+      const netWithdrawal = Math.max(0, spending - ssIncome);
+
+      portfolio = portfolio * (1 + ret) - netWithdrawal;
+      spending *= (1 + inflationRate);
+
+      if (portfolio <= 0) { survived = false; break; }
+    }
+    if (survived) successes++;
+  }
+  return successes / simCount;
+}
+
+function fmt(n) {
+  if (Math.abs(n) >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+  return '$' + n.toLocaleString('en-US', {maximumFractionDigits: 0});
+}
+
+function fmtPct(n) { return (n * 100).toFixed(1) + '%'; }
+
+function calculate() {
+  const currentAge         = parseFloat(document.getElementById('currentAge').value);
+  const retirementAge      = parseFloat(document.getElementById('retirementAge').value);
+  const wifeRetirementAge  = parseFloat(document.getElementById('wifeRetirementAge').value);
+  const lifeExp            = parseFloat(document.getElementById('lifeExpectancy').value);
+  const monthlyBudget      = parseFloat(document.getElementById('monthlyBudget').value);
+  const inflationPct       = parseFloat(document.getElementById('inflation').value) / 100;
+  const savings            = parseFloat(document.getElementById('savings').value);
+  const annualSavings      = parseFloat(document.getElementById('annualSavings').value);
+  const monthlySS          = parseFloat(document.getElementById('socialSecurity').value);
+  const ssAge              = parseFloat(document.getElementById('ssAge').value);
+  const targetSuccess      = parseFloat(document.getElementById('targetSuccess').value) / 100;
+
+  const accumReturnPct     = parseFloat(document.getElementById('accumReturn').value) / 100;
+  const distReturnPct      = parseFloat(document.getElementById('distReturn').value) / 100;
+  const savingsPhase2Pct   = parseFloat(document.getElementById('savingsAfterFirstRetire').value) / 100;
+  const mcMeanReturn       = distReturnPct;
+  const mcStdReturn        = 0.12;
+
+  if (retirementAge <= currentAge) { alert('Your retirement age must be greater than current age.'); return; }
+
+  const fullRetireAge      = Math.max(retirementAge, wifeRetirementAge);
+  const wifeStopsFirst     = wifeRetirementAge < retirementAge;
+  const yearsToFullRetire  = fullRetireAge - currentAge;
+  const yearsInRetirement  = lifeExp - fullRetireAge;
+  const annualBudget       = monthlyBudget * 12;
+  const annualSS           = monthlySS * 12;
+  const ssDelayFromRetire  = Math.max(0, ssAge - fullRetireAge);
+  const accumReturn        = accumReturnPct;
+
+  // --- Core accumulation function ---
+  function calcPortfolioAtRetirement(startSavings, yearlySavings) {
+    let p = startSavings;
+    const reducedSavings = yearlySavings * savingsPhase2Pct;
+    if (wifeStopsFirst) {
+      const p1 = wifeRetirementAge - currentAge;
+      const p2 = retirementAge - wifeRetirementAge;
+      // Phase 1: both working — full savings
+      for (let yr = 0; yr < p1; yr++) p = p * (1 + accumReturn) + yearlySavings;
+      // Phase 2: only you working — reduced savings
+      for (let yr = 0; yr < p2; yr++) p = p * (1 + accumReturn) + reducedSavings;
+    } else {
+      for (let yr = 0; yr < yearsToFullRetire; yr++) p = p * (1 + accumReturn) + yearlySavings;
+    }
+    return p;
+  }
+
+  // --- True number solver ---
+  function solveForTrueNumber() {
+    let lo = 100000, hi = 20000000;
+    for (let i = 0; i < 30; i++) {
+      const mid = (lo + hi) / 2;
+      const rate = runMonteCarlo(mid, annualBudget, annualSS, ssDelayFromRetire, yearsInRetirement, inflationPct, 1200, mcMeanReturn, mcStdReturn);
+      if (rate >= targetSuccess) hi = mid; else lo = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
+  // --- Back-solve to today's need ---
+  function backSolveToday(trueAtRetire, yearlySavings) {
+    const gf = Math.pow(1 + accumReturn, yearsToFullRetire);
+    const fv = yearlySavings * (gf - 1) / accumReturn;
+    return Math.max(0, (trueAtRetire - fv) / gf);
+  }
+
+  // --- Full projection rows ---
+  function fullProjection(startSavings, yearlySavings) {
+    let rows = [], p = startSavings, spending = annualBudget;
+    const totalYears = lifeExp - currentAge;
+    const reducedSavings = yearlySavings * savingsPhase2Pct;
+    for (let yr = 1; yr <= totalYears; yr++) {
+      const age = currentAge + yr;
+      const inAccum = age <= fullRetireAge;
+      const inPhase2 = wifeStopsFirst && age > wifeRetirementAge && age <= retirementAge;
+      const activeSavings = inPhase2 ? reducedSavings : yearlySavings;
+      let phase;
+      if (age <= wifeRetirementAge && wifeStopsFirst) phase = 'BOTH SAVING';
+      else if (age <= fullRetireAge) phase = wifeStopsFirst ? 'YOU SAVING' : 'SAVING';
+      else phase = 'DRAWING';
+      if (inAccum) {
+        p = p * (1 + accumReturn) + activeSavings;
+      } else {
+        const retireYr = age - fullRetireAge;
+        const ssIncome = retireYr > ssDelayFromRetire ? annualSS : 0;
+        p = p * (1 + distReturnPct) - Math.max(0, spending - ssIncome);
+        spending *= (1 + inflationPct);
+      }
+      const isWifeRetire = wifeStopsFirst && Math.abs(age - wifeRetirementAge) < 0.6;
+      const isYourRetire = Math.abs(age - retirementAge) < 0.6;
+      const showRow = yr % 5 === 0 || yr === 1 || isWifeRetire || isYourRetire;
+      if (showRow) {
+        const retireYr2 = Math.max(0, age - fullRetireAge);
+        const ssIncome2 = (!inAccum && retireYr2 > ssDelayFromRetire) ? annualSS : 0;
+        rows.push({ yr, age, p, spending: inAccum ? 0 : spending, ssIncome: ssIncome2, inAccum, phase, contribution: inAccum ? activeSavings : 0, isWifeRetire, isYourRetire });
+      }
+    }
+    return rows;
+  }
+
+  // ========== BASE SCENARIO ==========
+  const basePortfolio    = calcPortfolioAtRetirement(savings, annualSavings);
+  const trueNumber       = solveForTrueNumber();
+  const baseTodayNeed    = backSolveToday(trueNumber, annualSavings);
+  const baseGap          = savings - baseTodayNeed;
+  const baseRetireGap    = basePortfolio - trueNumber;
+  const baseRate         = runMonteCarlo(basePortfolio, annualBudget, annualSS, ssDelayFromRetire, yearsInRetirement, inflationPct, 3000, mcMeanReturn, mcStdReturn);
+  const baseSuccessPct   = Math.round(baseRate * 100);
+  const baseIsOnTrack    = savings >= baseTodayNeed;
+  const annualNetPostSS  = Math.max(0, annualBudget - annualSS);
+  const fourPctSS        = (annualBudget - annualSS * 0.5) / 0.04;
+
+  if (currentScenario === 'base') {
+    // Render single scenario
+    const projRows = fullProjection(savings, annualSavings);
+    renderSingleScenario({
+      isOnTrack: baseIsOnTrack, gap: baseGap, todayNeed: baseTodayNeed,
+      portfolioAtRetirement: basePortfolio, trueNumber, retirementGap: baseRetireGap,
+      successPct: baseSuccessPct, targetSuccess, projRows,
+      annualBudget, annualNetPostSS, annualSavings, annualSS,
+      currentAge, retirementAge, wifeRetirementAge, fullRetireAge,
+      ssAge, ssDelayFromRetire, lifeExp, fourPctSS,
+      wifeStopsFirst, yearsToFullRetire, label: null,
+      accumReturn: accumReturnPct, distReturn: distReturnPct,
+      savingsPhase2Pct
+    });
+    return;
+  }
+
+  // ========== HOME SCENARIO ==========
+  const currentHomeValue  = parseFloat(document.getElementById('currentHomeValue').value);
+  const newHomePrice      = parseFloat(document.getElementById('newHomePrice').value);
+  const mortgageRate      = parseFloat(document.getElementById('mortgageRate').value) / 100;
+  const mortgageTerm      = parseFloat(document.getElementById('mortgageTerm').value);
+  const homeApprecRate    = parseFloat(document.getElementById('homeAppreciation').value) / 100;
+  const lostBrokerage     = parseFloat(document.getElementById('lostBrokerage').value);
+
+  // Mortgage calc
+  const mortgage          = Math.max(0, newHomePrice - currentHomeValue);
+  const monthlyRate       = mortgageRate / 12;
+  const numPayments       = mortgageTerm * 12;
+  const monthlyPayment    = mortgage > 0
+    ? mortgage * monthlyRate * Math.pow(1 + monthlyRate, numPayments) / (Math.pow(1 + monthlyRate, numPayments) - 1)
+    : 0;
+  const annualMortgage    = monthlyPayment * 12;
+
+  // Home scenario: remove brokerage ($60k/yr) from savings, home equity grows separately
+  const homeSavings       = annualSavings - (lostBrokerage * 12);
+  const homePortfolio     = calcPortfolioAtRetirement(savings, homeSavings);
+  const homeRate          = runMonteCarlo(homePortfolio, annualBudget, annualSS, ssDelayFromRetire, yearsInRetirement, inflationPct, 3000, mcMeanReturn, mcStdReturn);
+  const homeSuccessPct    = Math.round(homeRate * 100);
+  const homeTodayNeed     = backSolveToday(trueNumber, homeSavings);
+  const homeGap           = savings - homeTodayNeed;
+  const homeRetireGap     = homePortfolio - trueNumber;
+  const homeIsOnTrack     = savings >= homeTodayNeed;
+
+  // Home equity at your retirement
+  const newHomeValueAtRetire  = newHomePrice * Math.pow(1 + homeApprecRate, yearsToFullRetire);
+  const currentHomeAtRetire   = currentHomeValue * Math.pow(1 + homeApprecRate, yearsToFullRetire);
+  // Remaining mortgage balance at retirement
+  const yearsToRetireYou      = retirementAge - currentAge;
+  const paymentsMade          = yearsToRetireYou * 12;
+  let mortgageBalance = mortgage;
+  for (let m = 0; m < Math.min(paymentsMade, numPayments); m++) {
+    mortgageBalance = mortgageBalance * (1 + monthlyRate) - monthlyPayment;
+  }
+  mortgageBalance = Math.max(0, mortgageBalance);
+  const netHomeEquityGain     = (newHomeValueAtRetire - mortgageBalance) - currentHomeAtRetire;
+  const portfolioDelta        = basePortfolio - homePortfolio;
+  const netCost               = portfolioDelta - netHomeEquityGain;
+
+  // Render comparison
+  renderComparison({
+    base: { portfolio: basePortfolio, successPct: baseSuccessPct, gap: baseGap, retireGap: baseRetireGap, isOnTrack: baseIsOnTrack, todayNeed: baseTodayNeed },
+    home: { portfolio: homePortfolio, successPct: homeSuccessPct, gap: homeGap, retireGap: homeRetireGap, isOnTrack: homeIsOnTrack, todayNeed: homeTodayNeed },
+    trueNumber, mortgage, monthlyPayment, annualMortgage,
+    newHomeValueAtRetire, mortgageBalance, netHomeEquityGain, portfolioDelta, netCost,
+    lostBrokerage, targetSuccess, annualBudget, annualNetPostSS, ssAge,
+    fullRetireAge, lifeExp, ssDelayFromRetire, yearsToFullRetire,
+    accumReturn: accumReturnPct, distReturn: distReturnPct,
+    baseRows: fullProjection(savings, annualSavings),
+    homeRows: fullProjection(savings, homeSavings)
+  });
+}
+
+function renderSingleScenario(p) {
+  const phaseColor = (phase) => phase === 'BOTH SAVING' ? 'var(--green)' : phase === 'YOU SAVING' ? 'var(--gold)' : 'var(--muted)';
+  const html = `
+    <div id="res-inner">
+      <div class="verdict-bar ${p.isOnTrack ? 'success' : 'danger'} animate">
+        <div>
+          <div class="verdict-label">${p.isOnTrack ? `✓ On track — Wife retires ${p.wifeRetirementAge}, You retire ${p.retirementAge}` : `⚠ Gap — Wife retires ${p.wifeRetirementAge}, You retire ${p.retirementAge}`}</div>
+          <div class="verdict-value ${p.gap >= 0 ? 'pos' : 'neg'}">${p.gap >= 0 ? '+' : ''}${fmt(p.gap)}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-top:0.3rem">
+            Today's savings vs. required <strong style="color:var(--gold-light)">${fmt(p.todayNeed)}</strong> needed now
+          </div>
+        </div>
+        <span class="verdict-badge ${p.isOnTrack ? 'success' : 'danger'}">${p.isOnTrack ? 'Funded' : 'Underfunded'}</span>
+      </div>
+      <div class="stats-grid animate">
+        <div class="stat-box"><div class="stat-label">True Number at Retirement</div><div class="stat-value">${fmt(p.trueNumber)}</div></div>
+        <div class="stat-box"><div class="stat-label">Projected at Age ${p.fullRetireAge}</div><div class="stat-value" style="color:${p.retirementGap>=0?'var(--green)':'var(--red)'}">${fmt(p.portfolioAtRetirement)}</div></div>
+        <div class="stat-box"><div class="stat-label">Retirement Gap</div><div class="stat-value" style="color:${p.retirementGap>=0?'var(--green)':'var(--red)'}">${p.retirementGap>=0?'+':''}${fmt(p.retirementGap)}</div></div>
+        <div class="stat-box"><div class="stat-label">Wife Retires</div><div class="stat-value">Age ${p.wifeRetirementAge}</div></div>
+        <div class="stat-box"><div class="stat-label">You Retire</div><div class="stat-value">Age ${p.retirementAge}</div></div>
+        <div class="stat-box"><div class="stat-label">Net Annual (post-SS)</div><div class="stat-value">${fmt(p.annualNetPostSS)}</div></div>
+      </div>
+      <div class="mc-section animate">
+        <div class="mc-title">Monte Carlo Success Rate · 3000 Simulations · ${(p.distReturn*100).toFixed(1)}% Mean Return · Full Retirement Age ${p.fullRetireAge}</div>
+        <div class="mc-rate">${p.successPct}%</div>
+        <div class="mc-bar-wrap">
+          <div class="mc-bar-fill ${p.successPct >= p.targetSuccess * 100 ? 'success' : 'danger'}" style="width:0%"></div>
+          <div class="mc-threshold-line" style="left:${p.targetSuccess * 100}%"></div>
+        </div>
+        <div class="mc-meta">
+          <span>${p.successPct}% of simulations survive to age ${p.lifeExp}</span>
+          <span>Target: ${Math.round(p.targetSuccess * 100)}% <span style="color:var(--gold)">│</span></span>
+        </div>
+      </div>
+      <div class="insight animate">
+        ${p.wifeStopsFirst ? `<strong>Three-phase plan modeled.</strong> Wife retires at <strong>${p.wifeRetirementAge}</strong> — savings drop to <strong>${Math.round(p.savingsPhase2Pct*100)}%</strong> of full rate (${fmt(p.annualSavings * p.savingsPhase2Pct)}/yr) while your income continues through age <strong>${p.retirementAge}</strong>. ` : ''}
+        ${p.isOnTrack
+          ? `Portfolio projects to <strong>${fmt(p.portfolioAtRetirement)}</strong> at full retirement — <strong>${fmt(p.retirementGap)} above</strong> your true number of ${fmt(p.trueNumber)}. MC success rate: <strong>${p.successPct}%</strong> ${p.successPct >= Math.round(p.targetSuccess*100) ? '✓ meets' : '— approaches'} your ${Math.round(p.targetSuccess*100)}% target.`
+          : `Portfolio projects to <strong>${fmt(p.portfolioAtRetirement)}</strong> — <strong>${fmt(Math.abs(p.retirementGap))} short</strong> of the ${fmt(p.trueNumber)} needed.`
+        }
+        <br><br>
+        <strong>Key window:</strong> Ages ${p.fullRetireAge}–${p.ssAge} are your most vulnerable — <strong>${fmt(p.annualBudget)}/yr</strong> fully from portfolio. Once SS starts, net draw drops to <strong>${fmt(p.annualNetPostSS)}/yr</strong> — a ${Math.round((1-p.annualNetPostSS/p.annualBudget)*100)}% reduction.
+      </div>
+      <div class="projection-section animate">
+        <div class="projection-header">Full Portfolio Projection — ${(p.accumReturn*100).toFixed(1)}% Accum · ${(p.distReturn*100).toFixed(1)}% Distribution (Median)</div>
+        <table>
+          <thead><tr><th>Age (You)</th><th>Phase</th><th>Portfolio Value</th><th>Annual Flow</th><th>SS Income</th></tr></thead>
+          <tbody>
+            ${p.projRows.map(r => `
+              <tr class="${(r.isYourRetire || r.isWifeRetire) ? 'highlight' : ''} ${r.p < 0 ? 'depleted' : ''}">
+                <td>${Math.round(r.age*2)/2}${r.isWifeRetire?' <span class="tag ss">WIFE RETIRES</span>':''}${r.isYourRetire?' <span class="tag now">YOU RETIRE</span>':''}${Math.abs(r.age-p.currentAge)<0.6?' <span class="tag now">NOW</span>':''}</td>
+                <td style="color:${phaseColor(r.phase)};font-size:0.65rem">${r.phase}</td>
+                <td>${r.p<0?'⚠ DEPLETED':fmt(r.p)}</td>
+                <td style="color:${r.inAccum?'var(--green)':'var(--muted)'}">${r.inAccum?'+'+fmt(r.contribution):r.spending>0?'-'+fmt(r.spending):'—'}</td>
+                <td>${r.ssIncome>0?fmt(r.ssIncome)+' <span class="tag ss">SS</span>':'—'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="insight animate">
+        <strong>4% Rule Cross-Check:</strong> Gross need without SS = <strong>${fmt(p.annualBudget/0.04)}</strong>. With SS offsetting ~50% of late-retirement spend, effective number ≈ <strong>${fmt(p.fourPctSS)}</strong> — Monte Carlo gives <strong>${fmt(p.trueNumber)}</strong>.
+      </div>
+    </div>`;
+  const el = document.getElementById('results');
+  el.style.display = 'block';
+  el.innerHTML = html;
+  setTimeout(() => { const f = document.querySelector('.mc-bar-fill'); if(f) f.style.width = Math.min(100, p.successPct)+'%'; }, 100);
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderComparison(p) {
+  const html = `
+    <div id="res-inner">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--gold-light);margin-bottom:1rem;animation:fadeUp 0.4s ease both">
+        Side-by-Side: Keep Investing vs. Buy Home
+      </div>
+
+      <div class="compare-grid animate">
+        <div class="compare-card scenario-a">
+          <div class="compare-card-header">📈 Keep Investing</div>
+          <div class="compare-card-value" style="color:${p.base.retireGap>=0?'var(--green)':'var(--red)'}">${fmt(p.base.portfolio)}</div>
+          <div class="compare-card-sub">Portfolio at retirement · Age ${p.fullRetireAge}</div>
+          <div class="compare-rows">
+            <div class="compare-row"><span>True Number</span><span>${fmt(p.trueNumber)}</span></div>
+            <div class="compare-row"><span>Gap vs. True #</span><span style="color:${p.base.retireGap>=0?'var(--green)':'var(--red)'}">${p.base.retireGap>=0?'+':''}${fmt(p.base.retireGap)}</span></div>
+            <div class="compare-row"><span>MC Success Rate</span><span style="color:${p.base.successPct>=Math.round(p.targetSuccess*100)?'var(--green)':'var(--red)'}">${p.base.successPct}%</span></div>
+            <div class="compare-row"><span>Monthly Brokerage</span><span style="color:var(--green)">+${fmt(p.lostBrokerage)}/mo</span></div>
+            <div class="compare-row"><span>Mortgage Payment</span><span style="color:var(--muted)">None</span></div>
+          </div>
+        </div>
+        <div class="compare-card scenario-b">
+          <div class="compare-card-header">🏡 Buy $${(parseFloat(document.getElementById('newHomePrice').value)/1e6).toFixed(1)}M Home</div>
+          <div class="compare-card-value" style="color:${p.home.retireGap>=0?'var(--green)':'var(--red)'}">${fmt(p.home.portfolio)}</div>
+          <div class="compare-card-sub">Portfolio at retirement · Age ${p.fullRetireAge}</div>
+          <div class="compare-rows">
+            <div class="compare-row"><span>True Number</span><span>${fmt(p.trueNumber)}</span></div>
+            <div class="compare-row"><span>Gap vs. True #</span><span style="color:${p.home.retireGap>=0?'var(--green)':'var(--red)'}">${p.home.retireGap>=0?'+':''}${fmt(p.home.retireGap)}</span></div>
+            <div class="compare-row"><span>MC Success Rate</span><span style="color:${p.home.successPct>=Math.round(p.targetSuccess*100)?'var(--green)':'var(--red)'}">${p.home.successPct}%</span></div>
+            <div class="compare-row"><span>Monthly Brokerage</span><span style="color:var(--red)">$0</span></div>
+            <div class="compare-row"><span>Mortgage Payment</span><span style="color:var(--red)">-${fmt(p.monthlyPayment)}/mo</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="delta-banner animate">
+        <div>
+          <div class="delta-label">Total Retirement Wealth Cost of Buying</div>
+          <div class="delta-value">-${fmt(p.portfolioDelta)}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:0.3rem">in forgone portfolio value at retirement</div>
+        </div>
+        <div style="text-align:right">
+          <div class="delta-label">Net Home Equity Gain</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--gold-light)">+${fmt(p.netHomeEquityGain)}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:0.3rem">vs. staying in current home</div>
+        </div>
+        <div style="text-align:right">
+          <div class="delta-label">True Net Cost</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--red)">-${fmt(p.netCost)}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:0.3rem">portfolio loss minus home equity gain</div>
+        </div>
+      </div>
+
+      <div class="insight animate">
+        <strong>The real trade-off in numbers:</strong> Buying the $${(parseFloat(document.getElementById('newHomePrice').value)/1e6).toFixed(1)}M home costs <strong>${fmt(p.portfolioDelta)}</strong> in retirement portfolio value — but you gain <strong>${fmt(p.netHomeEquityGain)}</strong> in net home equity vs. staying put. The true financial cost is <strong>${fmt(p.netCost)}</strong> in lifetime wealth.
+        <br><br>
+        Your mortgage would be <strong>${fmt(p.monthlyPayment)}/mo (${fmt(p.annualMortgage)}/yr)</strong> on a ${fmt(parseFloat(document.getElementById('mortgage') || 0))} loan at ${document.getElementById('mortgageRate').value}%. MC success rate drops from <strong>${p.base.successPct}% → ${p.home.successPct}%</strong> ${p.home.successPct >= Math.round(p.targetSuccess*100) ? '— still above your target ✓' : '— below your '+Math.round(p.targetSuccess*100)+'% target ⚠'}.
+      </div>
+
+      <div class="compare-grid animate">
+        <div class="projection-section" style="margin-bottom:0">
+          <div class="projection-header">📈 Keep Investing — Portfolio Path</div>
+          <table><thead><tr><th>Age</th><th>Phase</th><th>Portfolio</th></tr></thead>
+          <tbody>${p.baseRows.map(r=>`<tr class="${r.isYourRetire||r.isWifeRetire?'highlight':''} ${r.p<0?'depleted':''}"><td>${Math.round(r.age*2)/2}${r.isYourRetire?' <span class="tag now">RETIRE</span>':''}</td><td style="font-size:0.6rem;color:${r.inAccum?'var(--green)':'var(--muted)'}">${r.phase}</td><td>${r.p<0?'⚠ GONE':fmt(r.p)}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>
+        <div class="projection-section" style="margin-bottom:0">
+          <div class="projection-header">🏡 Buy Home — Portfolio Path</div>
+          <table><thead><tr><th>Age</th><th>Phase</th><th>Portfolio</th></tr></thead>
+          <tbody>${p.homeRows.map(r=>`<tr class="${r.isYourRetire||r.isWifeRetire?'highlight':''} ${r.p<0?'depleted':''}"><td>${Math.round(r.age*2)/2}${r.isYourRetire?' <span class="tag now">RETIRE</span>':''}</td><td style="font-size:0.6rem;color:${r.inAccum?'var(--gold)':'var(--muted)'}">${r.phase}</td><td style="color:${r.p<0?'var(--red)':r.p<p.trueNumber&&!r.inAccum?'var(--red)':'inherit'}">${r.p<0?'⚠ GONE':fmt(r.p)}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="insight animate" style="margin-top:1rem">
+        <strong>Bottom line:</strong> ${p.home.successPct >= Math.round(p.targetSuccess*100)
+          ? `Both scenarios keep you above your ${Math.round(p.targetSuccess*100)}% MC target. Buying the home is financially viable — the decision comes down to lifestyle, not survival.`
+          : `Buying the home pushes your MC success rate to ${p.home.successPct}% — below your ${Math.round(p.targetSuccess*100)}% target. You'd be taking on meaningful retirement risk. Consider a smaller home, larger down payment, or working to ${Math.round(p.fullRetireAge + 1)}–${Math.round(p.fullRetireAge + 2)} to compensate.`
+        } The home equity at retirement of <strong>${fmt(p.newHomeValueAtRetire - p.mortgageBalance)}</strong> is real wealth — but illiquid. Make sure your plan doesn't require selling the home to fund retirement.
+      </div>
+    </div>`;
+
+  const el = document.getElementById('results');
+  el.style.display = 'block';
+  el.innerHTML = html;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Spending Module ───────────────────────────────────────
+const SPEND_CATEGORIES = [
+  { id: 'housing',   label: 'Housing',              monthly: 0, p2pct: 100, p3pct: 100, tag: null,    note: 'Taxes, insurance, maintenance' },
+  { id: 'kids',      label: 'Kids',                 monthly: 0, p2pct: 0,   p3pct: 0,   tag: 'kids',  note: 'Phases out per graduation' },
+  { id: 'college',   label: '529 Contributions',    monthly: 0, p2pct: 0,   p3pct: 0,   tag: 'kids',  note: 'Stops when youngest finishes college' },
+  { id: 'food',      label: 'Food & Dining',         monthly: 0, p2pct: 90,  p3pct: 75,  tag: 'retire',note: 'Drops in retirement' },
+  { id: 'transport', label: 'Transportation',        monthly: 0, p2pct: 100, p3pct: 80,  tag: null,    note: '' },
+  { id: 'travel',    label: 'Travel & Vacations',    monthly: 0, p2pct: 100, p3pct: 100, tag: null,    note: '' },
+  { id: 'health',    label: 'Healthcare',            monthly: 0, p2pct: 100, p3pct: 130, tag: 'retire',note: 'Increases in retirement' },
+  { id: 'entertain', label: 'Entertainment',         monthly: 0, p2pct: 100, p3pct: 90,  tag: null,    note: '' },
+  { id: 'clothing',  label: 'Clothing & Personal',   monthly: 0, p2pct: 80,  p3pct: 70,  tag: null,    note: '' },
+  { id: 'misc',      label: 'Misc / Buffer',         monthly: 0, p2pct: 80,  p3pct: 70,  tag: null,    note: '' },
+];
+
+let spendOpen = false;
+let activePhase = 1;
+
+function toggleSpendModule() {
+  spendOpen = !spendOpen;
+  document.getElementById('spend-body').classList.toggle('open', spendOpen);
+  document.getElementById('spend-header').classList.toggle('open', spendOpen);
+  document.getElementById('spend-chevron').classList.toggle('open', spendOpen);
+  if (spendOpen) renderSpendTables();
+}
+
+function showPhase(n) {
+  activePhase = n;
+  [1,2,3].forEach(i => {
+    document.getElementById(`phase-panel-${i}`).style.display = i === n ? 'block' : 'none';
+    document.getElementById(`tab-p${i}`).classList.toggle('active', i === n);
+  });
+}
+
+function fmtM(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function getP1Monthly(id) {
+  const el = document.getElementById(`p1-${id}`);
+  return el ? parseFloat(el.value) || 0 : 0;
+}
+
+function getP2Pct(id) {
+  const el = document.getElementById(`p2pct-${id}`);
+  return el ? parseFloat(el.value) || 0 : 0;
+}
+
+function getP3Pct(id) {
+  const el = document.getElementById(`p3pct-${id}`);
+  return el ? parseFloat(el.value) || 0 : 0;
+}
+
+function recalcTotals() {
+  let t1 = 0, t2 = 0, t3 = 0;
+  SPEND_CATEGORIES.forEach(c => {
+    const m1 = getP1Monthly(c.id);
+    const m2 = m1 * getP2Pct(c.id) / 100;
+    const m3 = m1 * getP3Pct(c.id) / 100;
+    t1 += m1; t2 += m2; t3 += m3;
+    // Update p2 row computed values
+    const p2mEl = document.getElementById(`p2m-${c.id}`);
+    const p2aEl = document.getElementById(`p2a-${c.id}`);
+    if (p2mEl) p2mEl.textContent = fmtM(m2);
+    if (p2aEl) p2aEl.textContent = fmtM(m2 * 12);
+    // Update p3 row computed values
+    const p3mEl = document.getElementById(`p3m-${c.id}`);
+    const p3aEl = document.getElementById(`p3a-${c.id}`);
+    if (p3mEl) p3mEl.textContent = fmtM(m3);
+    if (p3aEl) p3aEl.textContent = fmtM(m3 * 12);
+  });
+  // Phase 1 totals
+  document.getElementById('p1-monthly-total').textContent = fmtM(t1);
+  document.getElementById('p1-annual-total').textContent = fmtM(t1 * 12);
+  // Phase 2 totals
+  document.getElementById('p2-monthly-total').textContent = fmtM(t2);
+  document.getElementById('p2-annual-total').textContent = fmtM(t2 * 12);
+  // Phase 3 totals
+  document.getElementById('p3-monthly-total').textContent = fmtM(t3);
+  document.getElementById('p3-annual-total').textContent = fmtM(t3 * 12);
+  // Summary cards
+  document.getElementById('phase1-total').textContent = fmtM(t1) + '/mo';
+  document.getElementById('phase2-total').textContent = fmtM(t2) + '/mo';
+  document.getElementById('phase3-total').textContent = fmtM(t3) + '/mo';
+  // Header summary
+  document.getElementById('spend-summary').textContent = fmtM(t1) + ' / mo';
+}
+
+function renderSpendTables() {
+  // Phase 1
+  const tb1 = document.getElementById('spend-tbody-p1');
+  tb1.innerHTML = SPEND_CATEGORIES.map(c => `
+    <tr>
+      <td>${c.label}${c.tag === 'kids' ? ' <span class="spend-tag kids">KIDS</span>' : ''}${c.tag === 'retire' ? ' <span class="spend-tag retire">RETIRE</span>' : ''}</td>
+      <td><input class="spend-input" type="number" id="p1-${c.id}" value="${c.monthly}" oninput="recalcTotals()" style="width:100px"></td>
+      <td id="p1a-${c.id}">${fmtM(c.monthly * 12)}</td>
+      <td style="color:var(--muted);font-size:0.65rem">${c.note}</td>
+    </tr>`).join('');
+
+  // Phase 2
+  const tb2 = document.getElementById('spend-tbody-p2');
+  tb2.innerHTML = SPEND_CATEGORIES.map(c => `
+    <tr>
+      <td>${c.label}${c.tag === 'kids' ? ' <span class="spend-tag kids">KIDS</span>' : ''}</td>
+      <td><input class="spend-pct-input" type="number" id="p2pct-${c.id}" value="${c.p2pct}" min="0" max="200" oninput="recalcTotals()">%</td>
+      <td id="p2m-${c.id}">${fmtM(c.monthly * c.p2pct / 100)}</td>
+      <td id="p2a-${c.id}">${fmtM(c.monthly * c.p2pct / 100 * 12)}</td>
+    </tr>`).join('');
+
+  // Phase 3
+  const tb3 = document.getElementById('spend-tbody-p3');
+  tb3.innerHTML = SPEND_CATEGORIES.map(c => `
+    <tr>
+      <td>${c.label}${c.tag === 'retire' ? ' <span class="spend-tag retire">RETIRE</span>' : ''}</td>
+      <td><input class="spend-pct-input" type="number" id="p3pct-${c.id}" value="${c.p3pct}" min="0" max="200" oninput="recalcTotals()">%</td>
+      <td id="p3m-${c.id}">${fmtM(c.monthly * c.p3pct / 100)}</td>
+      <td id="p3a-${c.id}">${fmtM(c.monthly * c.p3pct / 100 * 12)}</td>
+    </tr>`).join('');
+
+  recalcTotals();
+}
+
+function getSpendingPhases() {
+  // Returns monthly spend for each phase (or null if module not used)
+  if (!spendOpen) return null;
+  let t1 = 0, t2 = 0, t3 = 0;
+  SPEND_CATEGORIES.forEach(c => {
+    const m1 = getP1Monthly(c.id);
+    t1 += m1;
+    t2 += m1 * getP2Pct(c.id) / 100;
+    t3 += m1 * getP3Pct(c.id) / 100;
+  });
+  return { phase1: t1, phase2: t2, phase3: t3 };
+}
+
+function applySpending() {
+  const phases = getSpendingPhases();
+  if (!phases) return;
+  // Update the monthly budget field with Phase 3 (retirement) spend
+  document.getElementById('monthlyBudget').value = Math.round(phases.phase3);
+  document.getElementById('spend-budget-note').textContent =
+    `✓ Applied — Phase 3 retirement spend (${fmtM(phases.phase3)}/mo) set as monthly budget. Recalculate to update.`;
+  document.getElementById('spend-budget-note').style.color = 'var(--green)';
+}
+
+// ── End Spending Module ───────────────────────────────────
+
+// Auto-calculate on load
+// Fill in your values above, then click Calculate
+</script>
+</body>
+</html>
