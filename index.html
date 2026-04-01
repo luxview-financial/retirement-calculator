@@ -695,6 +695,286 @@
     }
   }
 
+
+
+  /* ── Debt Payoff Module ─────────────────────────────── */
+  .debt-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+  @media (max-width: 560px) { .debt-type-grid { grid-template-columns: 1fr 1fr; } }
+
+  .debt-type-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.55rem 0.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    user-select: none;
+  }
+  .debt-type-btn.active {
+    background: var(--surface);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .debt-entry-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+  .debt-entry-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .debt-entry-table td {
+    padding: 0.35rem 0.4rem;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .debt-entry-table tr:last-child td { border-bottom: none; }
+
+  .debt-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.28rem 0.45rem;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+  }
+  .debt-input:focus { border-color: var(--red); }
+
+  .method-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
+  }
+  @media (max-width: 600px) { .method-cards { grid-template-columns: 1fr; } }
+
+  .method-card {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .method-card:hover { border-color: var(--muted); }
+  .method-card.selected { border-color: var(--gold); background: var(--surface); }
+  .method-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 0.6rem;
+    right: 0.8rem;
+    color: var(--gold);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .method-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .method-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .method-tag.math { background: rgba(91,141,238,0.15); color: #5b8dee; border: 1px solid rgba(91,141,238,0.3); }
+  .method-tag.psych { background: rgba(76,175,125,0.15); color: var(--green); border: 1px solid rgba(76,175,125,0.3); }
+  .method-tag.hybrid { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+
+  .method-pros-cons {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .method-pros-cons strong { color: var(--text); font-weight: 500; }
+
+  .debt-results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
+  }
+  @media (max-width: 560px) { .debt-results-grid { grid-template-columns: 1fr 1fr; } }
+
+  .debt-stat {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+  }
+  .debt-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+  .debt-stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--gold-light);
+  }
+  .debt-stat-value.good { color: var(--green); }
+  .debt-stat-value.bad  { color: var(--red); }
+
+  .debt-timeline {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .debt-timeline-header {
+    padding: 0.7rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+  .debt-row {
+    display: flex;
+    align-items: center;
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    gap: 0.75rem;
+  }
+  .debt-row:last-child { border-bottom: none; }
+  .debt-row-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text);
+    width: 110px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .debt-bar-wrap {
+    flex: 1;
+    background: var(--surface);
+    border-radius: 3px;
+    height: 8px;
+    overflow: hidden;
+  }
+  .debt-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  }
+  .debt-row-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    white-space: nowrap;
+    min-width: 65px;
+    text-align: right;
+  }
+
+  .retire-advantage {
+    background: linear-gradient(135deg, #1a2e1f, #152614);
+    border: 1px solid #2d5a35;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .retire-advantage-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 0.6rem;
+  }
+  .retire-advantage-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--green);
+    margin-bottom: 0.3rem;
+  }
+
+  /* ── Charts ────────────────────────────────────────── */
+  .chart-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .chart-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 600px) { .chart-grid { grid-template-columns: 1fr; } }
+
+  .chart-legend {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+  }
+
+  .chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+  }
+
+  .chart-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
   /* ── Spending Module ─────────────────────────────── */
   .spend-module {
     background: var(--surface2);
@@ -928,6 +1208,7 @@
   .animate:nth-child(5) { animation-delay: 0.28s; }
   .animate:nth-child(6) { animation-delay: 0.35s; }
 </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -1078,27 +1359,27 @@
     <div class="inputs-grid" style="margin-bottom:0">
       <div class="field">
         <label>Current Home Value ($)</label>
-        <input type="number" id="currentHomeValue" value="1000000">
+        <input type="number" id="currentHomeValue" value="" placeholder="e.g. 800000">
       </div>
       <div class="field">
         <label>New Home Price ($)</label>
-        <input type="number" id="newHomePrice" value="1600000">
+        <input type="number" id="newHomePrice" value="" placeholder="e.g. 1200000">
       </div>
       <div class="field">
         <label>Mortgage Rate (%)</label>
-        <input type="number" id="mortgageRate" value="7" step="0.1">
+        <input type="number" id="mortgageRate" value="" placeholder="e.g. 6.5" step="0.1">
       </div>
       <div class="field">
         <label>Mortgage Term (years)</label>
-        <input type="number" id="mortgageTerm" value="30">
+        <input type="number" id="mortgageTerm" value="30" placeholder="e.g. 30">
       </div>
       <div class="field">
         <label>Home Appreciation Rate (%)</label>
-        <input type="number" id="homeAppreciation" value="4" step="0.1">
+        <input type="number" id="homeAppreciation" value="" placeholder="e.g. 4" step="0.1">
       </div>
       <div class="field">
         <label>Lost Monthly Brokerage ($)</label>
-        <input type="number" id="lostBrokerage" value="5000">
+        <input type="number" id="lostBrokerage" value="" placeholder="e.g. 5000">
       </div>
     </div>
   </div>
@@ -1202,6 +1483,103 @@
 
 
 
+
+  <!-- ── Debt Payoff Optimizer ────────────────────────── -->
+  <div class="spend-module" style="border-color:rgba(224,92,92,0.25);margin-bottom:1.5rem" id="debt-module">
+    <div class="spend-module-header" id="debt-header" onclick="toggleDebtModule()">
+      <div>
+        <div class="spend-module-title" style="color:var(--red)">💳 Debt Payoff Optimizer</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted)" id="debt-summary">Add debts below</span>
+        <span class="spend-module-chevron" id="debt-chevron">▼</span>
+      </div>
+    </div>
+    <div class="spend-module-body" id="debt-body">
+
+      <!-- Step 1: Debt type selector -->
+      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Step 1 — Click a type to add it · Click again to add another of the same type</div>
+      <div class="debt-type-grid" id="debt-type-grid"></div>
+
+      <!-- Step 2: Debt entry table -->
+      <div id="debt-entries-wrap" style="display:none">
+        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Step 2 — Enter your balances</div>
+        <table class="debt-entry-table">
+          <thead>
+            <tr>
+              <th>Debt Name</th>
+              <th>Balance ($)</th>
+              <th>Rate (% APR)</th>
+              <th>Min Payment ($)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="debt-tbody"></tbody>
+        </table>
+
+
+        <!-- Step 3: Method selector -->
+        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem">Step 3 — Choose your payoff strategy</div>
+        <div class="method-cards">
+
+          <div class="method-card selected" id="method-avalanche" onclick="selectMethod('avalanche')">
+            <div class="method-name">Avalanche</div>
+            <div><span class="method-tag math">Mathematically optimal</span></div>
+            <div class="method-pros-cons">
+              <strong>How it works:</strong> Pay minimums on all debts, then throw every extra dollar at the highest interest rate debt first.<br><br>
+              <strong>✓ Pros:</strong> Saves the most money in total interest. Fastest path to debt freedom in dollars. Best for high-rate debts like credit cards.<br><br>
+              <strong>✗ Cons:</strong> Your highest-rate debt may also be a large balance — it can take months before you see a debt fully paid off, which can feel discouraging.<br><br>
+              <strong>Best for:</strong> People who are motivated by numbers and can stay disciplined without quick wins.
+            </div>
+          </div>
+
+          <div class="method-card" id="method-snowball" onclick="selectMethod('snowball')">
+            <div class="method-name">Snowball</div>
+            <div><span class="method-tag psych">Psychologically powerful</span></div>
+            <div class="method-pros-cons">
+              <strong>How it works:</strong> Pay minimums on all debts, then attack the smallest balance first regardless of rate.<br><br>
+              <strong>✓ Pros:</strong> Quick wins build momentum. Eliminating accounts reduces financial stress and complexity. Research shows higher completion rates than avalanche.<br><br>
+              <strong>✗ Cons:</strong> Usually costs more in total interest — sometimes significantly if small debts have low rates.<br><br>
+              <strong>Best for:</strong> People who need motivation, have struggled with debt payoff before, or carry many small accounts.
+            </div>
+          </div>
+
+          <div class="method-card" id="method-hybrid" onclick="selectMethod('hybrid')">
+            <div class="method-name">Hybrid</div>
+            <div><span class="method-tag hybrid">Balanced approach</span></div>
+            <div class="method-pros-cons">
+              <strong>How it works:</strong> Ranks debts by a blended score combining interest rate AND balance size. Prioritizes high-rate, lower-balance debts first.<br><br>
+              <strong>✓ Pros:</strong> Gets early wins like snowball while keeping interest costs closer to avalanche. Adapts to your actual debt mix.<br><br>
+              <strong>✗ Cons:</strong> Not perfectly optimal mathematically, not purely psychological — a compromise on both.<br><br>
+              <strong>Best for:</strong> Most people. Especially when debt balances and rates are mixed across multiple accounts.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Monthly extra payment -->
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap">
+          <div class="field" style="flex:1;min-width:180px;border-color:rgba(224,92,92,0.3)">
+            <label>Total Extra Monthly Payment ($)</label>
+            <input type="number" id="debt-extra-total" value="" placeholder="e.g. 500" oninput="updateDebtSummary()">
+          </div>
+          <div class="field" style="flex:1;min-width:180px;border-color:rgba(201,168,76,0.3)">
+            <label>Expected Return if Invested (%)</label>
+            <input type="number" id="debt-invest-return" value="6" step="0.1" placeholder="6">
+          </div>
+        </div>
+
+        <button onclick="runDebtOptimizer()" style="width:100%;background:var(--red);color:#fff;border:none;border-radius:8px;padding:0.85rem;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;margin-bottom:1.5rem;transition:background 0.15s" onmouseover="this.style.background='#e87070'" onmouseout="this.style.background='var(--red)'">
+          Calculate Payoff Plan
+        </button>
+
+        <!-- Results -->
+        <div id="debt-results" style="display:none"></div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ── Planning Checklist ────────────────────────── -->
   <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.6rem;margin-bottom:1.5rem">
     <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">
@@ -1291,36 +1669,53 @@ function setScenario(s) {
 // Returns: fraction of simulations where portfolio survives
 function runMonteCarlo(
   startPortfolio, annualSpending, annualSS, ssDelay,
-  years, inflationRate, simCount = 2000, meanReturn = 0.055, stdReturn = 0.12, otherIncomeByYear = null
+  years, inflationRate, simCount = 2000, meanReturn = 0.055, stdReturn = 0.10, otherIncomeByYear = null
 ) {
+  // Use log-normal returns: more realistic than normal (can't lose more than 100%)
+  // Log-normal params: mu and sigma in log space
+  // If arithmetic mean = m, std = s, then:
+  //   logMu = ln(1+m) - 0.5 * logSig^2
+  //   logSig = sqrt(ln(1 + (s/(1+m))^2))
+  const logSig = Math.sqrt(Math.log(1 + Math.pow(stdReturn / (1 + meanReturn), 2)));
+  const logMu  = Math.log(1 + meanReturn) - 0.5 * logSig * logSig;
 
   let successes = 0;
 
-  for (let s = 0; s < simCount; s++) {
-    let portfolio = startPortfolio;
-    let spending = annualSpending;
-    let survived = true;
+  // Antithetic variates: run pairs of mirror-image simulations to reduce variance
+  // Each pair uses z and -z, so we need simCount/2 pairs
+  const pairs = Math.ceil(simCount / 2);
 
-    for (let yr = 1; yr <= years; yr++) {
-      // Random return (Box-Muller)
+  for (let s = 0; s < pairs; s++) {
+    // Generate one set of random normals for this year sequence
+    const zSeq = [];
+    for (let yr = 0; yr < years; yr++) {
       const u1 = Math.random(), u2 = Math.random();
-      const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-      const ret = meanReturn + stdReturn * z;
-
-      // SS income kicks in after delay
-      const ssIncome = yr > ssDelay ? annualSS : 0;
-      // Other income streams (passed as annual amount array indexed by year)
-      const otherInc = (otherIncomeByYear && otherIncomeByYear[yr]) ? otherIncomeByYear[yr] : 0;
-      const netWithdrawal = Math.max(0, spending - ssIncome - otherInc);
-
-      portfolio = portfolio * (1 + ret) - netWithdrawal;
-      spending *= (1 + inflationRate);
-
-      if (portfolio <= 0) { survived = false; break; }
+      zSeq.push(Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2));
     }
-    if (survived) successes++;
+
+    // Run both the original and antithetic (negated z) paths
+    for (const sign of [1, -1]) {
+      let portfolio = startPortfolio;
+      let spending  = annualSpending;
+      let survived  = true;
+
+      for (let yr = 1; yr <= years; yr++) {
+        const z   = sign * zSeq[yr - 1];
+        const ret = Math.exp(logMu + logSig * z) - 1; // log-normal annual return
+
+        const ssIncome  = yr > ssDelay ? annualSS : 0;
+        const otherInc  = (otherIncomeByYear && otherIncomeByYear[yr]) ? otherIncomeByYear[yr] : 0;
+        const netWithdrawal = Math.max(0, spending - ssIncome - otherInc);
+
+        portfolio = portfolio * (1 + ret) - netWithdrawal;
+        spending *= (1 + inflationRate);
+
+        if (portfolio <= 0) { survived = false; break; }
+      }
+      if (survived) successes++;
+    }
   }
-  return successes / simCount;
+  return successes / (pairs * 2);
 }
 
 function fmt(n) {
@@ -1347,7 +1742,7 @@ function calculate() {
   const distReturnPct      = parseFloat(document.getElementById('distReturn').value) / 100;
   const savingsPhase2Pct   = parseFloat(document.getElementById('savingsAfterFirstRetire').value) / 100;
   const mcMeanReturn       = distReturnPct;
-  const mcStdReturn        = 0.12;
+  const mcStdReturn        = 0.10; // 60/40 portfolio historical std dev
 
   if (retirementAge <= currentAge) { alert('Your retirement age must be greater than current age.'); return; }
 
@@ -1382,7 +1777,7 @@ function calculate() {
     let lo = 100000, hi = 20000000;
     for (let i = 0; i < 30; i++) {
       const mid = (lo + hi) / 2;
-      const rate = runMonteCarlo(mid, annualBudget, annualSS, ssDelayFromRetire, yearsInRetirement, inflationPct, 1200, mcMeanReturn, mcStdReturn, otherIncByYear);
+      const rate = runMonteCarlo(mid, annualBudget, annualSS, ssDelayFromRetire, yearsInRetirement, inflationPct, 2000, mcMeanReturn, mcStdReturn, otherIncByYear);
       if (rate >= targetSuccess) hi = mid; else lo = mid;
     }
     return (lo + hi) / 2;
@@ -1461,7 +1856,7 @@ function calculate() {
       ssAge, ssDelayFromRetire, lifeExp, fourPctSS,
       partnerRetireFirst, yearsToFullRetire, label: null,
       accumReturn: accumReturnPct, distReturn: distReturnPct,
-      savingsPhase2Pct
+      savingsPhase2Pct, inflationPct
     });
     return;
   }
@@ -1544,8 +1939,29 @@ function renderSingleScenario(p) {
         <div class="stat-box"><div class="stat-label">You Retire</div><div class="stat-value">Age ${p.retirementAge}</div></div>
         <div class="stat-box"><div class="stat-label">Net Annual (post-SS)</div><div class="stat-value">${fmt(p.annualNetPostSS)}</div></div>
       </div>
+
+      <!-- Charts -->
+      <div class="chart-section animate">
+        <div class="chart-title">📈 Portfolio Growth — Accumulation &amp; Drawdown</div>
+        <canvas id="chart-portfolio" height="200"></canvas>
+        <div class="chart-legend" id="chart-portfolio-legend"></div>
+      </div>
+
+      <div class="chart-grid animate">
+        <div class="chart-section" style="margin-bottom:0">
+          <div class="chart-title">🥧 Retirement Income Mix</div>
+          <canvas id="chart-income" height="200"></canvas>
+          <div class="chart-legend" id="chart-income-legend"></div>
+        </div>
+        <div class="chart-section" style="margin-bottom:0">
+          <div class="chart-title">🎲 Monte Carlo Outcomes</div>
+          <canvas id="chart-mc" height="200"></canvas>
+          <div class="chart-legend" id="chart-mc-legend"></div>
+        </div>
+      </div>
+
       <div class="mc-section animate">
-        <div class="mc-title">Monte Carlo Success Rate · 3000 Simulations · ${(p.distReturn*100).toFixed(1)}% Mean Return · Full Retirement Age ${p.fullRetireAge}</div>
+        <div class="mc-title">Monte Carlo Success Rate · 3000 Simulations · Antithetic Variates · ${(p.distReturn*100).toFixed(1)}% Mean · 10% Std Dev · Age ${p.fullRetireAge}</div>
         <div class="mc-rate">${p.successPct}%</div>
         <div class="mc-bar-wrap">
           <div class="mc-bar-fill ${p.successPct >= p.targetSuccess * 100 ? 'success' : 'danger'}" style="width:0%"></div>
@@ -1589,6 +2005,7 @@ function renderSingleScenario(p) {
   el.style.display = 'block';
   el.innerHTML = html;
   setTimeout(() => { const f = document.querySelector('.mc-bar-fill'); if(f) f.style.width = Math.min(100, p.successPct)+'%'; }, 100);
+  setTimeout(() => renderCharts(p), 150);
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -1679,6 +2096,686 @@ function renderComparison(p) {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+
+
+// ── Chart rendering ───────────────────────────────────────
+let chartPortfolio = null, chartIncome = null, chartMC = null;
+
+function destroyCharts() {
+  [chartPortfolio, chartIncome, chartMC].forEach(c => { if(c) c.destroy(); });
+  chartPortfolio = chartIncome = chartMC = null;
+}
+
+function renderCharts(p) {
+  destroyCharts();
+
+  const gridColor  = 'rgba(255,255,255,0.04)';
+  const textColor  = '#7a8078';
+  const gold       = '#c9a84c';
+  const green      = '#4caf7d';
+  const red        = '#e05c5c';
+  const blue       = '#5b8dee';
+
+  // ── A. Portfolio Growth Chart ──────────────────────────
+  const portfolioLabels = [];
+  const portfolioData   = [];
+  const trueLineData    = [];
+  const phaseColors     = [];
+
+  p.projRows.forEach(r => {
+    portfolioLabels.push('Age ' + Math.round(r.age * 2) / 2);
+    portfolioData.push(Math.max(0, Math.round(r.p)));
+    trueLineData.push(Math.round(p.trueNumber));
+    phaseColors.push(r.inAccum ? green : (r.p < p.trueNumber ? red : blue));
+  });
+
+  const ctxP = document.getElementById('chart-portfolio');
+  if (ctxP) {
+    chartPortfolio = new Chart(ctxP, {
+      type: 'bar',
+      data: {
+        labels: portfolioLabels,
+        datasets: [
+          {
+            label: 'Portfolio Value',
+            data: portfolioData,
+            backgroundColor: phaseColors.map(c => c + 'aa'),
+            borderColor: phaseColors,
+            borderWidth: 1,
+            borderRadius: 3,
+          },
+          {
+            label: 'True Number',
+            data: trueLineData,
+            type: 'line',
+            borderColor: gold,
+            borderWidth: 2,
+            borderDash: [6, 3],
+            pointRadius: 0,
+            fill: false,
+            tension: 0,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1e1a',
+            borderColor: '#2a2f2a',
+            borderWidth: 1,
+            titleColor: '#e8e8e4',
+            bodyColor: '#7a8078',
+            callbacks: {
+              label: ctx => {
+                const v = ctx.raw;
+                if (ctx.dataset.label === 'True Number') return ' True Number: $' + (v/1e6).toFixed(2) + 'M';
+                return ' Portfolio: $' + (v/1e6).toFixed(2) + 'M';
+              }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 9 }, maxRotation: 45 }, grid: { color: gridColor } },
+          y: {
+            ticks: { color: textColor, font: { family: 'DM Mono', size: 9 }, callback: v => '$' + (v/1e6).toFixed(1) + 'M' },
+            grid: { color: gridColor }
+          }
+        }
+      }
+    });
+
+    const leg = document.getElementById('chart-portfolio-legend');
+    if (leg) leg.innerHTML = `
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:${green}"></div>Accumulation</div>
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:${blue}"></div>Drawdown (above target)</div>
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:${red}"></div>Below true number</div>
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:${gold};border-radius:0;height:2px;width:16px;margin:3px 0"></div>True number line</div>
+    `;
+  }
+
+  // ── B. Income Mix Donut ────────────────────────────────
+  const annualSS      = (p.annualSS || 0);
+  const otherInc      = incomeStreams.reduce((s, st) => s + (st.monthly || 0) * 12, 0);
+  const portfolioDraw = Math.max(0, p.annualBudget - annualSS - otherInc);
+  const incomeLabels  = ['Portfolio Draw', 'Social Security', 'Other Income'];
+  const incomeData    = [portfolioDraw, annualSS, otherInc];
+  const incomeColors  = [blue, green, gold];
+
+  const ctxI = document.getElementById('chart-income');
+  if (ctxI && (annualSS > 0 || otherInc > 0)) {
+    chartIncome = new Chart(ctxI, {
+      type: 'doughnut',
+      data: {
+        labels: incomeLabels,
+        datasets: [{
+          data: incomeData,
+          backgroundColor: incomeColors.map(c => c + 'cc'),
+          borderColor: incomeColors,
+          borderWidth: 2,
+          hoverOffset: 8,
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: '68%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1e1a',
+            borderColor: '#2a2f2a',
+            borderWidth: 1,
+            titleColor: '#e8e8e4',
+            bodyColor: '#7a8078',
+            callbacks: {
+              label: ctx => {
+                const pct = Math.round(ctx.raw / p.annualBudget * 100);
+                return ' ' + ctx.label + ': $' + Math.round(ctx.raw/12).toLocaleString() + '/mo (' + pct + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const leg2 = document.getElementById('chart-income-legend');
+    if (leg2) leg2.innerHTML = incomeLabels.map((l,i) => incomeData[i] > 0 ? `
+      <div class="chart-legend-item">
+        <div class="chart-legend-dot" style="background:${incomeColors[i]}"></div>
+        ${l}: ${Math.round(incomeData[i]/p.annualBudget*100)}%
+      </div>` : '').join('');
+  } else if (ctxI) {
+    ctxI.parentElement.innerHTML = `<div class="chart-title">🥧 Retirement Income Mix</div><div style="font-family:DM Mono,monospace;font-size:0.7rem;color:var(--muted);padding:2rem 0;text-align:center">Add Social Security or income streams to see income mix breakdown.</div>`;
+  }
+
+  // ── C. Monte Carlo Fan Chart ───────────────────────────
+  // Simulate percentile bands for visual fan effect
+  const ctxMC = document.getElementById('chart-mc');
+  if (ctxMC) {
+    const retYears = p.lifeExp - p.fullRetireAge;
+    const labels   = [];
+    const p10 = [], p25 = [], p50 = [], p75 = [], p90 = [];
+
+    // Run mini-simulations for fan chart using same log-normal model as MC
+    const fanStd = 0.10;
+    const fanMean = p.distReturn;
+    const fanLogSig = Math.sqrt(Math.log(1 + Math.pow(fanStd / (1 + fanMean), 2)));
+    const fanLogMu  = Math.log(1 + fanMean) - 0.5 * fanLogSig * fanLogSig;
+    const sims = 500;
+    const paths = [];
+    for (let s = 0; s < sims; s++) {
+      let port = p.portfolioAtRetirement;
+      let spend = p.annualBudget;
+      const path = [port];
+      for (let yr = 1; yr <= retYears; yr++) {
+        const u1 = Math.random(), u2 = Math.random();
+        const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+        const ret = Math.exp(fanLogMu + fanLogSig * z) - 1;
+        const ssInc = yr > p.ssDelayFromRetire ? (p.annualSS||0) : 0;
+        const otherI = getOtherIncomeAtAge(p.fullRetireAge + yr);
+        port = port * (1 + ret) - Math.max(0, spend - ssInc - otherI);
+        spend *= (1 + (p.inflationPct || 0.03));
+        path.push(Math.max(0, port));
+      }
+      paths.push(path);
+    }
+
+    for (let yr = 0; yr <= retYears; yr++) {
+      const age = p.fullRetireAge + yr;
+      labels.push('Age ' + age);
+      const vals = paths.map(path => path[yr]).sort((a,b)=>a-b);
+      const n = vals.length;
+      p10.push(Math.max(0, vals[Math.floor(n*0.10)]));
+      p25.push(Math.max(0, vals[Math.floor(n*0.25)]));
+      p50.push(vals[Math.floor(n*0.50)]);
+      p75.push(vals[Math.floor(n*0.75)]);
+      p90.push(vals[Math.floor(n*0.90)]);
+    }
+
+    chartMC = new Chart(ctxMC, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: '90th %ile', data: p90, borderColor: green+'44', backgroundColor: green+'11', fill: '+1', pointRadius: 0, tension: 0.3, borderWidth: 1 },
+          { label: '75th %ile', data: p75, borderColor: green+'88', backgroundColor: green+'18', fill: '+1', pointRadius: 0, tension: 0.3, borderWidth: 1 },
+          { label: 'Median',    data: p50, borderColor: gold,        backgroundColor: 'transparent', fill: false,  pointRadius: 0, tension: 0.3, borderWidth: 2 },
+          { label: '25th %ile', data: p25, borderColor: red+'88',   backgroundColor: red+'11', fill: '+1', pointRadius: 0, tension: 0.3, borderWidth: 1 },
+          { label: '10th %ile', data: p10, borderColor: red+'44',   backgroundColor: red+'08', fill: false, pointRadius: 0, tension: 0.3, borderWidth: 1 },
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1e1a',
+            borderColor: '#2a2f2a',
+            borderWidth: 1,
+            titleColor: '#e8e8e4',
+            bodyColor: '#7a8078',
+            callbacks: {
+              label: ctx => ' ' + ctx.dataset.label + ': $' + (Math.max(0,ctx.raw)/1e6).toFixed(2) + 'M'
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 9 }, maxTicksLimit: 6 }, grid: { color: gridColor } },
+          y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 9 }, callback: v => '$' + (v/1e6).toFixed(1)+'M' }, grid: { color: gridColor } }
+        }
+      }
+    });
+
+    const leg3 = document.getElementById('chart-mc-legend');
+    if (leg3) leg3.innerHTML = `
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:${green}"></div>Best case (90th)</div>
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:${gold}"></div>Median</div>
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:${red}"></div>Worst case (10th)</div>
+    `;
+  }
+}
+
+// ── End Chart rendering ───────────────────────────────────
+
+
+// ══════════════════════════════════════════════════════════
+// DEBT PAYOFF OPTIMIZER
+// ══════════════════════════════════════════════════════════
+const DEBT_TYPES = [
+  { id: 'cc',       label: '💳 Credit Cards',      rate: 22, defaultMin: 25  },
+  { id: 'student',  label: '🎓 Student Loans',     rate: 6,  defaultMin: 200 },
+  { id: 'auto',     label: '🚗 Auto Loans',         rate: 7,  defaultMin: 350 },
+  { id: 'personal', label: '💰 Personal Loans',    rate: 12, defaultMin: 150 },
+  { id: 'medical',  label: '🏥 Medical Debt',       rate: 0,  defaultMin: 50  },
+  { id: 'heloc',    label: '🏠 HELOC',              rate: 9,  defaultMin: 200 },
+  { id: 'mortgage', label: '🏡 Mortgage',           rate: 7,  defaultMin: 0   },
+  { id: 'irs',      label: '📋 IRS / Tax Debt',     rate: 8,  defaultMin: 100 },
+  { id: 'other',    label: '➕ Other',               rate: 8,  defaultMin: 0   },
+];
+
+let debtOpen       = false;
+let selectedMethod = 'avalanche';
+let debtEntries    = [];   // Array of { rowId, typeId, label, balance, rate, minPayment, name }
+let debtRowCounter = 0;
+
+function toggleDebtModule() {
+  debtOpen = !debtOpen;
+  document.getElementById('debt-body').classList.toggle('open', debtOpen);
+  document.getElementById('debt-header').classList.toggle('open', debtOpen);
+  document.getElementById('debt-chevron').classList.toggle('open', debtOpen);
+  if (debtOpen && document.getElementById('debt-type-grid').innerHTML === '') {
+    renderDebtTypeGrid();
+  }
+}
+
+function renderDebtTypeGrid() {
+  const grid = document.getElementById('debt-type-grid');
+  grid.innerHTML = DEBT_TYPES.map(t => `
+    <div class="debt-type-btn" id="dtype-${t.id}"
+         onclick="addDebtEntry('${t.id}')">
+      ${t.label}
+    </div>`).join('');
+}
+
+function addDebtEntry(typeId) {
+  const t = DEBT_TYPES.find(d => d.id === typeId);
+  const rowId = ++debtRowCounter;
+  // Count existing entries of this type for auto-naming
+  const existing = debtEntries.filter(e => e.typeId === typeId).length;
+  const name = existing === 0 ? t.label : t.label + ' ' + (existing + 1);
+  debtEntries.push({ rowId, typeId, label: t.label, name, balance: 0, rate: t.rate, minPayment: t.defaultMin });
+  document.getElementById('debt-entries-wrap').style.display = 'block';
+  renderDebtTable();
+  updateDebtSummary();
+  // Flash the type button briefly to confirm
+  const btn = document.getElementById('dtype-' + typeId);
+  if (btn) { btn.style.borderColor = 'var(--red)'; btn.style.color = 'var(--red)'; setTimeout(() => { btn.style.borderColor=''; btn.style.color=''; }, 400); }
+}
+
+function renderDebtTable() {
+  const tbody = document.getElementById('debt-tbody');
+  if (debtEntries.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:1rem;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted)">Click a debt type above to add it</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = debtEntries.map(e => `
+    <tr id="debt-row-${e.rowId}">
+      <td>
+        <input class="debt-input" type="text" value="${e.name}"
+          oninput="updateEntry(${e.rowId},'name',this.value)"
+          style="width:110px;font-size:0.68rem" placeholder="e.g. Chase Visa">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:0.15rem">${e.label}</div>
+      </td>
+      <td><input class="debt-input" type="number" placeholder="e.g. 5000" value="${e.balance||''}"
+          oninput="updateEntry(${e.rowId},'balance',this.value)" style="width:95px"></td>
+      <td><input class="debt-input" type="number" value="${e.rate}"
+          oninput="updateEntry(${e.rowId},'rate',this.value)" style="width:58px">%</td>
+      <td><input class="debt-input" type="number" placeholder="${e.minPayment||0}" value="${e.minPayment||''}"
+          oninput="updateEntry(${e.rowId},'minPayment',this.value)" style="width:80px"></td>
+      <td><span onclick="removeDebtEntry(${e.rowId})"
+          style="cursor:pointer;color:var(--red);font-size:0.85rem;padding:0.2rem 0.5rem;display:inline-block">✕</span></td>
+    </tr>`).join('');
+}
+
+function updateEntry(rowId, field, value) {
+  const e = debtEntries.find(e => e.rowId === rowId);
+  if (!e) return;
+  e[field] = field === 'name' ? value : (parseFloat(value) || 0);
+  updateDebtSummary();
+}
+
+function removeDebtEntry(rowId) {
+  debtEntries = debtEntries.filter(e => e.rowId !== rowId);
+  if (debtEntries.length === 0) document.getElementById('debt-entries-wrap').style.display = 'none';
+  renderDebtTable();
+  updateDebtSummary();
+}
+
+function updateDebtSummary() {
+  const totalBal = debtEntries.reduce((s, e) => s + (e.balance || 0), 0);
+  const count    = debtEntries.length;
+  const summary  = document.getElementById('debt-summary');
+  if (totalBal > 0) {
+    summary.textContent = count + ' debt' + (count > 1 ? 's' : '') + ' · $' + Math.round(totalBal).toLocaleString() + ' total';
+    summary.style.color = 'var(--red)';
+  } else if (count > 0) {
+    summary.textContent = count + ' debt' + (count > 1 ? 's' : '') + ' added — enter balances';
+    summary.style.color = 'var(--muted)';
+  } else {
+    summary.textContent = 'Add debts below';
+    summary.style.color = 'var(--muted)';
+  }
+}
+
+function selectMethod(m) {
+  selectedMethod = m;
+  ['avalanche','snowball','hybrid'].forEach(id => {
+    document.getElementById(`method-${id}`).classList.toggle('selected', id === m);
+  });
+}
+
+// ── Core payoff engine ────────────────────────────────────
+function runDebtOptimizer() {
+  const extraTotal   = parseFloat(document.getElementById('debt-extra-total').value) || 0;
+  const investReturn = parseFloat(document.getElementById('debt-invest-return').value) / 100 || 0.06;
+
+  // Build debt list from entries array
+  const debts = debtEntries
+    .filter(e => e.balance > 0)
+    .map(e => ({
+      id:         e.rowId,
+      label:      e.name || e.label,
+      balance:    e.balance,
+      rate:       e.rate / 100,
+      minPayment: e.minPayment || 0,
+      extra:      0,
+    }));
+
+  if (debts.length === 0) { alert('Please enter at least one debt balance.'); return; }
+
+  const totalMinPayment = debts.reduce((s, d) => s + d.minPayment, 0);
+  const totalExtra      = extraTotal + debts.reduce((s, d) => s + d.extra, 0);
+
+  // Run all three strategies for comparison
+  const results = {
+    avalanche: simulate(JSON.parse(JSON.stringify(debts)), totalExtra, 'avalanche'),
+    snowball:  simulate(JSON.parse(JSON.stringify(debts)), totalExtra, 'snowball'),
+    hybrid:    simulate(JSON.parse(JSON.stringify(debts)), totalExtra, 'hybrid'),
+  };
+
+  // Also run minimum-only baseline
+  const baseline = simulate(JSON.parse(JSON.stringify(debts)), 0, 'avalanche');
+
+  renderDebtResults(results, baseline, debts, totalExtra, investReturn);
+}
+
+function simulate(debts, extraMonthly, method) {
+  // Sort debts by method priority
+  function sortDebts(debts) {
+    if (method === 'avalanche') return [...debts].sort((a,b) => b.rate - a.rate);
+    if (method === 'snowball')  return [...debts].sort((a,b) => a.balance - b.balance);
+    if (method === 'hybrid') {
+      // Hybrid score: normalize rate and inverse-balance, weighted 60/40
+      const maxRate = Math.max(...debts.map(d => d.rate));
+      const maxBal  = Math.max(...debts.map(d => d.balance));
+      return [...debts].sort((a,b) => {
+        const scoreA = 0.6 * (a.rate/maxRate) + 0.4 * (1 - a.balance/maxBal);
+        const scoreB = 0.6 * (b.rate/maxRate) + 0.4 * (1 - b.balance/maxBal);
+        return scoreB - scoreA;
+      });
+    }
+    return debts;
+  }
+
+  let month         = 0;
+  let totalInterest = 0;
+  let remainingDebts = debts.map(d => ({ ...d }));
+  const payoffDates  = {};
+  const monthlyLog   = [];  // for chart
+  const MAX_MONTHS   = 600; // 50 yr safety cap
+
+  while (remainingDebts.length > 0 && month < MAX_MONTHS) {
+    month++;
+    const sorted    = sortDebts(remainingDebts);
+    let extraPool   = extraMonthly;
+
+    // Apply interest and minimum payments
+    for (const d of sorted) {
+      const interest = d.balance * (d.rate / 12);
+      totalInterest += interest;
+      d.balance      = d.balance + interest - d.minPayment;
+      if (d.balance < 0) {
+        extraPool += Math.abs(d.balance); // overpaid — recapture
+        d.balance  = 0;
+      }
+    }
+
+    // Apply extra to priority debt
+    for (const d of sorted) {
+      if (d.balance > 0 && extraPool > 0) {
+        const applied = Math.min(extraPool, d.balance);
+        d.balance    -= applied;
+        extraPool    -= applied;
+      }
+    }
+
+    // Remove paid off debts
+    const justPaidOff = remainingDebts.filter(d => {
+      const updated = sorted.find(s => s.id === d.id);
+      return updated && updated.balance <= 0.01;
+    });
+    justPaidOff.forEach(d => {
+      payoffDates[d.id] = month;
+      extraPool += d.minPayment; // freed minimum rolls forward
+    });
+    remainingDebts = sorted.filter(d => d.balance > 0.01);
+
+    // Track total remaining for chart (every 3 months)
+    if (month % 3 === 0 || remainingDebts.length === 0) {
+      monthlyLog.push({
+        month,
+        total: remainingDebts.reduce((s, d) => s + d.balance, 0)
+      });
+    }
+  }
+
+  return { months: month, totalInterest: Math.round(totalInterest), payoffDates, monthlyLog };
+}
+
+function renderDebtResults(results, baseline, debts, extraMonthly, investReturn) {
+  const sel      = results[selectedMethod];
+  const base     = baseline;
+  const totalBal = debts.reduce((s, d) => s + d.balance, 0);
+
+  const interestSaved = base.totalInterest - sel.totalInterest;
+  const monthsSaved   = base.months - sel.months;
+
+  // Retirement advantage: interest saved + freed payments invested
+  // Once debt is paid off, total min payments freed and invested
+  const totalMinFreed   = debts.reduce((s, d) => s + d.minPayment, 0) + extraMonthly;
+  const yearsAfterPayoff = 30 - sel.months / 12; // rough 30yr horizon
+  const retireAdvantage = yearsAfterPayoff > 0
+    ? Math.round(interestSaved * Math.pow(1 + investReturn, yearsAfterPayoff)
+      + totalMinFreed * 12 * (Math.pow(1 + investReturn, yearsAfterPayoff) - 1) / investReturn)
+    : Math.round(interestSaved);
+
+  function monthsToDate(m) {
+    const d = new Date();
+    d.setMonth(d.getMonth() + m);
+    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  }
+
+  const methodLabels = { avalanche: 'Avalanche', snowball: 'Snowball', hybrid: 'Hybrid' };
+  const methodColors = { avalanche: '#5b8dee', snowball: '#4caf7d', hybrid: '#c9a84c' };
+
+  // Build bar colors for each debt
+  const barColors = ['#5b8dee','#4caf7d','#c9a84c','#e05c5c','#9b59b6','#e67e22','#1abc9c','#e74c3c','#95a5a6'];
+
+  const html = `
+    <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem">
+      Results — ${methodLabels[selectedMethod]} Strategy
+    </div>
+
+    <!-- Key stats -->
+    <div class="debt-results-grid">
+      <div class="debt-stat">
+        <div class="debt-stat-label">Debt-Free Date</div>
+        <div class="debt-stat-value good">${monthsToDate(sel.months)}</div>
+      </div>
+      <div class="debt-stat">
+        <div class="debt-stat-label">Total Interest Paid</div>
+        <div class="debt-stat-value bad">$${sel.totalInterest.toLocaleString()}</div>
+      </div>
+      <div class="debt-stat">
+        <div class="debt-stat-label">Interest Saved vs. Min Only</div>
+        <div class="debt-stat-value good">$${interestSaved.toLocaleString()}</div>
+      </div>
+      <div class="debt-stat">
+        <div class="debt-stat-label">Months Saved</div>
+        <div class="debt-stat-value good">${monthsSaved} mo</div>
+      </div>
+      <div class="debt-stat">
+        <div class="debt-stat-label">vs. Avalanche</div>
+        <div class="debt-stat-value ${selectedMethod==='avalanche'?'':'bad'}">
+          ${selectedMethod==='avalanche' ? 'Optimal ✓'
+            : '+$' + (results[selectedMethod].totalInterest - results.avalanche.totalInterest).toLocaleString() + ' interest'}
+        </div>
+      </div>
+      <div class="debt-stat">
+        <div class="debt-stat-label">Total Debt</div>
+        <div class="debt-stat-value">$${Math.round(totalBal).toLocaleString()}</div>
+      </div>
+    </div>
+
+    <!-- Retirement advantage -->
+    <div class="retire-advantage">
+      <div class="retire-advantage-title">🏦 Retirement Advantage of Paying Off Quickly</div>
+      <div class="retire-advantage-value">+$${retireAdvantage.toLocaleString()}</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#c8cac4;line-height:1.6">
+        By eliminating <strong style="color:var(--green)">$${interestSaved.toLocaleString()}</strong> in interest and redirecting
+        <strong style="color:var(--green)">$${Math.round(totalMinFreed).toLocaleString()}/mo</strong> in freed payments into investments
+        at ${(investReturn*100).toFixed(1)}% — this strategy could add an estimated
+        <strong style="color:var(--green)">$${retireAdvantage.toLocaleString()}</strong> to your retirement portfolio over 30 years.
+        That's money that would otherwise go to lenders.
+      </div>
+    </div>
+
+    <!-- Strategy comparison -->
+    <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Strategy Comparison</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1.2rem">
+      ${['avalanche','snowball','hybrid'].map(m => `
+        <div style="background:var(--bg);border:1px solid ${m===selectedMethod?methodColors[m]:'var(--border)'};border-radius:8px;padding:0.8rem;text-align:center">
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:${methodColors[m]};margin-bottom:0.3rem">${methodLabels[m]}</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text)">${monthsToDate(results[m].months)}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted)">$${results[m].totalInterest.toLocaleString()} interest</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Payoff timeline bars -->
+    <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Individual Payoff Timeline</div>
+    <div class="debt-timeline">
+      <div class="debt-timeline-header">
+        <span>Debt</span><span>Payoff Date</span>
+      </div>
+      ${debts.map((d, i) => {
+        const months = sel.payoffDates[d.id] || sel.months;
+        const pct    = Math.min(100, (months / sel.months) * 100);
+        return `<div class="debt-row">
+          <div class="debt-row-name">${d.label}</div>
+          <div class="debt-bar-wrap">
+            <div class="debt-bar-fill" style="width:${pct}%;background:${barColors[i % barColors.length]}"></div>
+          </div>
+          <div class="debt-row-date">${monthsToDate(months)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- Payoff chart -->
+    <div class="chart-section" style="margin-bottom:1rem">
+      <div class="chart-title">📉 Balance Over Time — All Strategies</div>
+      <canvas id="debt-chart" height="180"></canvas>
+      <div class="chart-legend" style="margin-top:0.8rem">
+        ${['avalanche','snowball','hybrid'].map(m => `
+          <div class="chart-legend-item">
+            <div class="chart-legend-dot" style="background:${methodColors[m]}"></div>${methodLabels[m]}
+          </div>`).join('')}
+        <div class="chart-legend-item">
+          <div class="chart-legend-dot" style="background:var(--muted);opacity:0.5"></div>Minimum only
+        </div>
+      </div>
+    </div>
+
+    <div class="insight" style="border-left-color:var(--red)">
+      <strong>Key insight:</strong> The difference between ${methodLabels.avalanche} and ${methodLabels.snowball} in your situation is
+      <strong>$${Math.abs(results.avalanche.totalInterest - results.snowball.totalInterest).toLocaleString()}</strong> in total interest
+      and <strong>${Math.abs(results.avalanche.months - results.snowball.months)} months</strong>.
+      ${Math.abs(results.avalanche.totalInterest - results.snowball.totalInterest) < 500
+        ? 'These strategies produce nearly identical results for your debt mix — choose based on what keeps you motivated.'
+        : results.avalanche.totalInterest < results.snowball.totalInterest
+          ? 'Avalanche saves meaningfully more. But if you need quick wins to stay on track, the Snowball\'s psychological benefit may be worth the extra cost.'
+          : 'Unusually, Snowball wins here — your smallest debts happen to carry high rates.'}
+    </div>
+  `;
+
+  const el = document.getElementById('debt-results');
+  el.style.display = 'block';
+  el.innerHTML = html;
+
+  // Render debt chart
+  setTimeout(() => {
+    const ctx = document.getElementById('debt-chart');
+    if (!ctx) return;
+    const maxMonths = Math.max(baseline.months, ...Object.values(results).map(r => r.months));
+    const labels = [];
+    for (let m = 0; m <= maxMonths; m += Math.max(1, Math.floor(maxMonths / 24))) {
+      labels.push(monthsToDate(m));
+    }
+
+    function interpolateLog(log, months) {
+      const totalBal = debts.reduce((s, d) => s + d.balance, 0);
+      const pts = [{ month: 0, total: totalBal }, ...log];
+      return months.map(m => {
+        const prev = [...pts].reverse().find(p => p.month <= m) || pts[0];
+        const next = pts.find(p => p.month >= m) || pts[pts.length - 1];
+        if (prev.month === next.month) return Math.max(0, prev.total);
+        const t = (m - prev.month) / (next.month - prev.month);
+        return Math.max(0, prev.total + t * (next.total - prev.total));
+      });
+    }
+
+    const monthPts = labels.map((_, i) => Math.round(i * maxMonths / (labels.length - 1)));
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Avalanche', data: interpolateLog(results.avalanche.monthlyLog, monthPts), borderColor: '#5b8dee', borderWidth: 2, pointRadius: 0, tension: 0.3, fill: false },
+          { label: 'Snowball',  data: interpolateLog(results.snowball.monthlyLog,  monthPts), borderColor: '#4caf7d', borderWidth: 2, pointRadius: 0, tension: 0.3, fill: false },
+          { label: 'Hybrid',   data: interpolateLog(results.hybrid.monthlyLog,    monthPts), borderColor: '#c9a84c', borderWidth: 2, pointRadius: 0, tension: 0.3, fill: false },
+          { label: 'Min Only', data: interpolateLog(baseline.monthlyLog,           monthPts), borderColor: '#7a8078', borderWidth: 1.5, borderDash: [5,4], pointRadius: 0, tension: 0.3, fill: false },
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1e1a', borderColor: '#2a2f2a', borderWidth: 1,
+            titleColor: '#e8e8e4', bodyColor: '#7a8078',
+            callbacks: { label: ctx => ' ' + ctx.dataset.label + ': $' + Math.round(ctx.raw).toLocaleString() }
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#7a8078', font: { family: 'DM Mono', size: 9 }, maxTicksLimit: 8 }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: { ticks: { color: '#7a8078', font: { family: 'DM Mono', size: 9 }, callback: v => '$' + (v/1000).toFixed(0) + 'k' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        }
+      }
+    });
+  }, 100);
+}
+
+// ── Clear integration ──────────────────────────────────────
+function clearDebtModule() {
+  debtEntries = [];
+  debtRowCounter = 0;
+  selectedMethod = 'avalanche';
+  if (document.getElementById('debt-type-grid')) renderDebtTypeGrid();
+  document.getElementById('debt-entries-wrap').style.display = 'none';
+  document.getElementById('debt-results').style.display = 'none';
+  document.getElementById('debt-results').innerHTML = '';
+  document.getElementById('debt-summary').textContent = 'Add debts below';
+  document.getElementById('debt-summary').style.color = 'var(--muted)';
+  selectMethod('avalanche');
+}
+
+// ══════════════════════════════════════════════════════════
+// END DEBT PAYOFF OPTIMIZER
+// ══════════════════════════════════════════════════════════
 
 // ── SS Quick Estimator ────────────────────────────────────
 function toggleSSEstimator() {
@@ -1812,13 +2909,22 @@ function clearAll() {
   // Reset SS estimator
   document.getElementById('ss-estimator').style.display = 'none';
   document.getElementById('ss-estimate-result').textContent = 'Enter income and years above to estimate.';
+  // Reset debt module
+  clearDebtModule();
   // Reset income streams
   incomeStreams = [];
   renderIncomeTable();
   updateIncomeSummary();
   // Reset spending module
-  SPEND_CATEGORIES.forEach(c => c.monthly = 0);
+  SPEND_CATEGORIES.forEach(c => { c.monthly = 0; c.p2pct = c._defaultP2 || c.p2pct; c.p3pct = c._defaultP3 || c.p3pct; });
   if (spendOpen) renderSpendTables();
+  else {
+    // Update summary even if closed
+    document.getElementById('phase1-total').textContent = '$0/mo';
+    document.getElementById('phase2-total').textContent = '$0/mo';
+    document.getElementById('phase3-total').textContent = '$0/mo';
+    document.getElementById('spend-summary').textContent = '$0 / mo';
+  }
   // Clear results
   const res = document.getElementById('results');
   res.style.display = 'none';
@@ -1849,6 +2955,10 @@ let spendOpen = false;
 let activePhase = 1;
 
 function toggleSpendModule() {
+  if (spendOpen) {
+    // Closing — sync values first so they survive re-open
+    syncSpendFromDOM();
+  }
   spendOpen = !spendOpen;
   document.getElementById('spend-body').classList.toggle('open', spendOpen);
   document.getElementById('spend-header').classList.toggle('open', spendOpen);
@@ -1857,6 +2967,7 @@ function toggleSpendModule() {
 }
 
 function showPhase(n) {
+  syncSpendFromDOM(); // persist values before switching tab
   activePhase = n;
   [1,2,3].forEach(i => {
     document.getElementById(`phase-panel-${i}`).style.display = i === n ? 'block' : 'none';
@@ -1865,6 +2976,22 @@ function showPhase(n) {
 }
 
 function fmtM(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function syncAndRecalc(field, id, value) {
+  // Immediately persist this single field change into the array
+  const c = SPEND_CATEGORIES.find(c => c.id === id);
+  if (!c) return;
+  const val = parseFloat(value) || 0;
+  if (field === 'p1')    c.monthly = val;
+  if (field === 'p2pct') c.p2pct   = val;
+  if (field === 'p3pct') c.p3pct   = val;
+  // Update phase 1 annual display
+  if (field === 'p1') {
+    const annEl = document.getElementById('p1a-' + id);
+    if (annEl) annEl.textContent = fmtM(val * 12);
+  }
+  recalcTotals();
+}
 
 function getP1Monthly(id) {
   const el = document.getElementById(`p1-${id}`);
@@ -1879,6 +3006,18 @@ function getP2Pct(id) {
 function getP3Pct(id) {
   const el = document.getElementById(`p3pct-${id}`);
   return el ? parseFloat(el.value) || 0 : 0;
+}
+
+function syncSpendFromDOM() {
+  // Save current DOM values back into SPEND_CATEGORIES array before any re-render
+  SPEND_CATEGORIES.forEach(c => {
+    const m = document.getElementById('p1-' + c.id);
+    const p2 = document.getElementById('p2pct-' + c.id);
+    const p3 = document.getElementById('p3pct-' + c.id);
+    if (m)  c.monthly = parseFloat(m.value)  || 0;
+    if (p2) c.p2pct   = parseFloat(p2.value) || 0;
+    if (p3) c.p3pct   = parseFloat(p3.value) || 0;
+  });
 }
 
 function recalcTotals() {
@@ -1922,7 +3061,7 @@ function renderSpendTables() {
   tb1.innerHTML = SPEND_CATEGORIES.map(c => `
     <tr>
       <td>${c.label}${c.tag === 'kids' ? ' <span class="spend-tag kids">KIDS</span>' : ''}${c.tag === 'retire' ? ' <span class="spend-tag retire">RETIRE</span>' : ''}</td>
-      <td><input class="spend-input" type="number" id="p1-${c.id}" value="${c.monthly}" oninput="recalcTotals()" style="width:100px"></td>
+      <td><input class="spend-input" type="number" id="p1-${c.id}" value="${c.monthly || ''}" placeholder="0" oninput="syncAndRecalc('p1','${c.id}',this.value)" style="width:100px"></td>
       <td id="p1a-${c.id}">${fmtM(c.monthly * 12)}</td>
       <td style="color:var(--muted);font-size:0.65rem">${c.note}</td>
     </tr>`).join('');
@@ -1932,7 +3071,7 @@ function renderSpendTables() {
   tb2.innerHTML = SPEND_CATEGORIES.map(c => `
     <tr>
       <td>${c.label}${c.tag === 'kids' ? ' <span class="spend-tag kids">KIDS</span>' : ''}</td>
-      <td><input class="spend-pct-input" type="number" id="p2pct-${c.id}" value="${c.p2pct}" min="0" max="200" oninput="recalcTotals()">%</td>
+      <td><input class="spend-pct-input" type="number" id="p2pct-${c.id}" value="${c.p2pct}" min="0" max="200" oninput="syncAndRecalc('p2pct','${c.id}',this.value)">%</td>
       <td id="p2m-${c.id}">${fmtM(c.monthly * c.p2pct / 100)}</td>
       <td id="p2a-${c.id}">${fmtM(c.monthly * c.p2pct / 100 * 12)}</td>
     </tr>`).join('');
@@ -1942,7 +3081,7 @@ function renderSpendTables() {
   tb3.innerHTML = SPEND_CATEGORIES.map(c => `
     <tr>
       <td>${c.label}${c.tag === 'retire' ? ' <span class="spend-tag retire">RETIRE</span>' : ''}</td>
-      <td><input class="spend-pct-input" type="number" id="p3pct-${c.id}" value="${c.p3pct}" min="0" max="200" oninput="recalcTotals()">%</td>
+      <td><input class="spend-pct-input" type="number" id="p3pct-${c.id}" value="${c.p3pct}" min="0" max="200" oninput="syncAndRecalc('p3pct','${c.id}',this.value)">%</td>
       <td id="p3m-${c.id}">${fmtM(c.monthly * c.p3pct / 100)}</td>
       <td id="p3a-${c.id}">${fmtM(c.monthly * c.p3pct / 100 * 12)}</td>
     </tr>`).join('');
@@ -1953,6 +3092,7 @@ function renderSpendTables() {
 function getSpendingPhases() {
   // Returns monthly spend for each phase (or null if module not used)
   if (!spendOpen) return null;
+  syncSpendFromDOM();
   let t1 = 0, t2 = 0, t3 = 0;
   SPEND_CATEGORIES.forEach(c => {
     const m1 = getP1Monthly(c.id);
@@ -1964,6 +3104,7 @@ function getSpendingPhases() {
 }
 
 function applySpending() {
+  syncSpendFromDOM();
   const phases = getSpendingPhases();
   if (!phases) return;
   // Update the monthly budget field with Phase 3 (retirement) spend
