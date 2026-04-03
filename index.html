@@ -1432,9 +1432,13 @@
   }
 
   .spend-module-header {
-    padding: 1.1rem 1.4rem !important;
+    padding: 0.9rem 1.2rem !important;
     border-bottom: none;
     transition: filter 0.15s;
+    min-height: 62px;
+    max-height: 62px;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 
   .spend-module-header:hover { filter: brightness(1.08); }
@@ -1445,7 +1449,7 @@
 
   /* Panel icon */
   .panel-icon-lg {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     line-height: 1;
     flex-shrink: 0;
   }
@@ -1455,19 +1459,22 @@
 
   .panel-title-main {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     color: #fff;
     line-height: 1.2;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.1rem;
   }
 
   .panel-subtitle-line {
     font-family: 'DM Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0.65;
+    opacity: 0.6;
     color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* Replace small chevron with explicit open/close button */
@@ -1965,12 +1972,12 @@
           <div class="cfa-allocation-row">
             <div class="cfa-dot" style="background:#e05c5c"></div>
             <div class="cfa-alloc-label">Fixed Living Expenses<small>From spending planner · Phase 1 budget</small></div>
-            <input class="cfa-input" type="number" id="cfa-expenses" placeholder="e.g. 8400" oninput="updateCFA()">
+            <input class="cfa-input" type="number" id="cfa-expenses" placeholder="e.g. 8400" oninput="this.dataset.userSet='1';updateCFA()">
           </div>
           <div class="cfa-allocation-row">
             <div class="cfa-dot" style="background:#e05c5c"></div>
             <div class="cfa-alloc-label">Debt Minimum Payments<small>From debt module · Required monthly</small></div>
-            <input class="cfa-input" type="number" id="cfa-debt-min" placeholder="e.g. 800" oninput="updateCFA()">
+            <input class="cfa-input" type="number" id="cfa-debt-min" placeholder="e.g. 800" oninput="this.dataset.userSet='1';updateCFA()">
           </div>
         </div>
 
@@ -2148,7 +2155,7 @@
     </div>
   </div>
 
-  <div style="display:flex;gap:0.75rem;margin-bottom:1rem">
+  <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;margin-top:0.5rem">
     <button class="btn" onclick="calculate()" style="margin-bottom:0;flex:1">Calculate My True Number</button>
     <button onclick="confirmClear()" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:1rem 1.4rem;font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;white-space:nowrap" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">✕ Clear</button>
   </div>
@@ -2281,12 +2288,20 @@
   </div>
 
   <!-- ── Planning Checklist ────────────────────────── -->
-  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.6rem;margin-bottom:1.5rem">
-    <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)">📋 Planning Checklist — What Else To Consider</span>
-      <span style="color:var(--muted);font-size:0.7rem">▼</span>
+  <div class="spend-module" style="border-color:rgba(155,89,182,0.3);margin-bottom:1.5rem" id="checklist-module">
+    <div class="spend-module-header theme-purple" id="checklist-header"
+         style="display:flex;align-items:center;gap:0.9rem;cursor:pointer;user-select:none"
+         onclick="toggleChecklistModule()">
+      <div class="panel-icon-lg">📋</div>
+      <div class="panel-title-block">
+        <div class="panel-title-main">Planning Checklist</div>
+        <div class="panel-subtitle-line">LTC · IRMAA · HSA · Estate · Withdrawal order · What else to consider</div>
+      </div>
+      <button class="panel-open-btn" id="checklist-panel-btn"
+              onclick="event.stopPropagation();toggleChecklistModule()">▼ Open</button>
     </div>
-    <div style="display:none;margin-top:1rem">
+    <div class="spend-module-body" id="checklist-body">
+      <div style="margin-top:0">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem">
         <div style="padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">
           <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold-light);margin-bottom:0.15rem">Tax strategy</div>
@@ -3074,6 +3089,23 @@ function renderDebtTable() {
   }).join('');
 }
 
+
+function updateMinDisplay(rowId) {
+  const e = debtEntries.find(e => e.rowId === rowId);
+  if (!e || e.cat !== 'installment') return;
+  const min = calcMinPayment(e);
+  // Find the min payment cell for this row
+  const row = document.getElementById('debt-row-' + rowId);
+  if (!row) return;
+  const cells = row.querySelectorAll('td');
+  if (cells.length >= 5) {
+    cells[4].innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--gold-light)">
+      $${Math.round(min).toLocaleString()}
+      <div style="font-size:0.55rem;color:var(--muted)">auto-calc'd</div>
+    </div>`;
+  }
+}
+
 function updateEntry(rowId, field, value) {
   const e = debtEntries.find(e => e.rowId === rowId);
   if (!e) return;
@@ -3086,9 +3118,9 @@ function updateEntry(rowId, field, value) {
     e.manualMin = true;
   }
   // Recalc auto min for installment
+  // Update displayed min payment in-place (no full re-render = no focus loss)
   if (field === 'balance' || field === 'rate') {
-    // Re-render to update displayed min payment
-    renderDebtTable();
+    updateMinDisplay(rowId);
   }
   updateDebtSummary();
 }
@@ -4086,6 +4118,14 @@ function clearGTN() {
 // END GROSS-TO-NET OPTIMIZER
 // ══════════════════════════════════════════════════════════
 
+
+let checklistOpen = false;
+function toggleChecklistModule() {
+  checklistOpen = !checklistOpen;
+  document.getElementById('checklist-body').classList.toggle('open', checklistOpen);
+  document.getElementById('checklist-header').classList.toggle('open', checklistOpen);
+  updatePanelBtn('checklist-header', checklistOpen);
+}
 // ── SS Quick Estimator ────────────────────────────────────
 function toggleSSEstimator() {
   const el = document.getElementById('ss-estimator');
@@ -4358,6 +4398,13 @@ function recalcTotals() {
   // Phase 3 totals
   document.getElementById('p3-monthly-total').textContent = fmtM(t3);
   document.getElementById('p3-annual-total').textContent = fmtM(t3 * 12);
+  // Auto-sync Phase 1 total → CFA expenses if not user-set
+  const cfaExp = document.getElementById('cfa-expenses');
+  if (cfaExp && t1 > 0 && !cfaExp.dataset.userSet) {
+    cfaExp.value = Math.round(t1);
+    cfaExp.dataset.autoFilled = '1';
+    if (typeof updateCFA === 'function') updateCFA();
+  }
   // Summary cards
   document.getElementById('phase1-total').textContent = fmtM(t1) + '/mo';
   document.getElementById('phase2-total').textContent = fmtM(t2) + '/mo';
