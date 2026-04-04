@@ -3,22 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Retirement Number Calculator</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>LuxView — Financial Planning Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f0e;
-    --surface: #141714;
-    --surface2: #1a1e1a;
-    --border: #2a2f2a;
-    --gold: #c9a84c;
-    --gold-light: #e8c97e;
-    --green: #4caf7d;
-    --red: #e05c5c;
-    --text: #e8e8e4;
-    --muted: #7a8078;
-    --accent: #c9a84c;
-  }
+    --bg: #F7F4EF;
+    --surface: #FFFFFF;
+    --surface2: #F2EEE8;
+    --border: #DDD8D0;
+    --gold: #B8955A;
+    --gold-light: #C8A86A;
+    --green: #2D6A4F;
+    --red: #8B2635;
+    --text: #1C1916;
+    --muted: #8A7F74;
+    --accent: #B8955A;
+  
+    --navy:       #1B2B4B;
+    --blue:       #2C4A7C;}
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -32,7 +34,7 @@
   }
 
   .container {
-    max-width: 860px;
+    max-width: 720px;
     margin: 0 auto;
   }
 
@@ -44,9 +46,9 @@
   }
 
   header h1 {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: clamp(2rem, 5vw, 3.2rem);
-    color: var(--gold-light);
+    color: #1B2B4B;
     line-height: 1.1;
     margin-bottom: 0.5rem;
   }
@@ -62,8 +64,8 @@
   .inputs-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
   }
 
   @media (max-width: 560px) { .inputs-grid { grid-template-columns: 1fr; } }
@@ -74,6 +76,7 @@
     border-radius: 8px;
     padding: 1rem 1.2rem;
     transition: border-color 0.2s;
+    box-shadow: 0 1px 3px rgba(28,25,22,0.06);
   }
 
   .field:focus-within { border-color: var(--gold); }
@@ -95,7 +98,7 @@
     outline: none;
     color: var(--text);
     font-family: 'DM Mono', monospace;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 500;
   }
 
@@ -104,7 +107,7 @@
   .btn {
     width: 100%;
     background: var(--gold);
-    color: #0d0f0e;
+    color: #F7F4EF;
     border: none;
     border-radius: 8px;
     padding: 1rem;
@@ -135,8 +138,8 @@
     flex-wrap: wrap;
   }
 
-  .verdict-bar.success { background: linear-gradient(135deg, #1a2e1f, #152614); border: 1px solid #2d5a35; }
-  .verdict-bar.danger  { background: linear-gradient(135deg, #2e1a1a, #261515); border: 1px solid #5a2d2d; }
+  .verdict-bar.success { background: linear-gradient(135deg, #E8F4EE, #D4EDDF); border: 1px solid #2D6A4F; }
+  .verdict-bar.danger  { background: linear-gradient(135deg, #F4E8EA, #EDDDE0); border: 1px solid #8B2635; }
 
   .verdict-label {
     font-family: 'DM Mono', monospace;
@@ -148,12 +151,12 @@
   }
 
   .verdict-value {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: clamp(1.6rem, 4vw, 2.4rem);
   }
 
-  .verdict-value.pos { color: var(--green); }
-  .verdict-value.neg { color: var(--red); }
+  .verdict-value.pos { color: #1E5C3A; }
+  .verdict-value.neg { color: #8B2635; }
 
   .verdict-badge {
     font-family: 'DM Mono', monospace;
@@ -217,7 +220,7 @@
   }
 
   .mc-bar-wrap {
-    background: var(--bg);
+    background: var(--surface2);
     border-radius: 4px;
     height: 10px;
     overflow: hidden;
@@ -231,8 +234,8 @@
     transition: width 1s cubic-bezier(0.4,0,0.2,1);
   }
 
-  .mc-bar-fill.success { background: linear-gradient(90deg, #2d7a4f, var(--green)); }
-  .mc-bar-fill.danger  { background: linear-gradient(90deg, #7a2d2d, var(--red)); }
+  .mc-bar-fill.success { background: linear-gradient(90deg, #2D6A4F, var(--green)); }
+  .mc-bar-fill.danger  { background: linear-gradient(90deg, #7A1D2D, var(--red)); }
 
   .mc-threshold-line {
     position: absolute;
@@ -251,7 +254,7 @@
   }
 
   .mc-rate {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 2rem;
     color: var(--text);
     margin-bottom: 0.3rem;
@@ -264,6 +267,7 @@
     border-radius: 8px;
     overflow: hidden;
     margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(28,25,22,0.06);
   }
 
   .projection-header {
@@ -297,8 +301,8 @@
   }
 
   tr:last-child td { border-bottom: none; }
-  tr.highlight td { background: rgba(201,168,76,0.05); }
-  tr.depleted td { color: var(--red); opacity: 0.7; }
+  tr.highlight td { background: rgba(184,149,90,0.08); }
+  tr.depleted td { color: #8B2635; opacity: 0.85; }
 
   .tag {
     display: inline-block;
@@ -309,18 +313,19 @@
     vertical-align: middle;
   }
 
-  .tag.ss { background: rgba(201,168,76,0.15); color: var(--gold); }
-  .tag.now { background: rgba(76,175,125,0.15); color: var(--green); }
+  .tag.ss { background: rgba(184,149,90,0.15); color: #8A6A30; border: 1px solid rgba(184,149,90,0.3); }
+  .tag.now { background: rgba(45,106,79,0.12); color: #1E5C3A; border: 1px solid rgba(45,106,79,0.25); }
 
   .insight {
-    background: var(--surface2);
+    background: #FBF8F3;
+    border: 1px solid var(--border);
     border-left: 3px solid var(--gold);
     border-radius: 0 8px 8px 0;
     padding: 1rem 1.4rem;
     margin-bottom: 1rem;
     font-size: 0.85rem;
     line-height: 1.6;
-    color: #c8cac4;
+    color: #3D3A36;
   }
 
   .insight strong { color: var(--gold-light); font-weight: 500; }
@@ -356,7 +361,7 @@
   }
 
   .spending-module-total {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
     color: var(--gold-light);
   }
@@ -467,7 +472,7 @@
   .apply-btn {
     width: 100%;
     background: var(--green);
-    color: #0d0f0e;
+    color: #F7F4EF;
     border: none;
     border-radius: 6px;
     padding: 0.75rem;
@@ -507,7 +512,7 @@
     vertical-align: middle;
   }
 
-  .hint-icon:hover { background: var(--gold); color: #0d0f0e; }
+  .hint-icon:hover { background: var(--gold); color: #F7F4EF; }
 
   .hint-tip {
     display: none;
@@ -515,7 +520,7 @@
     bottom: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%);
-    background: #1e2420;
+    background: #EAE6E0;
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.65rem 0.85rem;
@@ -612,7 +617,7 @@
   .debt-entry-table tr:last-child td { border-bottom: none; }
 
   .debt-input {
-    background: var(--bg);
+    background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 4px;
     color: var(--text);
@@ -655,7 +660,7 @@
   }
 
   .method-name {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1rem;
     color: var(--text);
     margin-bottom: 0.3rem;
@@ -671,7 +676,7 @@
     border-radius: 999px;
     margin-bottom: 0.6rem;
   }
-  .method-tag.math { background: rgba(91,141,238,0.15); color: #5b8dee; border: 1px solid rgba(91,141,238,0.3); }
+  .method-tag.math { background: rgba(91,141,238,0.15); color: #2C4A7C; border: 1px solid rgba(91,141,238,0.3); }
   .method-tag.psych { background: rgba(76,175,125,0.15); color: var(--green); border: 1px solid rgba(76,175,125,0.3); }
   .method-tag.hybrid { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
 
@@ -692,7 +697,7 @@
   @media (max-width: 560px) { .debt-results-grid { grid-template-columns: 1fr 1fr; } }
 
   .debt-stat {
-    background: var(--bg);
+    background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.8rem 1rem;
@@ -706,7 +711,7 @@
     margin-bottom: 0.25rem;
   }
   .debt-stat-value {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
     color: var(--gold-light);
   }
@@ -714,7 +719,7 @@
   .debt-stat-value.bad  { color: var(--red); }
 
   .debt-timeline {
-    background: var(--bg);
+    background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
@@ -771,8 +776,8 @@
   }
 
   .retire-advantage {
-    background: linear-gradient(135deg, #1a2e1f, #152614);
-    border: 1px solid #2d5a35;
+    background: linear-gradient(135deg, #1A3D28, #1A3D28);
+    border: 1px solid #2D5A35;
     border-radius: 10px;
     padding: 1.2rem 1.4rem;
     margin-bottom: 1rem;
@@ -782,11 +787,11 @@
     font-size: 0.65rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--green);
+    color: #1E5C3A;
     margin-bottom: 0.6rem;
   }
   .retire-advantage-value {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
     color: var(--green);
     margin-bottom: 0.3rem;
@@ -826,12 +831,12 @@
 
   .gtn-mode-btn.active {
     background: var(--surface);
-    border-color: #5b8dee;
-    color: #5b8dee;
+    border-color: #2C4A7C;
+    color: #2C4A7C;
   }
 
   .gtn-section {
-    background: var(--bg);
+    background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 1rem 1.2rem;
@@ -891,7 +896,7 @@
     text-align: right;
   }
 
-  .gtn-input:focus { border-color: #5b8dee; }
+  .gtn-input:focus { border-color: #2C4A7C; }
 
   .gtn-select {
     background: var(--surface);
@@ -925,8 +930,8 @@
   }
 
   .gtn-pill.active {
-    border-color: #5b8dee;
-    color: #5b8dee;
+    border-color: #2C4A7C;
+    color: #2C4A7C;
     background: rgba(91,141,238,0.08);
   }
 
@@ -959,10 +964,10 @@
   .gtn-wf-amount.neg { color: var(--red); }
   .gtn-wf-amount.pos { color: var(--green); }
   .gtn-wf-amount.gold { color: var(--gold-light); }
-  .gtn-wf-amount.blue { color: #5b8dee; }
+  .gtn-wf-amount.blue { color: #2C4A7C; }
 
   .gtn-takehome-big {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 2.2rem;
     color: var(--green);
     text-align: center;
@@ -976,7 +981,7 @@
     padding: 0.2rem 0.6rem;
     border-radius: 999px;
     background: rgba(91,141,238,0.12);
-    color: #5b8dee;
+    color: #2C4A7C;
     border: 1px solid rgba(91,141,238,0.25);
     margin-left: 0.5rem;
   }
@@ -1035,7 +1040,7 @@
   }
 
   .cfa-input {
-    background: var(--bg);
+    background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 5px;
     color: var(--text);
@@ -1065,7 +1070,7 @@
 
   .optimize-btn {
     width: 100%;
-    background: #5b8dee;
+    background: #2C4A7C;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -1080,7 +1085,7 @@
     margin-bottom: 1rem;
   }
 
-  .optimize-btn:hover { background: #4a7ae0; }
+  .optimize-btn:hover { background: #1E3A6C; }
 
   .scenario-compare-grid {
     display: grid;
@@ -1112,7 +1117,7 @@
   }
 
   .scenario-card-value {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.3rem;
     margin-bottom: 0.2rem;
   }
@@ -1125,7 +1130,7 @@
   }
 
   .recommendation-box {
-    background: linear-gradient(135deg, #0f1e14, #0a1510);
+    background: linear-gradient(135deg, #1A3D28, #0F2820);
     border: 1px solid rgba(76,175,125,0.3);
     border-radius: 10px;
     padding: 1.2rem 1.4rem;
@@ -1145,7 +1150,7 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 0.8rem;
     line-height: 1.65;
-    color: #c8cac4;
+    color: #3D3A36;
   }
 
   .rec-body strong { color: var(--gold-light); font-weight: 500; }
@@ -1155,6 +1160,7 @@
   /* ── Charts ────────────────────────────────────────── */
   .chart-section {
     background: var(--surface);
+    box-shadow: 0 1px 4px rgba(28,25,22,0.06);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 1.4rem 1.6rem;
@@ -1364,7 +1370,7 @@
 
   .spend-apply-btn {
     background: var(--green);
-    color: #0d0f0e;
+    color: #F7F4EF;
     border: none;
     border-radius: 6px;
     padding: 0.5rem 1.2rem;
@@ -1377,7 +1383,7 @@
     transition: background 0.15s;
   }
 
-  .spend-apply-btn:hover { background: #5dc98d; }
+  .spend-apply-btn:hover { background: #3D8A64; }
 
   .spend-phase-summary {
     display: grid;
@@ -1389,7 +1395,7 @@
   @media (max-width: 560px) { .spend-phase-summary { grid-template-columns: 1fr; } }
 
   .spend-phase-card {
-    background: var(--bg);
+    background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.8rem 1rem;
@@ -1405,7 +1411,7 @@
   }
 
   .spend-phase-card-value {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.3rem;
     color: var(--text);
   }
@@ -1429,6 +1435,7 @@
   .spend-module {
     border-radius: 12px !important;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(28,25,22,0.08);
   }
 
   .spend-module-header {
@@ -1458,7 +1465,7 @@
   .panel-title-block { flex: 1; }
 
   .panel-title-main {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 0.95rem;
     color: #fff;
     line-height: 1.2;
@@ -1506,12 +1513,12 @@
   }
 
   /* Color themes for each module */
-  .spend-module-header.theme-blue   { background: linear-gradient(135deg, #1a2640, #0f1a2e); }
-  .spend-module-header.theme-gold   { background: linear-gradient(135deg, #2a2010, #1a1408); }
-  .spend-module-header.theme-teal   { background: linear-gradient(135deg, #0f2020, #081515); }
-  .spend-module-header.theme-red    { background: linear-gradient(135deg, #2a1010, #1a0a0a); }
-  .spend-module-header.theme-green  { background: linear-gradient(135deg, #152614, #0d1a0f); }
-  .spend-module-header.theme-purple { background: linear-gradient(135deg, #1e1428, #130d1e); }
+  .spend-module-header.theme-blue   { background: linear-gradient(135deg, #243460, #1B2B4B); }
+  .spend-module-header.theme-gold   { background: linear-gradient(135deg, #4D3A18, #3D2E10); }
+  .spend-module-header.theme-teal   { background: linear-gradient(135deg, #1A3535, #0F2828); }
+  .spend-module-header.theme-red    { background: linear-gradient(135deg, #4D1E28, #3D1520); }
+  .spend-module-header.theme-green  { background: linear-gradient(135deg, #1A3D28, #1A3D28); }
+  .spend-module-header.theme-purple { background: linear-gradient(135deg, #3A2550, #2A1840); }
 
   /* Hide old small chevron */
   .spend-module-chevron { display: none !important; }
@@ -1521,9 +1528,9 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(13,15,14,0.96);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(247,244,239,0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
     margin: -0.5rem -1rem 2rem;
     padding: 0.5rem 1rem;
@@ -1558,7 +1565,7 @@
     display: inline-block;
   }
 
-  .nav-pill:hover { border-color: var(--gold); color: var(--gold-light); }
+  .nav-pill:hover { border-color: var(--gold); color: var(--gold); background: #FBF8F3; }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -1576,8 +1583,8 @@
 <body>
 <div class="container">
   <header>
-    <h1>Your True Retirement Number</h1>
-    <p>Monte Carlo Simulation · Inflation-Adjusted · Phase-Based Spending · Personalized</p>
+    <h1>LuxView Financial Planner</h1>
+    <p>Retirement · Cash Flow · Debt · Tax-Optimized · Monte Carlo</p>
   </header>
 
   <nav class="sticky-nav">
@@ -1651,7 +1658,7 @@
         </div>
       </div>
       <div id="ss-estimate-result" style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);margin-bottom:0.6rem">Enter income and years above to estimate.</div>
-      <button onclick="applySSEstimate()" style="background:var(--green);color:#0d0f0e;border:none;border-radius:6px;padding:0.4rem 1rem;font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer">Apply Estimate →</button>
+      <button onclick="applySSEstimate()" style="background:var(--green);color:#F7F4EF;border:none;border-radius:6px;padding:0.4rem 1rem;font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer">Apply Estimate →</button>
       <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);margin-top:0.6rem">
         Estimate based on SSA benefit formula using 2025 bend points. Claiming at Full Retirement Age (67).
         For accuracy, use your actual earnings record at <a href="https://www.ssa.gov/myaccount/" target="_blank" style="color:var(--gold)">ssa.gov/myaccount</a>.
@@ -1962,7 +1969,7 @@
 
       <!-- Cash Flow Allocator (shown after take-home is calculated) -->
       <div id="cfa-section" style="display:none">
-        <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:#5b8dee;margin-bottom:0.8rem;margin-top:0.5rem">
+        <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:#2C4A7C;margin-bottom:0.8rem;margin-top:0.5rem">
           ── Cash Flow Allocator ──────────────────────────────
         </div>
 
@@ -1970,12 +1977,12 @@
         <div class="cfa-section">
           <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.7rem">Fixed Monthly Outflows</div>
           <div class="cfa-allocation-row">
-            <div class="cfa-dot" style="background:#e05c5c"></div>
+            <div class="cfa-dot" style="background:#8B2635"></div>
             <div class="cfa-alloc-label">Fixed Living Expenses<small>From spending planner · Phase 1 budget</small></div>
             <input class="cfa-input" type="number" id="cfa-expenses" placeholder="e.g. 8400" oninput="this.dataset.userSet='1';updateCFA()">
           </div>
           <div class="cfa-allocation-row">
-            <div class="cfa-dot" style="background:#e05c5c"></div>
+            <div class="cfa-dot" style="background:#8B2635"></div>
             <div class="cfa-alloc-label">Debt Minimum Payments<small>From debt module · Required monthly</small></div>
             <input class="cfa-input" type="number" id="cfa-debt-min" placeholder="e.g. 800" oninput="this.dataset.userSet='1';updateCFA()">
           </div>
@@ -1993,22 +2000,22 @@
           <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.8rem;text-align:right" id="cfa-bar-label"></div>
 
           <div class="cfa-allocation-row">
-            <div class="cfa-dot" style="background:#e05c5c"></div>
+            <div class="cfa-dot" style="background:#8B2635"></div>
             <div class="cfa-alloc-label">Extra Debt Payments<small>Above minimums — accelerate payoff</small></div>
             <input class="cfa-input" type="number" id="cfa-debt-extra" placeholder="0" oninput="updateCFA()">
           </div>
           <div class="cfa-allocation-row">
-            <div class="cfa-dot" style="background:#5b8dee"></div>
+            <div class="cfa-dot" style="background:#2C4A7C"></div>
             <div class="cfa-alloc-label">Above-Payroll Savings<small>IRA, backdoor Roth, brokerage</small></div>
             <input class="cfa-input" type="number" id="cfa-savings" placeholder="0" oninput="updateCFA()">
           </div>
           <div class="cfa-allocation-row">
-            <div class="cfa-dot" style="background:#4caf7d"></div>
+            <div class="cfa-dot" style="background:#2D6A4F"></div>
             <div class="cfa-alloc-label">Emergency Fund Build<small>Target: 3–6 months expenses</small></div>
             <input class="cfa-input" type="number" id="cfa-emergency" placeholder="0" oninput="updateCFA()">
           </div>
           <div class="cfa-allocation-row">
-            <div class="cfa-dot" style="background:#c9a84c"></div>
+            <div class="cfa-dot" style="background:#B8955A"></div>
             <div class="cfa-alloc-label">Major Purchase / Other<small>Car, renovation, vacation, etc.</small></div>
             <input class="cfa-input" type="number" id="cfa-other" placeholder="0" oninput="updateCFA()">
           </div>
@@ -2149,8 +2156,14 @@
       </div>
 
       <div class="spend-footer">
-        <span id="spend-budget-note">💡 Phase totals feed directly into the Monte Carlo. Click Apply to update.</span>
-        <button class="spend-apply-btn" onclick="applySpending()">Apply to Calculator</button>
+        <span id="spend-budget-note">💡 Apply pushes Phase 3 spend to the retirement engine · Re-apply anytime after updating</span>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <button class="spend-apply-btn" onclick="applySpending()">→ Apply Phase 3 to Retirement</button>
+          <button class="spend-apply-btn" onclick="applySpendingToCFA()"
+            style="background:var(--surface);border:1px solid var(--green);color:var(--green)">
+            → Apply Phase 1 to Cash Flow
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -2161,9 +2174,9 @@
   </div>
 
   <!-- Clear confirm modal -->
-  <div id="clear-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center">
+  <div id="clear-modal" style="display:none;position:fixed;inset:0;background:rgba(28,25,22,0.5);z-index:1000;align-items:center;justify-content:center">
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;max-width:340px;width:90%;text-align:center">
-      <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--red);margin-bottom:0.5rem">Clear all data?</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--red);margin-bottom:0.5rem">Clear all data?</div>
       <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6">This will reset every field and all results. This cannot be undone.</div>
       <div style="display:flex;gap:0.75rem;justify-content:center">
         <button onclick="clearAll()" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:0.7rem 1.5rem;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;letter-spacing:0.1em;cursor:pointer">Yes, Clear Everything</button>
@@ -2277,7 +2290,7 @@
                  padding:0.85rem;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;
                  letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;margin-bottom:1.5rem;
                  transition:background 0.15s"
-          onmouseover="this.style.background='#e87070'"
+          onmouseover="this.style.background='#A03040'"
           onmouseout="this.style.background='var(--red)'">
           Calculate Payoff Plan
         </button>
@@ -2684,12 +2697,12 @@ function destroyCharts() {
 function renderCharts(p) {
   destroyCharts();
 
-  const gridColor  = 'rgba(255,255,255,0.04)';
-  const textColor  = '#7a8078';
-  const gold       = '#c9a84c';
-  const green      = '#4caf7d';
-  const red        = '#e05c5c';
-  const blue       = '#5b8dee';
+  const gridColor  = 'rgba(28,25,22,0.06)';
+  const textColor  = '#8A7F74';
+  const gold       = '#B8955A';
+  const green      = '#2D6A4F';
+  const red        = '#8B2635';
+  const blue       = '#2C4A7C';
 
   // ── A. Portfolio Growth Chart ──────────────────────────
   const portfolioLabels = [];
@@ -2738,11 +2751,11 @@ function renderCharts(p) {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#1a1e1a',
-            borderColor: '#2a2f2a',
+            backgroundColor: '#F2EEE8',
+            borderColor: '#DDD8D0',
             borderWidth: 1,
-            titleColor: '#e8e8e4',
-            bodyColor: '#7a8078',
+            titleColor: '#1C1916',
+            bodyColor: '#8A7F74',
             callbacks: {
               label: ctx => {
                 const v = ctx.raw;
@@ -2799,11 +2812,11 @@ function renderCharts(p) {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#1a1e1a',
-            borderColor: '#2a2f2a',
+            backgroundColor: '#F2EEE8',
+            borderColor: '#DDD8D0',
             borderWidth: 1,
-            titleColor: '#e8e8e4',
-            bodyColor: '#7a8078',
+            titleColor: '#1C1916',
+            bodyColor: '#8A7F74',
             callbacks: {
               label: ctx => {
                 const pct = Math.round(ctx.raw / p.annualBudget * 100);
@@ -2887,11 +2900,11 @@ function renderCharts(p) {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#1a1e1a',
-            borderColor: '#2a2f2a',
+            backgroundColor: '#F2EEE8',
+            borderColor: '#DDD8D0',
             borderWidth: 1,
-            titleColor: '#e8e8e4',
-            bodyColor: '#7a8078',
+            titleColor: '#1C1916',
+            bodyColor: '#8A7F74',
             callbacks: {
               label: ctx => ' ' + ctx.dataset.label + ': $' + (Math.max(0,ctx.raw)/1e6).toFixed(2) + 'M'
             }
@@ -2950,12 +2963,17 @@ function revolvingMin(balance, annualRate) {
 }
 
 function calcMinPayment(entry) {
+  if (!entry.balance || entry.balance <= 0) return 0;
   if (entry.cat === 'installment' && entry.termMonths > 0) {
     return amortPayment(entry.balance, entry.rate, entry.termMonths);
   }
-  // Revolving: 2% of balance or $25 floor
-  if (!entry.balance) return 0;
-  return Math.max(25, entry.balance * 0.02);
+  // Revolving: if user has set a manual minimum, use it
+  if (entry.manualMin && entry.manualMinAmt > 0) return entry.manualMinAmt;
+  // Otherwise auto-estimate: greater of (interest + 1% principal) or $25
+  // This approximates real credit card minimums
+  const monthlyInterest = entry.balance * (entry.rate / 100 / 12);
+  const principalPct    = entry.balance * 0.01;
+  return Math.max(25, monthlyInterest + principalPct);
 }
 
 // ── State ─────────────────────────────────────────────────
@@ -3051,15 +3069,22 @@ function renderDebtTable() {
       </select>` : `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;
         color:var(--muted)">Revolving</span>`;
 
+    const rowAutoMin = calcMinPayment(e);
     const minDisplay = isInstallment
       ? `<div style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--gold-light)">
-           $${Math.round(displayMin).toLocaleString()}
+           $\${Math.round(autoMin).toLocaleString()}
            <div style="font-size:0.55rem;color:var(--muted)">auto-calc'd</div>
          </div>`
-      : `<input class="debt-input" type="number" placeholder="min"
-             value="${e.manualMinAmt || ''}"
-             oninput="updateEntry(${e.rowId},'manualMinAmt',this.value)"
-             style="width:80px">`;
+      : `<div>
+           <input class="debt-input" type="number"
+             placeholder="$\${Math.round(autoMin)}"
+             value="\${e.manualMin ? e.manualMinAmt : ''}"
+             oninput="updateEntry(\${e.rowId},'manualMinAmt',this.value)"
+             style="width:80px">
+           <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:0.15rem">
+             est. $\${Math.round(autoMin)}/mo
+           </div>
+         </div>`;
 
     return `<tr id="debt-row-${e.rowId}">
       <td>
@@ -3092,17 +3117,23 @@ function renderDebtTable() {
 
 function updateMinDisplay(rowId) {
   const e = debtEntries.find(e => e.rowId === rowId);
-  if (!e || e.cat !== 'installment') return;
+  if (!e) return;
   const min = calcMinPayment(e);
-  // Find the min payment cell for this row
   const row = document.getElementById('debt-row-' + rowId);
   if (!row) return;
   const cells = row.querySelectorAll('td');
-  if (cells.length >= 5) {
+  if (cells.length < 5) return;
+  if (e.cat === 'installment') {
     cells[4].innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--gold-light)">
       $${Math.round(min).toLocaleString()}
       <div style="font-size:0.55rem;color:var(--muted)">auto-calc'd</div>
     </div>`;
+  } else {
+    // Update just the placeholder/estimate on revolving — don't overwrite user input
+    const input = cells[4].querySelector('input');
+    const hint  = cells[4].querySelector('div');
+    if (input && !input.value) input.placeholder = '$' + Math.round(min);
+    if (hint) hint.textContent = 'est. $' + Math.round(min) + '/mo';
   }
 }
 
@@ -3313,9 +3344,9 @@ function runDebtOptimizer() {
     return '$' + Math.round(Math.abs(n)).toLocaleString();
   }
 
-  const methodColors = { avalanche:'#5b8dee', snowball:'#4caf7d', hybrid:'#c9a84c' };
+  const methodColors = { avalanche:'#2C4A7C', snowball:'#2D6A4F', hybrid:'#B8955A' };
   const methodLabels = { avalanche:'Avalanche', snowball:'Snowball', hybrid:'Hybrid' };
-  const barColors    = ['#5b8dee','#4caf7d','#c9a84c','#e05c5c','#9b59b6','#e67e22','#1abc9c','#e74c3c'];
+  const barColors    = ['#2C4A7C','#2D6A4F','#B8955A','#8B2635','#7B3F9B','#C96A10','#16A085','#C0392B'];
 
   const html = `
     <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;
@@ -3355,7 +3386,7 @@ function runDebtOptimizer() {
     <div class="retire-advantage">
       <div class="retire-advantage-title">🏦 Retirement Advantage of This Payoff Strategy</div>
       <div class="retire-advantage-value">+${fmtD(retireAdv)}</div>
-      <div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#c8cac4;line-height:1.6">
+      <div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#3D3A36;line-height:1.6">
         Eliminating <strong style="color:var(--green)">${fmtD(intSaved)}</strong> in interest
         and investing freed payments of
         <strong style="color:var(--green)">${fmtD(totalMinPmts + extraTotal)}/mo</strong>
@@ -3376,7 +3407,7 @@ function runDebtOptimizer() {
           <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:${methodColors[m]};margin-bottom:0.3rem">
             ${methodLabels[m]}${m===selectedMethod?' ✓':''}
           </div>
-          <div style="font-family:'DM Serif Display',serif;font-size:0.95rem;color:var(--text)">
+          <div style="font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--text)">
             ${monthsToDate(results[m].months)}
           </div>
           <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)">
@@ -3428,6 +3459,14 @@ function runDebtOptimizer() {
     </div>
 
     <!-- Insight -->
+    <div style="display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap">
+      <button onclick="applyDebtToCFA()"
+        style="flex:1;background:var(--red);color:#fff;border:none;border-radius:7px;
+               padding:0.6rem 1rem;font-family:'DM Mono',monospace;font-size:0.65rem;
+               font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer">
+        → Apply Minimums to Cash Flow
+      </button>
+    </div>
     <div class="insight" style="border-left-color:var(--red)">
       <strong>Avalanche vs. Snowball difference:</strong>
       <strong>${fmtD(Math.abs(results.avalanche.totalInterest - results.snowball.totalInterest))}</strong> in interest
@@ -3478,13 +3517,13 @@ function runDebtOptimizer() {
         labels,
         datasets: [
           { label:'Avalanche', data:interpolate(results.avalanche.monthlyLog, moPts),
-            borderColor:'#5b8dee', borderWidth:2, pointRadius:0, tension:0.3, fill:false },
+            borderColor:'#2C4A7C', borderWidth:2, pointRadius:0, tension:0.3, fill:false },
           { label:'Snowball',  data:interpolate(results.snowball.monthlyLog,  moPts),
-            borderColor:'#4caf7d', borderWidth:2, pointRadius:0, tension:0.3, fill:false },
+            borderColor:'#2D6A4F', borderWidth:2, pointRadius:0, tension:0.3, fill:false },
           { label:'Hybrid',   data:interpolate(results.hybrid.monthlyLog,    moPts),
-            borderColor:'#c9a84c', borderWidth:2, pointRadius:0, tension:0.3, fill:false },
+            borderColor:'#B8955A', borderWidth:2, pointRadius:0, tension:0.3, fill:false },
           { label:'Min Only', data:interpolate(results.baseline.monthlyLog,  moPts),
-            borderColor:'#7a8078', borderWidth:1.5, borderDash:[5,4],
+            borderColor:'#8A7F74', borderWidth:1.5, borderDash:[5,4],
             pointRadius:0, tension:0.3, fill:false },
         ]
       },
@@ -3494,17 +3533,17 @@ function runDebtOptimizer() {
         plugins: {
           legend: { display:false },
           tooltip: {
-            backgroundColor:'#1a1e1a', borderColor:'#2a2f2a', borderWidth:1,
-            titleColor:'#e8e8e4', bodyColor:'#7a8078',
+            backgroundColor:'#F2EEE8', borderColor:'#DDD8D0', borderWidth:1,
+            titleColor:'#1C1916', bodyColor:'#8A7F74',
             callbacks: {
               label: ctx => ` ${ctx.dataset.label}: $${Math.round(ctx.raw).toLocaleString()}`
             }
           }
         },
         scales: {
-          x: { ticks:{ color:'#7a8078', font:{family:'DM Mono',size:9}, maxTicksLimit:8 },
+          x: { ticks:{ color:'#8A7F74', font:{family:'DM Mono',size:9}, maxTicksLimit:8 },
                grid:{ color:'rgba(255,255,255,0.04)' } },
-          y: { ticks:{ color:'#7a8078', font:{family:'DM Mono',size:9},
+          y: { ticks:{ color:'#8A7F74', font:{family:'DM Mono',size:9},
                        callback: v => '$' + (v/1000).toFixed(0) + 'k' },
                grid:{ color:'rgba(255,255,255,0.04)' } }
         }
@@ -3739,14 +3778,14 @@ function calcSimple() {
     </div>
     <div class="gtn-takehome-big">${fmtMo(r.takeHome)}</div>
     <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);text-align:center;margin-bottom:0.8rem">
-      estimated monthly take-home · marginal bracket: <strong style="color:#5b8dee">${(r.marginal*100).toFixed(0)}%</strong>
+      estimated monthly take-home · marginal bracket: <strong style="color:#2C4A7C">${(r.marginal*100).toFixed(0)}%</strong>
       <span class="gtn-bracket-badge">${filing.toUpperCase()}</span>
     </div>
-    <div class="insight" style="border-left-color:#5b8dee;margin-bottom:0.5rem">
+    <div class="insight" style="border-left-color:#2C4A7C;margin-bottom:0.5rem">
       <strong>Pre-tax contribution insight:</strong> At your ${(r.marginal*100).toFixed(0)}% marginal rate, every $1,000 contributed pre-tax to your 401k only reduces take-home by <strong>~${fmtD(marginalCostOf1k401k)}</strong> — the government subsidizes the rest. This makes maintaining pre-tax retirement contributions much cheaper than stopping them to pay off debt.
     </div>
     <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);margin-bottom:0.5rem">
-      Want per-person breakdown and payroll optimization? → <span onclick="setGTNMode('detail')" style="color:#5b8dee;cursor:pointer;text-decoration:underline">Switch to Detailed Mode</span>
+      Want per-person breakdown and payroll optimization? → <span onclick="setGTNMode('detail')" style="color:#2C4A7C;cursor:pointer;text-decoration:underline">Switch to Detailed Mode</span>
     </div>
   `;
 
@@ -3873,22 +3912,22 @@ function calcDetailed() {
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1rem">
       <div class="gtn-section" style="margin-bottom:0;text-align:center">
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.2rem">PAYROLL RETIREMENT</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:#5b8dee">${fmtMo(total401k)}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#2C4A7C">${fmtMo(total401k)}</div>
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)">(incl. $${Math.round(totalMatch/12).toLocaleString()}/mo match)</div>
       </div>
       <div class="gtn-section" style="margin-bottom:0;text-align:center">
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.2rem">ABOVE-PAYROLL SAVINGS</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--gold)">${fmtMo(abovePayroll*12)}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold)">${fmtMo(abovePayroll*12)}</div>
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)">IRA · backdoor · brokerage</div>
       </div>
       <div class="gtn-section" style="margin-bottom:0;text-align:center">
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.2rem">MARGINAL RATE</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text)">${(marginal*100).toFixed(0)}%</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text)">${(marginal*100).toFixed(0)}%</div>
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)">fed + ${stateRate}% state = ${(marginal*100+stateRate).toFixed(0)}% combined</div>
       </div>
     </div>
 
-    <div class="insight" style="border-left-color:#5b8dee">
+    <div class="insight" style="border-left-color:#2C4A7C">
       <strong>Key decision insight:</strong> Your combined marginal rate is <strong>${(marginal*100+stateRate).toFixed(0)}%</strong>. Every $1,000 of pre-tax 401k only costs <strong>~${fmtD(marginalCostOf1k)}</strong> in take-home.
       ${highDebtRate > 0
         ? ` Your highest debt rate is <strong>${highDebtRate.toFixed(1)}%</strong>. ${highDebtRate > (marginal+stateRate/100)*100
@@ -3935,10 +3974,10 @@ function updateCFA() {
   // Stacked bar
   const total  = Math.max(1, allocated + Math.max(0, unallocated));
   const segs   = [
-    { val: debtExtra, color: '#e05c5c' },
-    { val: savings,   color: '#5b8dee' },
-    { val: emergency, color: '#4caf7d' },
-    { val: other,     color: '#c9a84c' },
+    { val: debtExtra, color: '#8B2635' },
+    { val: savings,   color: '#2C4A7C' },
+    { val: emergency, color: '#2D6A4F' },
+    { val: other,     color: '#B8955A' },
     { val: Math.max(0, unallocated), color: 'rgba(255,255,255,0.06)' },
   ];
   document.getElementById('cfa-bar').innerHTML = segs.map(s =>
@@ -4090,7 +4129,7 @@ function runOptimizer() {
         ${warningMatch}
       </div>
     </div>
-    <div class="insight" style="border-left-color:#5b8dee">
+    <div class="insight" style="border-left-color:#2C4A7C">
       <strong>Note:</strong> These projections use simplified monthly compounding and average debt rates. For a full picture, run Boldin with these allocation decisions. This optimizer shows the directional trade-off — the actual numbers depend on sequence of returns, tax changes, and debt payoff order.
     </div>
   `;
@@ -4459,6 +4498,44 @@ function getSpendingPhases() {
     t3 += m1 * getP3Pct(c.id) / 100;
   });
   return { phase1: t1, phase2: t2, phase3: t3 };
+}
+
+
+function applyDebtToCFA() {
+  const totalMin = debtEntries.reduce((s, e) => s + calcMinPayment(e), 0);
+  if (totalMin <= 0) return;
+  const el = document.getElementById('cfa-debt-min');
+  if (el) {
+    el.value = Math.round(totalMin);
+    el.dataset.userSet = '1'; // mark as intentionally set
+    if (typeof updateCFA === 'function') updateCFA();
+    // Open CFA if GTN module is open
+    const cfaSec = document.getElementById('cfa-section');
+    if (cfaSec) cfaSec.style.display = 'block';
+  }
+  // Also open income module so user can see CFA
+  if (!gtnOpen) toggleGTN();
+  // Flash confirmation
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Applied — $' + Math.round(totalMin).toLocaleString() + '/mo';
+  btn.style.background = 'var(--green)';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = 'var(--red)'; }, 2500);
+}
+
+function applySpendingToCFA() {
+  syncSpendFromDOM();
+  const phases = getSpendingPhases();
+  if (!phases || !phases.phase1) return;
+  const el = document.getElementById('cfa-expenses');
+  if (el) {
+    el.value = Math.round(phases.phase1);
+    el.dataset.userSet = '1';
+    if (typeof updateCFA === 'function') updateCFA();
+    const cfaSec = document.getElementById('cfa-section');
+    if (cfaSec) cfaSec.style.display = 'block';
+  }
+  if (!gtnOpen) toggleGTN();
 }
 
 function applySpending() {
