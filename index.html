@@ -1831,6 +1831,190 @@
   .animate:nth-child(4) { animation-delay: 0.21s; }
   .animate:nth-child(5) { animation-delay: 0.28s; }
   .animate:nth-child(6) { animation-delay: 0.35s; }
+
+  /* ── Mobile (≤390px — iPhone/Galaxy) ────────────────── */
+  @media (max-width: 430px) {
+
+    /* Body — reduce padding */
+    body {
+      padding: 0.5rem 0.5rem;
+      padding-top: 56px;
+    }
+
+    /* Container — no side padding waste */
+    .container {
+      padding: 0 0.25rem;
+    }
+
+    /* Panel headers — allow subtitle to wrap, relax fixed height */
+    .spend-module-header {
+      min-height: 56px !important;
+      max-height: none !important;
+      padding: 0.75rem 0.9rem !important;
+      flex-wrap: nowrap;
+    }
+
+    .panel-title-main {
+      font-size: 0.85rem !important;
+    }
+
+    .panel-subtitle-line {
+      display: none;  /* hide subtitle on mobile — title is enough */
+    }
+
+    .panel-open-btn {
+      font-size: 0.55rem;
+      padding: 0.2rem 0.5rem;
+      white-space: nowrap;
+    }
+
+    /* Debt entry table — horizontal scroll wrapper */
+    .debt-table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+    }
+
+    .debt-entry-table {
+      min-width: 480px;  /* force table to be wider than screen = scroll */
+    }
+
+    .debt-entry-table th,
+    .debt-entry-table td {
+      padding: 0.4rem 0.3rem;
+      font-size: 0.68rem;
+      white-space: nowrap;
+    }
+
+    /* Debt inputs smaller on mobile */
+    .debt-input {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.3rem;
+    }
+
+    /* Spend table — horizontal scroll */
+    .spend-table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 0.5rem;
+    }
+
+    .spend-table {
+      min-width: 380px;
+    }
+
+    .spend-table th,
+    .spend-table td {
+      padding: 0.35rem 0.4rem;
+      font-size: 0.7rem;
+    }
+
+    /* Hide Notes column on mobile — too much info */
+    .spend-table th:last-child,
+    .spend-table td:last-child {
+      display: none;
+    }
+
+    /* Debt results grid — 2 col on mobile */
+    .debt-results-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* Debt timeline — smaller text */
+    .debt-timeline .debt-row {
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+
+    .debt-row-name {
+      font-size: 0.7rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .debt-row-date {
+      font-size: 0.65rem;
+    }
+
+    /* QS stats — 2 cols on mobile */
+    .qs-stats {
+      grid-template-columns: 1fr 1fr !important;
+    }
+
+    .qs-stat-value {
+      font-size: 0.9rem;
+    }
+
+    /* Fields — full width inputs */
+    .field input, .field select {
+      font-size: 0.9rem;
+    }
+
+    /* Method cards already collapse to 1fr */
+
+    /* Chart sections — reduce padding */
+    .chart-section {
+      padding: 0.75rem;
+    }
+
+    /* Retire advantage value */
+    .retire-advantage-value {
+      font-size: 1.4rem;
+    }
+
+    /* Sticky nav — smaller pills */
+    .nav-pill {
+      font-size: 0.52rem;
+      padding: 0.28rem 0.55rem;
+    }
+
+    /* GNT inputs */
+    .gtn-input {
+      width: 90px !important;
+    }
+
+    .gtn-row {
+      flex-wrap: wrap;
+    }
+
+    .gtn-label {
+      min-width: 100%;
+    }
+
+    /* CFA inputs */
+    .cfa-input {
+      width: 80px !important;
+    }
+
+    /* Spend phase tabs */
+    .spend-tab {
+      font-size: 0.55rem;
+      padding: 0.28rem 0.55rem;
+    }
+
+    /* QS field pair */
+    .qs-pair {
+      flex-wrap: wrap;
+    }
+
+    /* Recommendation box */
+    .recommendation-box {
+      padding: 0.9rem 1rem;
+    }
+
+    /* Scenario compare grid — already 1fr at 600px */
+
+    /* Verdict bar */
+    .verdict-bar {
+      padding: 0.75rem 1rem;
+    }
+
+    .verdict-number {
+      font-size: 1.6rem;
+    }
+  }
+
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
@@ -2394,7 +2578,7 @@
         <div style="font-family:DM Mono,monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">
           Step 2 — Enter details · Minimum payments auto-calculate for installment loans
         </div>
-        <div style="overflow-x:auto;margin-bottom:0.5rem">
+        <div class="debt-table-scroll">
           <table class="debt-entry-table" id="debt-table">
             <thead>
               <tr>
@@ -2530,11 +2714,11 @@
 
       <!-- Phase 1 table -->
       <div id="phase-panel-1">
-        <table class="spend-table">
+        <div class="spend-table-scroll"><table class="spend-table">
           <thead><tr><th>Category</th><th>Monthly ($)</th><th>Annual</th><th>Notes</th></tr></thead>
           <tbody id="spend-tbody-p1"></tbody>
           <tfoot><tr class="spend-total-row"><td>Total</td><td id="p1-monthly-total">—</td><td id="p1-annual-total">—</td><td></td></tr></tfoot>
-        </table>
+        </table></div>
       </div>
 
       <!-- Phase 2 table -->
@@ -2542,11 +2726,11 @@
         <p style="font-family:DM Mono,monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.8rem">
           Phase 2 adjustments — set each category as a % of your Phase 1 amount. 100% = no change. 0% = that expense goes away. Kids &amp; 529 are pre-set to 0% since those costs end. Adjust anything else that changes when kids leave home.
         </p>
-        <table class="spend-table">
+        <div class="spend-table-scroll"><table class="spend-table">
           <thead><tr><th>Category</th><th>% of Phase 1</th><th>Monthly ($)</th><th>Annual</th></tr></thead>
           <tbody id="spend-tbody-p2"></tbody>
           <tfoot><tr class="spend-total-row"><td>Total</td><td></td><td id="p2-monthly-total">—</td><td id="p2-annual-total">—</td></tr></tfoot>
-        </table>
+        </table></div>
       </div>
 
       <!-- Phase 3 table -->
@@ -2554,11 +2738,11 @@
         <p style="font-family:DM Mono,monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.8rem">
           Phase 3 adjustments — retirement spending as a % of Phase 1. Food often drops (cooking more, less dining out). Healthcare often rises (premiums, out-of-pocket). Travel may increase early in retirement then taper off.
         </p>
-        <table class="spend-table">
+        <div class="spend-table-scroll"><table class="spend-table">
           <thead><tr><th>Category</th><th>% of Phase 1</th><th>Monthly ($)</th><th>Annual</th></tr></thead>
           <tbody id="spend-tbody-p3"></tbody>
           <tfoot><tr class="spend-total-row"><td>Total</td><td></td><td id="p3-monthly-total">—</td><td id="p3-annual-total">—</td></tr></tfoot>
-        </table>
+        </table></div>
       </div>
 
       <div class="spend-footer">
