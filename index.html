@@ -1446,6 +1446,7 @@
     max-height: 62px;
     overflow: hidden;
     box-sizing: border-box;
+    color: #ffffff;
   }
 
   .spend-module-header:hover { filter: brightness(1.08); }
@@ -1467,7 +1468,7 @@
   .panel-title-main {
     font-family: 'Playfair Display', serif;
     font-size: 0.95rem;
-    color: #fff;
+    color: #ffffff !important;
     line-height: 1.2;
     margin-bottom: 0.1rem;
   }
@@ -1477,8 +1478,8 @@
     font-size: 0.55rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0.6;
-    color: #fff;
+    opacity: 0.75;
+    color: #ffffff !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1492,9 +1493,9 @@
     text-transform: uppercase;
     padding: 0.28rem 0.75rem;
     border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.25);
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.12);
+    color: #ffffff !important;
     cursor: pointer;
     transition: background 0.15s;
     white-space: nowrap;
@@ -1510,6 +1511,7 @@
     text-align: right;
     flex-shrink: 0;
     margin-right: 0.5rem;
+    color: rgba(255,255,255,0.75);
   }
 
   /* Color themes for each module */
@@ -3020,6 +3022,17 @@ function addDebtEntry(typeId) {
   });
   document.getElementById('debt-entries-wrap').style.display = 'block';
   renderDebtTable();
+  // Wire delegated input handler for min payment fields
+  var tbody = document.getElementById('debt-tbody');
+  if (tbody && !tbody._minHandlerSet) {
+    tbody._minHandlerSet = true;
+    tbody.addEventListener('input', function(ev) {
+      var el = ev.target;
+      if (el.dataset.field === 'manualMinAmt') {
+        updateEntry(parseInt(el.dataset.rowid), 'manualMinAmt', el.value);
+      }
+    });
+  }
   updateDebtSummary();
   // Flash the button
   const btn = document.getElementById('dtype-' + typeId);
@@ -3028,6 +3041,20 @@ function addDebtEntry(typeId) {
     btn.style.color = 'var(--red)';
     setTimeout(() => { btn.style.borderColor = ''; btn.style.color = ''; }, 350);
   }
+}
+
+
+function buildMinDisplay(e, autoMin) {
+  var amt = Math.round(autoMin).toLocaleString();
+  if (e.cat === "installment") {
+    return '<div style="font-family:DM Mono,monospace;font-size:0.78rem;color:#8A6A30">$'
+      + amt + '<div style="font-size:0.55rem;color:#8A7F74">auto-calcd</div></div>';
+  }
+  var cur = e.manualMin ? (e.manualMinAmt || "") : "";
+  return '<div><input class="debt-input spend-input" type="number" '
+    + 'data-rowid="' + e.rowId + '" data-field="manualMinAmt" '
+    + 'placeholder="' + amt + '" value="' + cur + '" style="width:80px">'
+    + '<div style="font-size:0.55rem;color:#8A7F74;margin-top:0.15rem">est. $' + amt + '/mo</div></div>';
 }
 
 function renderDebtTable() {
@@ -3070,22 +3097,8 @@ function renderDebtTable() {
       </select>` : `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;
         color:var(--muted)">Revolving</span>`;
 
-    const rowAutoMin = calcMinPayment(e);
-    const minDisplay = isInstallment
-      ? `<div style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--gold-light)">
-           $\${Math.round(autoMin).toLocaleString()}
-           <div style="font-size:0.55rem;color:var(--muted)">auto-calc'd</div>
-         </div>`
-      : `<div>
-           <input class="debt-input" type="number"
-             placeholder="$\${Math.round(autoMin)}"
-             value="\${e.manualMin ? e.manualMinAmt : ''}"
-             oninput="updateEntry(\${e.rowId},'manualMinAmt',this.value)"
-             style="width:80px">
-           <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:0.15rem">
-             est. $\${Math.round(autoMin)}/mo
-           </div>
-         </div>`;
+const rowAutoMin = calcMinPayment(e);
+    const minDisplay = buildMinDisplay(e, rowAutoMin);
 
     return `<tr id="debt-row-${e.rowId}">
       <td>
@@ -3127,7 +3140,7 @@ function updateMinDisplay(rowId) {
   if (e.cat === 'installment') {
     cells[4].innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--gold-light)">
       ${Math.round(min).toLocaleString()}
-      <div style="font-size:0.55rem;color:var(--muted)">auto-calc'd</div>
+      <div style="font-size:0.55rem;color:var(--muted)">auto-calc&#39;d</div>
     </div>`;
   } else {
     // Update just the placeholder/estimate on revolving — don't overwrite user input
@@ -3166,7 +3179,7 @@ function updateEntryTerm(rowId, value) {
   } else {
     e.termMonths = parseInt(value);
   }
-  renderDebtTable(); // re-render to update auto-calc'd min
+  renderDebtTable(); // re-render to update auto-calc&#39;d min
   updateDebtSummary();
 }
 
