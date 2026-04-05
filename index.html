@@ -1594,10 +1594,11 @@
     <div class="sticky-nav-inner">
       <a class="nav-pill" onclick="document.getElementById('gtn-module').scrollIntoView({behavior:'smooth'});if(!gtnOpen)toggleGTN()">💵 Income</a>
       <a class="nav-pill" onclick="document.getElementById('debt-module').scrollIntoView({behavior:'smooth'});if(!debtOpen)toggleDebtModule()">💳 Debt</a>
-      <a class="nav-pill" onclick="document.getElementById('debt-module').nextElementSibling.nextElementSibling.scrollIntoView({behavior:'smooth'});if(!spendOpen)toggleSpendModule()">💰 Spending</a>
-      <a class="nav-pill" onclick="document.getElementById('income-header').closest('.spend-module').scrollIntoView({behavior:'smooth'});if(!incomeOpen)toggleIncomeModule()">📥 Income Streams</a>
+      <a class="nav-pill" onclick="document.getElementById('spend-header').closest('.spend-module').scrollIntoView({behavior:'smooth'});if(!spendOpen)toggleSpendModule()">💰 Spending</a>
+      <a class="nav-pill" onclick="document.getElementById('income-header').closest('.spend-module').scrollIntoView({behavior:'smooth'});if(!incomeOpen)toggleIncomeModule()">📥 Other Income</a>
       <a class="nav-pill" onclick="document.querySelector('.inputs-grid').scrollIntoView({behavior:'smooth'})">📊 Retirement</a>
       <a class="nav-pill" onclick="document.getElementById('results').scrollIntoView({behavior:'smooth'})">📈 Results</a>
+      <a class="nav-pill" onclick="document.getElementById('checklist-module').scrollIntoView({behavior:'smooth'});if(!checklistOpen)toggleChecklistModule()">📋 Checklist</a>
     </div>
   </nav>
 
@@ -2036,162 +2037,6 @@
     </div>
   </div>
 
-  <!-- ── Other Income Streams ──────────────────────── -->
-  <div class="spend-module" style="border-color:rgba(201,168,76,0.25); margin-bottom:1.5rem">
-    <div class="spend-module-header theme-gold" id="income-header" onclick="toggleIncomeModule()" style="display:flex;align-items:center;gap:0.9rem;cursor:pointer;user-select:none">
-      <div class="panel-icon-lg">📥</div>
-      <div class="panel-title-block">
-        <div class="panel-title-main">Other Retirement Income</div>
-        <div class="panel-subtitle-line">Pension · Rental · Annuity · Part-time · Social Security</div>
-      </div>
-      <div class="panel-status-badge" id="income-summary"></div>
-      <button class="panel-open-btn" onclick="event.stopPropagation();toggleIncomeModule()">▼ Open</button>
-    </div>
-    <div class="spend-module-body" id="income-body">
-      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:1rem">
-        Add any recurring income that will offset portfolio withdrawals in retirement. Each stream can have its own start age and end age.
-      </div>
-      <table class="spend-table" id="income-table">
-        <thead>
-          <tr>
-            <th>Source</th>
-            <th>Monthly ($)</th>
-            <th>Start Age</th>
-            <th>End Age</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="income-tbody">
-        </tbody>
-      </table>
-      <button onclick="addIncomeStream()" style="background:var(--surface);border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:0.45rem 1rem;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;margin-bottom:1rem">+ Add Income Stream</button>
-      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted)">
-        Common sources: Rental income · Pension · Annuity · Part-time work · Royalties · Business income · Inheritance
-      </div>
-    </div>
-  </div>
-  
-
-    
-  <!-- ── Major Purchase Analyzer (Stage 5) ───────────── -->
-  <div class="spend-module" style="border-color:rgba(155,89,182,0.3);margin-bottom:1.5rem">
-    <div class="spend-module-header theme-purple"
-         style="display:flex;align-items:center;gap:0.9rem;cursor:default;user-select:none;opacity:0.7">
-      <div class="panel-icon-lg">🛒</div>
-      <div class="panel-title-block">
-        <div class="panel-title-main">Major Purchase Analyzer</div>
-        <div class="panel-subtitle-line">Home · Car · Renovation · Any large expense · Cash flow &amp; retirement impact</div>
-      </div>
-      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.4);letter-spacing:0.08em;text-transform:uppercase;flex-shrink:0">Coming Soon</div>
-    </div>
-  </div>
-
-  <!-- ── Spending Module ──────────────────────────── -->
-  <div class="spend-module">
-    <div class="spend-module-header theme-teal" id="spend-header" onclick="toggleSpendModule()" style="display:flex;align-items:center;gap:0.9rem;cursor:pointer;user-select:none">
-      <div class="panel-icon-lg">💰</div>
-      <div class="panel-title-block">
-        <div class="panel-title-main">Spending Planner</div>
-        <div class="panel-subtitle-line">Phase-based budget · Kids · College · Retirement lifestyle</div>
-      </div>
-      <div class="panel-status-badge" id="spend-summary"></div>
-      <button class="panel-open-btn" onclick="event.stopPropagation();toggleSpendModule()">▼ Open</button>
-    </div>
-    <div class="spend-module-body" id="spend-body">
-
-      <!-- Phase summary cards -->
-      <div class="spend-phase-summary">
-        <div class="spend-phase-card">
-          <div class="spend-phase-card-label">📅 Phase 1 — Now (Current)</div>
-          <div class="spend-phase-card-value" id="phase1-total">$0</div>
-          <div class="spend-phase-card-sub" id="phase1-sub">Enter your spending below</div>
-        </div>
-        <div class="spend-phase-card">
-          <div class="spend-phase-card-label">🎓 Phase 2 — Kids Done (Age ~57)</div>
-          <div class="spend-phase-card-value" id="phase2-total">$0</div>
-          <div class="spend-phase-card-sub" id="phase2-sub">Post-kids budget</div>
-        </div>
-        <div class="spend-phase-card">
-          <div class="spend-phase-card-label">🌅 Phase 3 — Retirement (Age 65)</div>
-          <div class="spend-phase-card-value" id="phase3-total">$0</div>
-          <div class="spend-phase-card-sub" id="phase3-sub">Retirement budget</div>
-        </div>
-      </div>
-
-      <!-- Phase tabs -->
-      <div class="spend-phase-tabs">
-        <div class="spend-tab active" id="tab-p1" onclick="showPhase(1)">Phase 1 · Current</div>
-        <div class="spend-tab" id="tab-p2" onclick="showPhase(2)">Phase 2 · Post-Kids</div>
-        <div class="spend-tab" id="tab-p3" onclick="showPhase(3)">Phase 3 · Retirement</div>
-      </div>
-
-      <!-- Phase 1 table -->
-      <div id="phase-panel-1">
-        <table class="spend-table">
-          <thead><tr><th>Category</th><th>Monthly ($)</th><th>Annual</th><th>Notes</th></tr></thead>
-          <tbody id="spend-tbody-p1"></tbody>
-          <tfoot><tr class="spend-total-row"><td>Total</td><td id="p1-monthly-total">—</td><td id="p1-annual-total">—</td><td></td></tr></tfoot>
-        </table>
-      </div>
-
-      <!-- Phase 2 table -->
-      <div id="phase-panel-2" style="display:none">
-        <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.8rem">
-          Phase 2 adjustments — set each category as a % of your Phase 1 amount. 100% = no change. 0% = that expense goes away. Kids &amp; 529 are pre-set to 0% since those costs end. Adjust anything else that changes when kids leave home.
-        </p>
-        <table class="spend-table">
-          <thead><tr><th>Category</th><th>% of Phase 1</th><th>Monthly ($)</th><th>Annual</th></tr></thead>
-          <tbody id="spend-tbody-p2"></tbody>
-          <tfoot><tr class="spend-total-row"><td>Total</td><td></td><td id="p2-monthly-total">—</td><td id="p2-annual-total">—</td></tr></tfoot>
-        </table>
-      </div>
-
-      <!-- Phase 3 table -->
-      <div id="phase-panel-3" style="display:none">
-        <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.8rem">
-          Phase 3 adjustments — retirement spending as a % of Phase 1. Food often drops (cooking more, less dining out). Healthcare often rises (premiums, out-of-pocket). Travel may increase early in retirement then taper off.
-        </p>
-        <table class="spend-table">
-          <thead><tr><th>Category</th><th>% of Phase 1</th><th>Monthly ($)</th><th>Annual</th></tr></thead>
-          <tbody id="spend-tbody-p3"></tbody>
-          <tfoot><tr class="spend-total-row"><td>Total</td><td></td><td id="p3-monthly-total">—</td><td id="p3-annual-total">—</td></tr></tfoot>
-        </table>
-      </div>
-
-      <div class="spend-footer">
-        <span id="spend-budget-note">💡 Apply pushes Phase 3 spend to the retirement engine · Re-apply anytime after updating</span>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          <button class="spend-apply-btn" onclick="applySpending()">→ Apply Phase 3 to Retirement</button>
-          <button class="spend-apply-btn" onclick="applySpendingToCFA()"
-            style="background:var(--surface);border:1px solid var(--green);color:var(--green)">
-            → Apply Phase 1 to Cash Flow
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;margin-top:0.5rem">
-    <button class="btn" onclick="calculate()" style="margin-bottom:0;flex:1">Calculate My True Number</button>
-    <button onclick="confirmClear()" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:1rem 1.4rem;font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;white-space:nowrap" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">✕ Clear</button>
-  </div>
-
-  <!-- Clear confirm modal -->
-  <div id="clear-modal" style="display:none;position:fixed;inset:0;background:rgba(28,25,22,0.5);z-index:1000;align-items:center;justify-content:center">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;max-width:340px;width:90%;text-align:center">
-      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--red);margin-bottom:0.5rem">Clear all data?</div>
-      <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6">This will reset every field and all results. This cannot be undone.</div>
-      <div style="display:flex;gap:0.75rem;justify-content:center">
-        <button onclick="clearAll()" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:0.7rem 1.5rem;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;letter-spacing:0.1em;cursor:pointer">Yes, Clear Everything</button>
-        <button onclick="document.getElementById('clear-modal').style.display='none'" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1.5rem;font-family:'DM Mono',monospace;font-size:0.75rem;cursor:pointer">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
   <!-- ── Debt Payoff Optimizer ────────────────────────── -->
   <div class="spend-module" style="border-color:rgba(224,92,92,0.25);margin-bottom:1.5rem" id="debt-module">
     <div class="spend-module-header theme-red" id="debt-header"
@@ -2303,6 +2148,166 @@
     </div>
   </div>
 
+  <!-- ── Spending Module ──────────────────────────── -->
+  <div class="spend-module">
+    <div class="spend-module-header theme-teal" id="spend-header" onclick="toggleSpendModule()" style="display:flex;align-items:center;gap:0.9rem;cursor:pointer;user-select:none">
+      <div class="panel-icon-lg">💰</div>
+      <div class="panel-title-block">
+        <div class="panel-title-main">Spending Planner</div>
+        <div class="panel-subtitle-line">Phase-based budget · Kids · College · Retirement lifestyle</div>
+      </div>
+      <div class="panel-status-badge" id="spend-summary"></div>
+      <button class="panel-open-btn" onclick="event.stopPropagation();toggleSpendModule()">▼ Open</button>
+    </div>
+    <div class="spend-module-body" id="spend-body">
+
+      <!-- Phase summary cards -->
+      <div class="spend-phase-summary">
+        <div class="spend-phase-card">
+          <div class="spend-phase-card-label">📅 Phase 1 — Now (Current)</div>
+          <div class="spend-phase-card-value" id="phase1-total">$0</div>
+          <div class="spend-phase-card-sub" id="phase1-sub">Enter your spending below</div>
+        </div>
+        <div class="spend-phase-card">
+          <div class="spend-phase-card-label">🎓 Phase 2 — Kids Done (Age ~57)</div>
+          <div class="spend-phase-card-value" id="phase2-total">$0</div>
+          <div class="spend-phase-card-sub" id="phase2-sub">Post-kids budget</div>
+        </div>
+        <div class="spend-phase-card">
+          <div class="spend-phase-card-label">🌅 Phase 3 — Retirement (Age 65)</div>
+          <div class="spend-phase-card-value" id="phase3-total">$0</div>
+          <div class="spend-phase-card-sub" id="phase3-sub">Retirement budget</div>
+        </div>
+      </div>
+
+      <!-- Phase tabs -->
+      <div class="spend-phase-tabs">
+        <div class="spend-tab active" id="tab-p1" onclick="showPhase(1)">Phase 1 · Current</div>
+        <div class="spend-tab" id="tab-p2" onclick="showPhase(2)">Phase 2 · Post-Kids</div>
+        <div class="spend-tab" id="tab-p3" onclick="showPhase(3)">Phase 3 · Retirement</div>
+      </div>
+
+      <!-- Phase 1 table -->
+      <div id="phase-panel-1">
+        <table class="spend-table">
+          <thead><tr><th>Category</th><th>Monthly ($)</th><th>Annual</th><th>Notes</th></tr></thead>
+          <tbody id="spend-tbody-p1"></tbody>
+          <tfoot><tr class="spend-total-row"><td>Total</td><td id="p1-monthly-total">—</td><td id="p1-annual-total">—</td><td></td></tr></tfoot>
+        </table>
+      </div>
+
+      <!-- Phase 2 table -->
+      <div id="phase-panel-2" style="display:none">
+        <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.8rem">
+          Phase 2 adjustments — set each category as a % of your Phase 1 amount. 100% = no change. 0% = that expense goes away. Kids &amp; 529 are pre-set to 0% since those costs end. Adjust anything else that changes when kids leave home.
+        </p>
+        <table class="spend-table">
+          <thead><tr><th>Category</th><th>% of Phase 1</th><th>Monthly ($)</th><th>Annual</th></tr></thead>
+          <tbody id="spend-tbody-p2"></tbody>
+          <tfoot><tr class="spend-total-row"><td>Total</td><td></td><td id="p2-monthly-total">—</td><td id="p2-annual-total">—</td></tr></tfoot>
+        </table>
+      </div>
+
+      <!-- Phase 3 table -->
+      <div id="phase-panel-3" style="display:none">
+        <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.8rem">
+          Phase 3 adjustments — retirement spending as a % of Phase 1. Food often drops (cooking more, less dining out). Healthcare often rises (premiums, out-of-pocket). Travel may increase early in retirement then taper off.
+        </p>
+        <table class="spend-table">
+          <thead><tr><th>Category</th><th>% of Phase 1</th><th>Monthly ($)</th><th>Annual</th></tr></thead>
+          <tbody id="spend-tbody-p3"></tbody>
+          <tfoot><tr class="spend-total-row"><td>Total</td><td></td><td id="p3-monthly-total">—</td><td id="p3-annual-total">—</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="spend-footer">
+        <span id="spend-budget-note">💡 Apply pushes Phase 3 spend to the retirement engine · Re-apply anytime after updating</span>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <button class="spend-apply-btn" onclick="applySpending()">→ Apply Phase 3 to Retirement</button>
+          <button class="spend-apply-btn" onclick="applySpendingToCFA()"
+            style="background:var(--surface);border:1px solid var(--green);color:var(--green)">
+            → Apply Phase 1 to Cash Flow
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- ── Other Income Streams ──────────────────────── -->
+  <div class="spend-module" style="border-color:rgba(201,168,76,0.25); margin-bottom:1.5rem">
+    <div class="spend-module-header theme-gold" id="income-header" onclick="toggleIncomeModule()" style="display:flex;align-items:center;gap:0.9rem;cursor:pointer;user-select:none">
+      <div class="panel-icon-lg">📥</div>
+      <div class="panel-title-block">
+        <div class="panel-title-main">Other Retirement Income</div>
+        <div class="panel-subtitle-line">Pension · Rental · Annuity · Part-time · Social Security</div>
+      </div>
+      <div class="panel-status-badge" id="income-summary"></div>
+      <button class="panel-open-btn" onclick="event.stopPropagation();toggleIncomeModule()">▼ Open</button>
+    </div>
+    <div class="spend-module-body" id="income-body">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:1rem">
+        Add any recurring income that will offset portfolio withdrawals in retirement. Each stream can have its own start age and end age.
+      </div>
+      <table class="spend-table" id="income-table">
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Monthly ($)</th>
+            <th>Start Age</th>
+            <th>End Age</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="income-tbody">
+        </tbody>
+      </table>
+      <button onclick="addIncomeStream()" style="background:var(--surface);border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:0.45rem 1rem;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;margin-bottom:1rem">+ Add Income Stream</button>
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted)">
+        Common sources: Rental income · Pension · Annuity · Part-time work · Royalties · Business income · Inheritance
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Major Purchase Analyzer (Stage 5) ───────────── -->
+  <div class="spend-module" style="border-color:rgba(155,89,182,0.3);margin-bottom:1.5rem">
+    <div class="spend-module-header theme-purple"
+         style="display:flex;align-items:center;gap:0.9rem;cursor:default;user-select:none;opacity:0.7">
+      <div class="panel-icon-lg">🛒</div>
+      <div class="panel-title-block">
+        <div class="panel-title-main">Major Purchase Analyzer</div>
+        <div class="panel-subtitle-line">Home · Car · Renovation · Any large expense · Cash flow &amp; retirement impact</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.4);letter-spacing:0.08em;text-transform:uppercase;flex-shrink:0">Coming Soon</div>
+    </div>
+  </div><div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;margin-top:0.5rem">
+    <button class="btn" onclick="calculate()" style="margin-bottom:0;flex:1">Calculate My True Number</button>
+    <button onclick="confirmClear()" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:1rem 1.4rem;font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;white-space:nowrap" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">✕ Clear</button>
+  </div>
+
+  
+
+  <!-- Clear confirm modal -->
+  <div id="clear-modal" style="display:none;position:fixed;inset:0;background:rgba(28,25,22,0.5);z-index:1000;align-items:center;justify-content:center">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;max-width:340px;width:90%;text-align:center">
+      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--red);margin-bottom:0.5rem">Clear all data?</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6">This will reset every field and all results. This cannot be undone.</div>
+      <div style="display:flex;gap:0.75rem;justify-content:center">
+        <button onclick="clearAll()" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:0.7rem 1.5rem;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;letter-spacing:0.1em;cursor:pointer">Yes, Clear Everything</button>
+        <button onclick="document.getElementById('clear-modal').style.display='none'" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1.5rem;font-family:'DM Mono',monospace;font-size:0.75rem;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <div id="results"></div>
+
+  <div class="disclaimer">
+    For illustrative purposes only · Not financial advice · Returns vary · Consult a CFP
+  </div>
+
   <!-- ── Planning Checklist ────────────────────────── -->
   <div class="spend-module" style="border-color:rgba(155,89,182,0.3);margin-bottom:1.5rem" id="checklist-module">
     <div class="spend-module-header theme-purple" id="checklist-header"
@@ -2377,12 +2382,6 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <div id="results"></div>
-
-  <div class="disclaimer">
-    For illustrative purposes only · Not financial advice · Returns vary · Consult a CFP
   </div>
 </div>
 </div>
