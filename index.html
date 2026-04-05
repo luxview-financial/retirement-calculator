@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LuxView — Financial Planning Suite</title>
+<title>Luxview — Financial Planning Suite</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -776,8 +776,8 @@
   }
 
   .retire-advantage {
-    background: linear-gradient(135deg, #1A3D28, #1A3D28);
-    border: 1px solid #2D5A35;
+    background: linear-gradient(135deg, #E8F4EE, #D4EDDF);
+    border: 1px solid #2D6A4F;
     border-radius: 10px;
     padding: 1.2rem 1.4rem;
     margin-bottom: 1rem;
@@ -788,6 +788,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: #1E5C3A;
+    font-weight: 600;
     margin-bottom: 0.6rem;
   }
   .retire-advantage-value {
@@ -1150,12 +1151,12 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 0.8rem;
     line-height: 1.65;
-    color: #3D3A36;
+    color: #2A3A2A;
   }
 
-  .rec-body strong { color: var(--gold-light); font-weight: 500; }
-  .rec-body .flag { color: var(--red); }
-  .rec-body .good { color: var(--green); }
+  .rec-body strong { color: #6B4A10; font-weight: 600; }
+  .rec-body .flag { color: #8B2635; }
+  .rec-body .good { color: #1E5C3A; }
 
   /* ── Charts ────────────────────────────────────────── */
   .chart-section {
@@ -1585,7 +1586,7 @@
 <body>
 <div class="container">
   <header>
-    <h1>LuxView Financial Planner</h1>
+    <h1>Luxview Financial Planner</h1>
     <p>Retirement · Cash Flow · Debt · Tax-Optimized · Monte Carlo</p>
   </header>
 
@@ -3207,6 +3208,7 @@ function updateDebtSummary() {
     el.textContent = 'Add debts below';
     el.style.color = 'var(--muted)';
   }
+  // TODO: Add warning when expenses + debt minimums exceed take-home (note 3)
   // Auto-fill debt minimums in CFA if open
   const cfaMin = document.getElementById('cfa-debt-min');
   if (cfaMin && totalMin > 0 && !cfaMin.dataset.userSet) {
@@ -3382,7 +3384,7 @@ function runDebtOptimizer() {
 
   const html = `
     <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;
-      text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem">
+      text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem" id='debt-results-header'>
       Results — ${methodLabels[selectedMethod]} Strategy
     </div>
 
@@ -3418,7 +3420,7 @@ function runDebtOptimizer() {
     <div class="retire-advantage">
       <div class="retire-advantage-title">🏦 Retirement Advantage of This Payoff Strategy</div>
       <div class="retire-advantage-value">+${fmtD(retireAdv)}</div>
-      <div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#3D3A36;line-height:1.6">
+      <div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#2D3A2D;line-height:1.6">
         Eliminating <strong style="color:var(--green)">${fmtD(intSaved)}</strong> in interest
         and investing freed payments of
         <strong style="color:var(--green)">${fmtD(totalMinPmts + extraTotal)}/mo</strong>
@@ -4197,6 +4199,10 @@ function toggleChecklistModule() {
   document.getElementById('checklist-header').classList.toggle('open', checklistOpen);
   updatePanelBtn('checklist-header', checklistOpen);
 }
+// TODO (Note 4): Reorder modules for better UX flow:
+// Income → Debt → Spending → Other Income → Retirement Engine → Results
+// Currently: Retirement inputs → Income → Other Income → Major Purchase → Spending → Debt → Checklist
+
 // ── SS Quick Estimator ────────────────────────────────────
 function toggleSSEstimator() {
   const el = document.getElementById('ss-estimator');
