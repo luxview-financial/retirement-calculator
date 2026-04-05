@@ -1896,10 +1896,10 @@
       </div>
 
       <div class="qs-field">
-        <label>Household Gross Income / Year</label>
-        <input type="number" id="qs-income" placeholder="e.g. 220000"
+        <label>Monthly Saving &amp; Investing for Retirement</label>
+        <input type="number" id="qs-monthly-invest" placeholder="e.g. 5000"
                oninput="qsProgress()">
-        <div class="qs-hint">Before taxes and deductions</div>
+        <div class="qs-hint">401k, IRA, brokerage — your actual monthly amount</div>
       </div>
 
       <div class="qs-field">
@@ -2643,7 +2643,7 @@
 
   
 
-  <div id="results"></div>
+  <div id="results" data-convention="future-dollars"></div>
 
   <div class="disclaimer">
     For illustrative purposes only · Not financial advice · Returns vary · Consult a CFP
@@ -3021,7 +3021,10 @@ function renderSingleScenario(p) {
     </div>`;
   const el = document.getElementById('results');
   el.style.display = 'block';
-  el.innerHTML = html;
+  // Add dollar convention note
+
+  var futureNote = "<div style='font-family:DM Mono,monospace;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;text-align:right'>All figures in future (nominal) dollars</div>";
+  el.innerHTML = futureNote + html;
   setTimeout(() => { const f = document.querySelector('.mc-bar-fill'); if(f) f.style.width = Math.min(100, p.successPct)+'%'; }, 100);
   setTimeout(() => renderCharts(p), 150);
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -4564,7 +4567,7 @@ function toggleChecklistModule() {
 // ══════════════════════════════════════════════════════════
 
 function qsProgress() {
-  const fields = ['qs-age','qs-retire-age','qs-savings','qs-income','qs-spend'];
+  const fields = ['qs-age','qs-retire-age','qs-savings','qs-monthly-invest','qs-spend'];
   const filled = fields.filter(id => {
     const el = document.getElementById(id);
     return el && el.value && parseFloat(el.value) > 0;
@@ -4574,57 +4577,65 @@ function qsProgress() {
 }
 
 function runQuickStart() {
-  const age       = parseFloat(document.getElementById('qs-age').value)        || 0;
-  const partnerAge= parseFloat(document.getElementById('qs-partner-age').value)|| 0;
-  const retireAge = parseFloat(document.getElementById('qs-retire-age').value)  || 65;
-  const filing    = document.getElementById('qs-filing').value;
-  const saved     = parseFloat(document.getElementById('qs-savings').value)     || 0;
-  const income    = parseFloat(document.getElementById('qs-income').value)      || 0;
-  const spend     = parseFloat(document.getElementById('qs-spend').value)       || 0;
-  const ss        = parseFloat(document.getElementById('qs-ss').value)          || 0;
+  const age          = parseFloat(document.getElementById('qs-age').value)           || 0;
+  const partnerAge   = parseFloat(document.getElementById('qs-partner-age').value)   || 0;
+  const retireAge    = parseFloat(document.getElementById('qs-retire-age').value)     || 65;
+  const filing       = document.getElementById('qs-filing').value;
+  const saved        = parseFloat(document.getElementById('qs-savings').value)        || 0;
+  const monthlyInvest= parseFloat(document.getElementById('qs-monthly-invest').value) || 0;
+  const spend        = parseFloat(document.getElementById('qs-spend').value)          || 0;
+  const ss           = parseFloat(document.getElementById('qs-ss').value)             || 0;
 
-  if (!age || !retireAge || !saved || !income || !spend) {
-    alert('Please fill in at least: your age, retirement age, savings, income, and monthly spending.');
+  if (!age || !retireAge || !saved || !monthlyInvest || !spend) {
+    alert('Please fill in all fields: age, retirement age, current savings, monthly retirement investing, and monthly spending.');
     return;
   }
 
-  const yearsToRetire = Math.max(1, retireAge - age);
-  const lifeExpect    = 90;
-  const yearsInRetire = lifeExpect - retireAge;
-  const inflationRate = 0.03;
-  const returnRate    = 0.055;  // conservative balanced
-  const distRate      = 0.045;
+  const yearsToRetire  = Math.max(1, retireAge - age);
+  const lifeExpect     = 90;
+  const yearsInRetire  = lifeExpect - retireAge;
+  const inflationRate  = 0.03;
+  const returnRate     = 0.050;  // 5% — moderate balanced allocation for long retirement
+  const distRate       = 0.045;
+  const annualSavings  = monthlyInvest * 12;  // direct — no tax estimation needed
 
-  // Estimate take-home from gross (rough: ~70% rule for moderate earners)
-  const takeHome    = income * (filing === 'mfj' ? 0.72 : 0.68);
-  const annualSavings = Math.max(0, takeHome - spend * 12);
+  // ── Deflator: converts future dollars → today's purchasing power ──
+  const inflationFactor = Math.pow(1 + inflationRate, yearsToRetire);
+  const deflate = (futureVal) => futureVal / inflationFactor;
 
-  // 1. Project portfolio to retirement date FIRST
+  // 1. Project portfolio to retirement (nominal future dollars)
   const r = returnRate;
   const fvSavings  = saved * Math.pow(1 + r, yearsToRetire);
   const fvContribs = annualSavings > 0
     ? annualSavings * (Math.pow(1 + r, yearsToRetire) - 1) / r
     : 0;
-  const projectedPortfolio = Math.round(fvSavings + fvContribs);
+  const projectedFuture    = fvSavings + fvContribs;
+  const projectedPortfolio = Math.round(deflate(projectedFuture)); // today's $
 
-  // 2. True number — inflation-adjusted spending need at retirement
-  const replacementRatio  = 0.75; // Retirement spending ~75% of working years
-  const annualSpendRetire = spend * 12 * replacementRatio * Math.pow(1 + inflationRate, yearsToRetire);
-  const annualSS          = ss * 12;  // ss input is monthly, convert to annual
-  const netNeed           = Math.max(0, annualSpendRetire - annualSS);
-  const trueNumber        = Math.round(netNeed / distRate);
+  // 2. True number — what portfolio you need at retirement in today's $
+  //    Retirement spend = today's spend × 75% replacement (no inflation adjustment
+  //    needed since we want today's dollars throughout)
+  const monthlySpendRetire = spend * 0.75;               // today's $
+  const annualSpendRetire  = monthlySpendRetire * 12;    // today's $
+  const annualSS           = ss * 12;                    // today's $ (user entered today's estimate)
+  const netNeed            = Math.max(0, annualSpendRetire - annualSS);
+  const trueNumber         = Math.round(netNeed / distRate); // today's $
 
-  // 3. Run Monte Carlo with correct inputs:
-  //    - startPortfolio = projected portfolio at retirement
-  //    - annualSpending = inflation-adjusted annual spend at retirement
-  //    - annualSS       = annual SS (ss input * 12)
-  //    - ssDelay        = 0 (SS starts at retirement for quick start)
-  //    - years          = years in retirement
-  // runMonteCarlo returns a number 0-1 (success rate)
+  // 3. Monthly retirement income in today's dollars
+  //    projectedFuture × withdrawal rate + SS, deflated back to today's $
+  const monthlyRetireIncome = Math.round(
+    (projectedFuture * distRate / 12 + ss) / inflationFactor
+  );
+
+  // 4. Monte Carlo — must use FUTURE dollar amounts for accuracy
+  //    Re-inflate spending for MC simulation
+  const annualSpendFuture = annualSpendRetire * inflationFactor;
+  const annualSSFuture    = annualSS;  // SS is indexed to inflation, stays real
+
   const successRate = runMonteCarlo(
-    projectedPortfolio,
-    annualSpendRetire,
-    annualSS,
+    projectedFuture,       // start portfolio in future $
+    annualSpendFuture,     // annual spend in future $
+    annualSSFuture,        // annual SS
     0,
     yearsInRetire,
     inflationRate,
@@ -4635,11 +4646,25 @@ function runQuickStart() {
   );
   const successPct = Math.round(successRate * 100);
 
-  // Gap
+  // 5. Gap in today's dollars
   const gap         = Math.max(0, trueNumber - projectedPortfolio);
   const extraNeeded = gap > 0 && yearsToRetire > 0
-    ? gap / ((Math.pow(1 + r, yearsToRetire) - 1) / r)
+    ? gap * inflationFactor / ((Math.pow(1 + r, yearsToRetire) - 1) / r) / 12
     : 0;
+
+  // SS timing warning
+  const ssWarning = retireAge < 67
+    ? '<div style="background:#FDE8EB;border:1px solid #8B2635;border-left:3px solid #8B2635;'
+      + 'border-radius:0 6px 6px 0;padding:0.75rem 1rem;margin-bottom:0.75rem;'
+      + 'font-family:DM Sans,sans-serif;font-size:0.75rem;color:#5A0F1A;line-height:1.6">'
+      + '<strong>&#9888; Social Security timing risk</strong><br>'
+      + 'You plan to retire at ' + retireAge + ' but full SS eligibility begins at 67. '
+      + 'If you claim at ' + retireAge + ', your benefit is permanently reduced to ~'
+      + Math.round((retireAge < 62 ? 70 : 70 + (retireAge - 62) * 6.67)) + '% of the amount entered. '
+      + 'There is also a ' + (67 - retireAge) + '-year gap before SS begins if you delay to maximize benefits. '
+      + 'Both scenarios significantly affect this estimate — use the full calculator to model SS timing precisely.'
+      + '</div>'
+    : '';
 
   // Verdict
   let verdictClass, verdictIcon, verdictHeadline, verdictSub;
@@ -4671,8 +4696,11 @@ function runQuickStart() {
   const targetPct = 85;
   let levers = '';
   if (successPct < targetPct) {
-    const saveMore   = extraNeeded > 0 ? fmt(Math.round(extraNeeded/12)) + '/mo more in savings' : null;
-    const retireLater = yearsToRetire < 30 ? (Math.ceil((trueNumber - projectedPortfolio) / (annualSavings || 12000) / 12)) + ' more months working' : null;
+    const saveMore   = extraNeeded > 0 ? fmt(Math.round(extraNeeded)) + '/mo more in savings' : null;
+    const extraYears  = gap > 0 && annualSavings > 0
+    const retireLater = yearsToRetire < 30 && extraYears > 0
+      ? 'retire at age ' + (retireAge + Math.ceil(extraYears / 12)) + ' instead of ' + retireAge
+      : null;
     const spendLess  = netNeed > 0 ? fmt(Math.round(netNeed * 0.1 / 12)) + '/mo less in retirement' : null;
     const options = [saveMore, retireLater ? retireLater : null, spendLess].filter(Boolean);
     if (options.length > 0) {
@@ -4689,18 +4717,27 @@ function runQuickStart() {
     + '<div class="qs-verdict-headline">' + verdictHeadline + '</div>'
     + '<div class="qs-verdict-sub">' + verdictSub + '</div>'
     + '</div></div>'
-    + '<div class="qs-stats">'
+    + '<div style="font-family:DM Mono,monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">All figures in today&#39;s dollars</div><div class="qs-stats">'
     + '<div class="qs-stat"><div class="qs-stat-label">True Number</div><div class="qs-stat-value">' + fmtK(trueNumber) + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Projected at Retirement</div><div class="qs-stat-value ' + (projectedPortfolio >= trueNumber ? 'good' : 'bad') + '">' + fmtK(projectedPortfolio) + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Gap</div><div class="qs-stat-value ' + (gap > 0 ? 'bad' : 'good') + '">' + (gap > 0 ? fmtK(gap) : '✓ Funded') + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Years to Retire</div><div class="qs-stat-value">' + yearsToRetire + '</div></div>'
-    + '<div class="qs-stat"><div class="qs-stat-label">Est. Monthly Income in Retirement</div><div class="qs-stat-value good">' + fmt(Math.round((projectedPortfolio * distRate + annualSS) / 12)) + '/mo</div></div>'
-    + '<div class="qs-stat"><div class="qs-stat-label">Est. Retirement Spend</div><div class="qs-stat-value">' + fmt(Math.round(spend * 0.75)) + '/mo today (75%)</div></div>'
+    + '<div class="qs-stat"><div class="qs-stat-label">Est. Monthly Income in Retirement</div><div class="qs-stat-value good">' + fmt(monthlyRetireIncome) + '/mo</div></div>'
+    + '<div class="qs-stat"><div class="qs-stat-label">Est. Retirement Spend</div><div class="qs-stat-value">' + fmt(Math.round(monthlySpendRetire)) + '/mo</div></div>'
     + '</div>'
+    + ssWarning
     + '<div class="qs-next">'
     + levers
     + '<div style="margin-top:0.8rem"><strong>Want a more precise picture?</strong> Your answers have been pre-filled in the sections below. Open any module to refine — income, debts, detailed spending, Social Security, and more.</div>'
-    + '<div style="margin-top:0.5rem;font-size:0.72rem;color:var(--muted)">Retirement spending estimated at 75% of current — no commuting, payroll savings, or work costs. Adjust in Spending Planner for precision.</div>'
+    + '<div style="margin-top:0.5rem;font-size:0.72rem;color:var(--muted);line-height:1.6">'
+    + 'All figures in today&#39;s purchasing power · Retirement spend at 75% of current · '
+    + '<strong style="color:var(--text)">Assumptions:</strong> '
+    + Math.round(returnRate * 100) + '% annual return · '
+    + Math.round(inflationRate * 100) + '% inflation · '
+    + distRate * 100 + '% withdrawal rate · '
+    + 'Life expectancy ' + lifeExpect + ' · '
+    + 'SS starts at retirement age'
+    + '</div>'
     + '<button class="qs-refine-btn" onclick="qsRefineAndScroll()">Refine My Numbers →</button>'
     + '</div>';
 
@@ -4712,10 +4749,10 @@ function runQuickStart() {
   resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   // Pre-fill all the detailed modules
-  qsPrefill(age, partnerAge, retireAge, saved, income, spend, ss, filing);
+  qsPrefill(age, partnerAge, retireAge, saved, monthlyInvest, spend, ss, filing);
 }
 
-function qsPrefill(age, partnerAge, retireAge, saved, income, spend, ss, filing) {
+function qsPrefill(age, partnerAge, retireAge, saved, monthlyInvest, spend, ss, filing) {
   // Retirement inputs
   function setVal(id, val) {
     const el = document.getElementById(id);
@@ -4724,12 +4761,14 @@ function qsPrefill(age, partnerAge, retireAge, saved, income, spend, ss, filing)
   setVal('currentAge', age);
   setVal('retirementAge', retireAge);
   setVal('savings', saved);
-  setVal('monthlyBudget', Math.round(spend));
+  setVal('monthlyBudget', Math.round(spend * 0.75));
   setVal('socialSecurity', ss || '');
+  setVal('ssAge', 67);
+  setVal('annualSavings', Math.round(monthlyInvest * 12));
   if (partnerAge) setVal('partnerRetirementAge', retireAge);
 
-  // GTN income — simple mode
-  setVal('gtn-gross-simple', income);
+  // GTN income — can't pre-fill without gross income
+  // User entered monthly savings directly — they can open Income module to detail
   const filingEl = document.getElementById('gtn-filing-simple');
   if (filingEl) filingEl.value = filing;
 
