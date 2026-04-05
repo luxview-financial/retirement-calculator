@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Luxview — Financial Planning Suite</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -31,6 +34,7 @@
     font-weight: 300;
     min-height: 100vh;
     padding: 2rem 1rem;
+    padding-top: 64px;
   }
 
   .container {
@@ -1785,8 +1789,6 @@
     margin: 0 auto;
   }
 
-  /* Push content down so nav doesn't overlap it */
-  body { padding-top: 48px; }
 
   .sticky-nav-inner {
     max-width: 860px;
@@ -1901,10 +1903,10 @@
       </div>
 
       <div class="qs-field">
-        <label>Estimated Monthly Spending</label>
+        <label>Current Monthly Spending</label>
         <input type="number" id="qs-spend" placeholder="e.g. 9500"
                oninput="qsProgress()">
-        <div class="qs-hint">Everything except debt payments</div>
+        <div class="qs-hint">All monthly costs — housing, food, bills, loans</div>
       </div>
 
       <div class="qs-field">
@@ -2008,7 +2010,7 @@
     </div>
     <div class="field" style="border-color: rgba(201,168,76,0.3);">
       <label>Annual Savings (pre-retirement, $) <span class="hint-wrap"><span class="hint-icon" tabindex="0">?</span><span class="hint-tip">Total household savings per year across all accounts: 401k, 403b, IRA, Roth IRA, and taxable brokerage contributions combined. Include any employer match. Does not include spending — only new money going into investments.</span></span></label>
-      <input type="number" id="annualSavings" value="" placeholder="e.g. 50000">
+      <input type="number" id="annualSavings" value="0" placeholder="e.g. 50000">
     </div>
     <div class="field" style="border-color: rgba(224,92,92,0.3);">
       <label>Accumulation Return % (working years) <span class="hint-wrap"><span class="hint-icon" tabindex="0">?</span><span class="hint-tip">The annual investment return assumed during your saving years. 6–7% is a reasonable nominal (before inflation) assumption for a diversified 70/30 stock/bond portfolio. Higher stock allocation = higher potential return with more volatility.</span></span></label>
@@ -4593,41 +4595,51 @@ function runQuickStart() {
   const returnRate    = 0.055;  // conservative balanced
   const distRate      = 0.045;
 
-  // Estimate take-home from gross (rough: 72% rule for moderate earners)
-  const takeHome = income * (filing === 'mfj' ? 0.72 : 0.68);
-
-  // Rough annual savings
+  // Estimate take-home from gross (rough: ~70% rule for moderate earners)
+  const takeHome    = income * (filing === 'mfj' ? 0.72 : 0.68);
   const annualSavings = Math.max(0, takeHome - spend * 12);
 
-  // Run simplified Monte Carlo (500 sims — fast)
-  const simResult = runMonteCarlo(
-    saved, spend, ss / 12, retireAge, yearsInRetire,
-    inflationRate, 500, returnRate, 0.10,
-    [] // no other income for quick start
-  );
-
-  // Project portfolio at retirement with annual savings
-  const r = returnRate / 1;
+  // 1. Project portfolio to retirement date FIRST
+  const r = returnRate;
   const fvSavings  = saved * Math.pow(1 + r, yearsToRetire);
   const fvContribs = annualSavings > 0
     ? annualSavings * (Math.pow(1 + r, yearsToRetire) - 1) / r
     : 0;
-  const projectedPortfolio = fvSavings + fvContribs;
+  const projectedPortfolio = Math.round(fvSavings + fvContribs);
 
-  // True number at retirement
-  const annualSpendRetire = spend * 12 * Math.pow(1 + inflationRate, yearsToRetire);
-  const annualSS          = ss * 12;
+  // 2. True number — inflation-adjusted spending need at retirement
+  const replacementRatio  = 0.75; // Retirement spending ~75% of working years
+  const annualSpendRetire = spend * 12 * replacementRatio * Math.pow(1 + inflationRate, yearsToRetire);
+  const annualSS          = ss * 12;  // ss input is monthly, convert to annual
   const netNeed           = Math.max(0, annualSpendRetire - annualSS);
-  const trueNumber        = netNeed / distRate;
+  const trueNumber        = Math.round(netNeed / distRate);
+
+  // 3. Run Monte Carlo with correct inputs:
+  //    - startPortfolio = projected portfolio at retirement
+  //    - annualSpending = inflation-adjusted annual spend at retirement
+  //    - annualSS       = annual SS (ss input * 12)
+  //    - ssDelay        = 0 (SS starts at retirement for quick start)
+  //    - years          = years in retirement
+  // runMonteCarlo returns a number 0-1 (success rate)
+  const successRate = runMonteCarlo(
+    projectedPortfolio,
+    annualSpendRetire,
+    annualSS,
+    0,
+    yearsInRetire,
+    inflationRate,
+    500,
+    returnRate,
+    0.10,
+    null
+  );
+  const successPct = Math.round(successRate * 100);
 
   // Gap
   const gap         = Math.max(0, trueNumber - projectedPortfolio);
   const extraNeeded = gap > 0 && yearsToRetire > 0
     ? gap / ((Math.pow(1 + r, yearsToRetire) - 1) / r)
     : 0;
-
-  // Success rate from MC
-  const successPct = simResult.successPct || 0;
 
   // Verdict
   let verdictClass, verdictIcon, verdictHeadline, verdictSub;
@@ -4682,12 +4694,13 @@ function runQuickStart() {
     + '<div class="qs-stat"><div class="qs-stat-label">Projected at Retirement</div><div class="qs-stat-value ' + (projectedPortfolio >= trueNumber ? 'good' : 'bad') + '">' + fmtK(projectedPortfolio) + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Gap</div><div class="qs-stat-value ' + (gap > 0 ? 'bad' : 'good') + '">' + (gap > 0 ? fmtK(gap) : '✓ Funded') + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Years to Retire</div><div class="qs-stat-value">' + yearsToRetire + '</div></div>'
-    + '<div class="qs-stat"><div class="qs-stat-label">Est. Monthly Savings</div><div class="qs-stat-value ' + (annualSavings > 0 ? 'good' : 'bad') + '">' + fmt(annualSavings / 12) + '/mo</div></div>'
-    + '<div class="qs-stat"><div class="qs-stat-label">Retirement Spending Need</div><div class="qs-stat-value">' + fmt(annualSpendRetire / 12) + '/mo</div></div>'
+    + '<div class="qs-stat"><div class="qs-stat-label">Est. Monthly Income in Retirement</div><div class="qs-stat-value good">' + fmt(Math.round((projectedPortfolio * distRate + annualSS) / 12)) + '/mo</div></div>'
+    + '<div class="qs-stat"><div class="qs-stat-label">Est. Retirement Spend</div><div class="qs-stat-value">' + fmt(Math.round(spend * 0.75)) + '/mo today (75%)</div></div>'
     + '</div>'
     + '<div class="qs-next">'
     + levers
     + '<div style="margin-top:0.8rem"><strong>Want a more precise picture?</strong> Your answers have been pre-filled in the sections below. Open any module to refine — income, debts, detailed spending, Social Security, and more.</div>'
+    + '<div style="margin-top:0.5rem;font-size:0.72rem;color:var(--muted)">Retirement spending estimated at 75% of current — no commuting, payroll savings, or work costs. Adjust in Spending Planner for precision.</div>'
     + '<button class="qs-refine-btn" onclick="qsRefineAndScroll()">Refine My Numbers →</button>'
     + '</div>';
 
@@ -4910,6 +4923,11 @@ function clearAll() {
     document.getElementById('phase3-total').textContent = '$0/mo';
     document.getElementById('spend-summary').textContent = '$0 / mo';
   }
+  // Clear Quick Start result
+  const qsResult = document.getElementById('qs-result');
+  if (qsResult) { qsResult.style.display = 'none'; qsResult.innerHTML = ''; }
+  const qsBar = document.getElementById('qs-progress-bar');
+  if (qsBar) qsBar.style.width = '0%';
   // Clear results
   const res = document.getElementById('results');
   res.style.display = 'none';
