@@ -1131,8 +1131,8 @@
   }
 
   .recommendation-box {
-    background: linear-gradient(135deg, #1A3D28, #0F2820);
-    border: 1px solid rgba(76,175,125,0.3);
+    background: linear-gradient(135deg, #EEF6F1, #E0F0E8);
+    border: 1px solid #2D6A4F;
     border-radius: 10px;
     padding: 1.2rem 1.4rem;
     margin-bottom: 1rem;
@@ -1242,7 +1242,7 @@
   .spend-module-summary {
     font-family: 'DM Mono', monospace;
     font-size: 0.75rem;
-    color: var(--gold-light);
+    color: rgba(255,255,255,0.75);
   }
 
   .spend-module-chevron {
@@ -3200,13 +3200,13 @@ function updateDebtSummary() {
   const el = document.getElementById('debt-summary');
   if (totalBal > 0) {
     el.textContent = `${count} debt${count>1?'s':''} · ${Math.round(totalBal).toLocaleString()} · ${Math.round(totalMin).toLocaleString()}/mo mins`;
-    el.style.color = 'var(--red)';
+    el.style.color = 'rgba(255,255,255,0.92)';
   } else if (count > 0) {
     el.textContent = `${count} debt${count>1?'s':''} added — enter balances`;
-    el.style.color = 'var(--muted)';
+    el.style.color = 'rgba(255,255,255,0.6)';
   } else {
     el.textContent = 'Add debts below';
-    el.style.color = 'var(--muted)';
+    el.style.color = 'rgba(255,255,255,0.6)';
   }
   // TODO: Add warning when expenses + debt minimums exceed take-home (note 3)
   // Auto-fill debt minimums in CFA if open
@@ -3824,7 +3824,7 @@ function calcSimple() {
   `;
 
   document.getElementById('gtn-summary').textContent = fmtMo(r.takeHome) + ' take-home';
-  document.getElementById('gtn-summary').style.color = 'var(--green)';
+  document.getElementById('gtn-summary').style.color = 'rgba(255,255,255,0.92)';
   showCFA();
 }
 
@@ -3972,7 +3972,7 @@ function calcDetailed() {
   `;
 
   document.getElementById('gtn-summary').textContent = fmtMo(totalTakeHome) + ' take-home';
-  document.getElementById('gtn-summary').style.color = 'var(--green)';
+  document.getElementById('gtn-summary').style.color = 'rgba(255,255,255,0.92)';
   // Set above-payroll savings in CFA
   document.getElementById('cfa-savings').value = abovePayroll || '';
   showCFA();
@@ -4179,7 +4179,7 @@ function clearGTN() {
   document.getElementById('optimizer-results').style.display = 'none';
   document.getElementById('optimizer-results').innerHTML = '';
   document.getElementById('gtn-summary').textContent = 'Enter income to optimize';
-  document.getElementById('gtn-summary').style.color = 'var(--muted)';
+  document.getElementById('gtn-summary').style.color = 'rgba(255,255,255,0.6)';
   ['gtn-gross-simple','gtn-pretax-simple',
    'd-p1-gross','d-p1-age','d-p1-401k','d-p1-match','d-p1-hsa','d-p1-ins','d-p1-roth401k','d-p1-other',
    'd-p2-gross','d-p2-age','d-p2-401k','d-p2-match','d-p2-hsa','d-p2-ins','d-p2-roth401k','d-p2-other',
@@ -4312,6 +4312,7 @@ function updateStream(id, field, value) {
 function updateIncomeSummary() {
   const total = incomeStreams.reduce((sum, s) => sum + (s.monthly || 0), 0);
   document.getElementById('income-summary').textContent = '$' + Math.round(total).toLocaleString() + '/mo added';
+  document.getElementById('income-summary').style.color = 'rgba(255,255,255,0.92)';
 }
 
 function getOtherIncomeAtAge(age) {
@@ -4488,6 +4489,7 @@ function recalcTotals() {
   document.getElementById('phase3-total').textContent = fmtM(t3) + '/mo';
   // Header summary
   document.getElementById('spend-summary').textContent = fmtM(t1) + ' / mo';
+  document.getElementById('spend-summary').style.color = 'rgba(255,255,255,0.92)';
 }
 
 function renderSpendTables() {
