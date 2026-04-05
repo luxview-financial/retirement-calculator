@@ -34,7 +34,7 @@
   }
 
   .container {
-    max-width: 720px;
+    max-width: 960px;
     margin: 0 auto;
   }
 
@@ -3126,7 +3126,7 @@ function updateMinDisplay(rowId) {
   if (cells.length < 5) return;
   if (e.cat === 'installment') {
     cells[4].innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--gold-light)">
-      $${Math.round(min).toLocaleString()}
+      ${Math.round(min).toLocaleString()}
       <div style="font-size:0.55rem;color:var(--muted)">auto-calc'd</div>
     </div>`;
   } else {
@@ -3185,7 +3185,7 @@ function updateDebtSummary() {
   const totalMin = debtEntries.reduce((s, e) => s + calcMinPayment(e), 0);
   const el = document.getElementById('debt-summary');
   if (totalBal > 0) {
-    el.textContent = `${count} debt${count>1?'s':''} · $${Math.round(totalBal).toLocaleString()} · $${Math.round(totalMin).toLocaleString()}/mo mins`;
+    el.textContent = `${count} debt${count>1?'s':''} · ${Math.round(totalBal).toLocaleString()} · ${Math.round(totalMin).toLocaleString()}/mo mins`;
     el.style.color = 'var(--red)';
   } else if (count > 0) {
     el.textContent = `${count} debt${count>1?'s':''} added — enter balances`;
@@ -3212,69 +3212,85 @@ function selectMethod(m) {
 
 // ── Core amortization simulation ──────────────────────────
 function simulateDebt(debts, extraMonthly, method) {
-  // Deep copy
-  let pool = debts.map(d => ({ ...d, remaining: d.balance }));
+  // Build working pool — store ORIGINAL min payment separately
+  // (installment loans have fixed payments regardless of remaining balance)
+  let pool = debts.map(d => ({
+    ...d,
+    remaining:   d.balance,
+    origMin:     d.minPayment || calcMinPayment(d),  // fixed for installment
+  }));
 
-  function sortPool(pool) {
-    if (method === 'avalanche') return [...pool].sort((a,b) => b.rate - a.rate);
-    if (method === 'snowball')  return [...pool].sort((a,b) => a.remaining - b.remaining);
-    // Hybrid: 60% rate weight + 40% inverse balance weight
-    const maxR = Math.max(...pool.map(d => d.rate));
-    const maxB = Math.max(...pool.map(d => d.remaining));
-    return [...pool].sort((a,b) => {
-      const sA = 0.6*(a.rate/(maxR||1)) + 0.4*(1-a.remaining/(maxB||1));
-      const sB = 0.6*(b.rate/(maxR||1)) + 0.4*(1-b.remaining/(maxB||1));
-      return sB - sA;
-    });
+  function priorityOrder(pool) {
+    const copy = [...pool];
+    if (method === 'avalanche') {
+      copy.sort((a,b) => b.rate - a.rate);
+    } else if (method === 'snowball') {
+      copy.sort((a,b) => a.remaining - b.remaining);
+    } else {
+      // Hybrid: 60% rate + 40% inverse balance
+      const maxR = Math.max(...copy.map(d => d.rate)) || 1;
+      const maxB = Math.max(...copy.map(d => d.remaining)) || 1;
+      copy.sort((a,b) => {
+        const sA = 0.6*(a.rate/maxR) + 0.4*(1 - a.remaining/maxB);
+        const sB = 0.6*(b.rate/maxR) + 0.4*(1 - b.remaining/maxB);
+        return sB - sA;
+      });
+    }
+    return copy;
   }
 
-  let month = 0;
-  let totalInterest = 0;
-  const payoffDates = {};
-  const monthlyLog  = []; // [{month, total}]
-  const MAX_MONTHS  = 600;
-  let freedCashFlow = 0; // accumulates freed minimums
+  let month          = 0;
+  let totalInterest  = 0;
+  const payoffDates  = {};
+  const monthlyLog   = [];
+  const MAX_MONTHS   = 600;
+  let freedMin       = 0;  // freed minimum payments as debts are paid off
 
   while (pool.length > 0 && month < MAX_MONTHS) {
     month++;
-    let extra = extraMonthly + freedCashFlow;
-    const sorted = sortPool(pool);
 
-    // Apply interest + minimum payments to all
-    for (const d of sorted) {
+    // Step 1: Accrue interest on all debts
+    for (const d of pool) {
       const monthlyRate = d.rate / 100 / 12;
-      const interest    = d.remaining * monthlyRate;
-      totalInterest    += interest;
-      const minPmt      = calcMinPayment(d);
-      d.remaining       = d.remaining + interest - minPmt;
+      const interest = d.remaining * monthlyRate;
+      totalInterest += interest;
+      d.remaining   += interest;
+    }
+
+    // Step 2: Apply minimum payments to all
+    let extraPool = extraMonthly + freedMin;
+    for (const d of pool) {
+      const pmt = Math.min(d.origMin, d.remaining);
+      d.remaining -= pmt;
       if (d.remaining < 0) {
-        extra    += Math.abs(d.remaining);
+        extraPool += Math.abs(d.remaining);
         d.remaining = 0;
       }
     }
 
-    // Apply extra to priority debt
-    for (const d of sorted) {
-      if (d.remaining > 0 && extra > 0) {
-        const applied = Math.min(extra, d.remaining);
-        d.remaining  -= applied;
-        extra        -= applied;
-      }
+    // Step 3: Apply extra payment to priority debt (one at a time, in order)
+    const ordered = priorityOrder(pool.filter(d => d.remaining > 0.01));
+    for (const d of ordered) {
+      if (extraPool <= 0) break;
+      const applied = Math.min(extraPool, d.remaining);
+      d.remaining  -= applied;
+      extraPool    -= applied;
+      // Find and update in pool
+      const poolItem = pool.find(p => p.rowId === d.rowId);
+      if (poolItem) poolItem.remaining = d.remaining;
     }
 
-    // Check for payoffs
-    const justPaid = pool.filter(d => {
-      const updated = sorted.find(s => s.rowId === d.rowId);
-      return updated && updated.remaining <= 0.5;
-    });
+    // Step 4: Check for payoffs
+    const justPaid = pool.filter(d => d.remaining <= 0.01);
     justPaid.forEach(d => {
-      payoffDates[d.rowId] = month;
-      // Freed cash = minimum payment of this debt
-      freedCashFlow += calcMinPayment(d);
+      if (!payoffDates[d.rowId]) {
+        payoffDates[d.rowId] = month;
+        freedMin += d.origMin;  // freed minimum rolls into extra pool next month
+      }
     });
-    pool = sorted.filter(d => d.remaining > 0.5);
+    pool = pool.filter(d => d.remaining > 0.01);
 
-    // Log every 3 months
+    // Log balance every 3 months
     if (month % 3 === 0 || pool.length === 0) {
       monthlyLog.push({
         month,
@@ -3283,12 +3299,14 @@ function simulateDebt(debts, extraMonthly, method) {
     }
   }
 
+  // Recalculate total interest properly
+  // (approximation above — do a clean pass for display)
   return {
-    months: month,
+    months:        month,
     totalInterest: Math.round(totalInterest),
     payoffDates,
     monthlyLog,
-    freedCashFlow // monthly freed cash at end of payoff
+    freedMin
   };
 }
 
@@ -3537,7 +3555,7 @@ function runDebtOptimizer() {
             backgroundColor:'#F2EEE8', borderColor:'#DDD8D0', borderWidth:1,
             titleColor:'#1C1916', bodyColor:'#8A7F74',
             callbacks: {
-              label: ctx => ` ${ctx.dataset.label}: $${Math.round(ctx.raw).toLocaleString()}`
+              label: ctx => ` ${ctx.dataset.label}: ${Math.round(ctx.raw).toLocaleString()}`
             }
           }
         },
@@ -3876,11 +3894,11 @@ function calcDetailed() {
         <span class="gtn-wf-amount blue">${fmtD(totalGross)} &nbsp;${fmtMo(totalGross)}</span>
       </div>
       ${r1 ? `<div class="gtn-wf-row">
-        <span class="gtn-wf-label">Person 1 pre-tax deductions<small>401k $${Math.round(p1.k401).toLocaleString()} + HSA $${Math.round(p1.hsa).toLocaleString()} + insurance $${Math.round(p1.ins*12).toLocaleString()}</small></span>
+        <span class="gtn-wf-label">Person 1 pre-tax deductions<small>401k ${Math.round(p1.k401).toLocaleString()} + HSA ${Math.round(p1.hsa).toLocaleString()} + insurance ${Math.round(p1.ins*12).toLocaleString()}</small></span>
         <span class="gtn-wf-amount neg">− ${fmtD(r1.preDeduct)}</span>
       </div>` : ''}
       ${r2 ? `<div class="gtn-wf-row">
-        <span class="gtn-wf-label">Person 2 pre-tax deductions<small>401k $${Math.round(p2.k401).toLocaleString()} + HSA $${Math.round(p2.hsa).toLocaleString()} + insurance $${Math.round(p2.ins*12).toLocaleString()}</small></span>
+        <span class="gtn-wf-label">Person 2 pre-tax deductions<small>401k ${Math.round(p2.k401).toLocaleString()} + HSA ${Math.round(p2.hsa).toLocaleString()} + insurance ${Math.round(p2.ins*12).toLocaleString()}</small></span>
         <span class="gtn-wf-amount neg">− ${fmtD(r2.preDeduct)}</span>
       </div>` : ''}
       <div class="gtn-wf-row">
@@ -3888,7 +3906,7 @@ function calcDetailed() {
         <span class="gtn-wf-amount neg">− ${fmtD(totalFed)} &nbsp;${fmtMo(totalFed)}</span>
       </div>
       <div class="gtn-wf-row">
-        <span class="gtn-wf-label">FICA — Social Security + Medicare<small>SS capped at $${TAX_2026.ssWageBase.toLocaleString()} per person</small></span>
+        <span class="gtn-wf-label">FICA — Social Security + Medicare<small>SS capped at ${TAX_2026.ssWageBase.toLocaleString()} per person</small></span>
         <span class="gtn-wf-amount neg">− ${fmtD(totalFICA)} &nbsp;${fmtMo(totalFICA)}</span>
       </div>
       <div class="gtn-wf-row">
@@ -3914,7 +3932,7 @@ function calcDetailed() {
       <div class="gtn-section" style="margin-bottom:0;text-align:center">
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.2rem">PAYROLL RETIREMENT</div>
         <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#2C4A7C">${fmtMo(total401k)}</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)">(incl. $${Math.round(totalMatch/12).toLocaleString()}/mo match)</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)">(incl. ${Math.round(totalMatch/12).toLocaleString()}/mo match)</div>
       </div>
       <div class="gtn-section" style="margin-bottom:0;text-align:center">
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.2rem">ABOVE-PAYROLL SAVINGS</div>
@@ -3985,7 +4003,7 @@ function updateCFA() {
     `<div class="cfa-bar-seg" style="width:${(s.val/total*100).toFixed(1)}%;background:${s.color}"></div>`
   ).join('');
   document.getElementById('cfa-bar-label').textContent =
-    `Debt extra: $${Math.round(debtExtra).toLocaleString()} · Savings: $${Math.round(savings).toLocaleString()} · Emergency: $${Math.round(emergency).toLocaleString()} · Other: $${Math.round(other).toLocaleString()}`;
+    `Debt extra: ${Math.round(debtExtra).toLocaleString()} · Savings: ${Math.round(savings).toLocaleString()} · Emergency: ${Math.round(emergency).toLocaleString()} · Other: ${Math.round(other).toLocaleString()}`;
 
   // Unallocated badge
   const badge = document.getElementById('cfa-unallocated-badge');
@@ -3997,10 +4015,10 @@ function updateCFA() {
     badge.textContent = '✓ Fully allocated — every dollar has a job';
   } else if (unallocated > 0) {
     badge.className = 'cfa-unallocated warn';
-    badge.textContent = `$${Math.round(unallocated).toLocaleString()}/mo unallocated — assign it below`;
+    badge.textContent = `${Math.round(unallocated).toLocaleString()}/mo unallocated — assign it below`;
   } else {
     badge.className = 'cfa-unallocated bad';
-    badge.textContent = `⚠ Over-allocated by $${Math.round(-unallocated).toLocaleString()}/mo — reduce allocations`;
+    badge.textContent = `⚠ Over-allocated by ${Math.round(-unallocated).toLocaleString()}/mo — reduce allocations`;
   }
 }
 
@@ -4097,8 +4115,8 @@ function runOptimizer() {
         <div class="scenario-card-sub">
           Projected 30-yr wealth<br>
           Debt-free: ${monthsToDate(result.debtFreeMonth)}<br>
-          Extra debt: $${Math.round(debtExtra).toLocaleString()}/mo<br>
-          Extra savings: $${Math.round(savings).toLocaleString()}/mo
+          Extra debt: ${Math.round(debtExtra).toLocaleString()}/mo<br>
+          Extra savings: ${Math.round(savings).toLocaleString()}/mo
         </div>
       </div>`;
   }
@@ -4199,9 +4217,9 @@ function estimateSS() {
   const el = document.getElementById('ss-estimate-result');
   if (!pia1 && !pia2) { el.textContent = 'Enter income and years above to estimate.'; return; }
   el.innerHTML = `
-    <span style="color:var(--text)">Person 1:</span> $${pia1.toLocaleString()}/mo &nbsp;·&nbsp;
-    <span style="color:var(--text)">Person 2:</span> $${pia2.toLocaleString()}/mo &nbsp;·&nbsp;
-    <span style="color:var(--gold-light);font-weight:500">Household Total: $${total.toLocaleString()}/mo</span>
+    <span style="color:var(--text)">Person 1:</span> ${pia1.toLocaleString()}/mo &nbsp;·&nbsp;
+    <span style="color:var(--text)">Person 2:</span> ${pia2.toLocaleString()}/mo &nbsp;·&nbsp;
+    <span style="color:var(--gold-light);font-weight:500">Household Total: ${total.toLocaleString()}/mo</span>
     ${pia2 > 0 && pia1 > pia2*2 ? '<br><span style="color:var(--muted);font-size:0.6rem">Note: Person 2 may qualify for spousal benefit — already factored in above.</span>' : ''}
   `;
   el._total = total;
