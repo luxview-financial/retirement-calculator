@@ -3185,7 +3185,7 @@ function renderSingleScenario(p) {
       </div>
       <div class="projection-section animate">
         <div class="projection-header">Full Portfolio Projection — ${(p.accumReturn*100).toFixed(1)}% Accum · ${(p.distReturn*100).toFixed(1)}% Distribution (Median)</div>
-        <table>
+        <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table>
           <thead><tr><th>Age (You)</th><th>Phase</th><th>Portfolio Value</th><th>Annual Flow</th><th>SS + Other Income</th></tr></thead>
           <tbody>
             ${p.projRows.map(r => `
@@ -3197,7 +3197,7 @@ function renderSingleScenario(p) {
                 <td>${(()=>{ const oi=getOtherIncomeAtAge(r.age); const tot=(r.ssIncome||0)+oi; return tot>0 ? fmt(r.ssIncome||0)+(r.ssIncome>0?' <span class="tag ss">SS</span>':'') + (oi>0?' <span class="tag retire">+'+fmt(oi)+'</span>':'') : '—'; })()}</td>
               </tr>`).join('')}
           </tbody>
-        </table>
+        </table></div>
       </div>
       <div class="insight animate">
         <strong>4% Rule Cross-Check:</strong> Gross need without SS = <strong>${fmt(p.annualBudget/0.04)}</strong>. With SS offsetting ~50% of late-retirement spend, effective number ≈ <strong>${fmt(p.fourPctSS)}</strong> — Monte Carlo gives <strong>${fmt(p.trueNumber)}</strong>.
