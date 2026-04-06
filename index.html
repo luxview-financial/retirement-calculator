@@ -809,7 +809,7 @@
     border: 1px solid rgba(91,141,238,0.3);
     border-radius: 10px;
     margin-bottom: 1.5rem;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .gtn-mode-toggle {
@@ -1219,6 +1219,11 @@
     border: 1px solid rgba(76,175,125,0.25);
     border-radius: 10px;
     margin-bottom: 1.5rem;
+    overflow: visible;
+  }
+
+  .spend-module-header {
+    border-radius: 10px 10px 0 0;
     overflow: hidden;
   }
 
@@ -1679,7 +1684,7 @@
   /* ── Option D: Module Panel Headers ─────────────────── */
   .spend-module {
     border-radius: 12px !important;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 8px rgba(28,25,22,0.08);
   }
 
@@ -2015,6 +2020,267 @@
     }
   }
 
+
+  /* ── Retirement Results Refinement ───────────────────── */
+
+  /* Verdict Card */
+  .verdict-card {
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(28,25,22,0.12);
+  }
+
+  .verdict-card-header {
+    padding: 1.8rem 2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .verdict-card-header.vc-green  { background: linear-gradient(135deg, #1A3D28, #2D6A4F); }
+  .verdict-card-header.vc-amber  { background: linear-gradient(135deg, #4D3A18, #7A5C20); }
+  .verdict-card-header.vc-red    { background: linear-gradient(135deg, #4D1E28, #8B2635); }
+
+  .verdict-card-icon {
+    font-size: 2.8rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .verdict-card-text { flex: 1; }
+
+  .verdict-card-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    color: #ffffff;
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+
+  .verdict-card-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .verdict-card-rate {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: #ffffff;
+    line-height: 1;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .verdict-card-rate-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    text-align: right;
+    margin-top: 0.2rem;
+  }
+
+  .verdict-card-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+  }
+
+  @media (max-width: 560px) {
+    .verdict-card-stats { grid-template-columns: 1fr 1fr; }
+    .verdict-card-header { padding: 1.2rem 1.2rem; }
+    .verdict-card-rate { font-size: 2.2rem; }
+  }
+
+  .verdict-card-stat {
+    padding: 1rem 1.2rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .verdict-card-stat:last-child { border-right: none; }
+
+  .verdict-card-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .verdict-card-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--text);
+  }
+
+  .verdict-card-stat-value.vc-good { color: #1E5C3A; }
+  .verdict-card-stat-value.vc-bad  { color: #8B2635; }
+  .verdict-card-stat-value.vc-gold { color: #8A6A30; }
+
+  /* Action Levers */
+  .levers-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .levers-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .levers-rate-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .levers-rate-display span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .lever-row {
+    margin-bottom: 1.2rem;
+  }
+
+  .lever-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+
+  .lever-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .lever-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .lever-input {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .lever-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+
+  .lever-input::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+
+  .lever-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Projection table refinement */
+  .proj-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+  }
+
+  .proj-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+  }
+
+  .proj-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .proj-table td {
+    padding: 0.55rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    white-space: nowrap;
+  }
+
+  .proj-table tr.proj-milestone td { background: rgba(184,149,90,0.07); font-weight: 500; }
+  .proj-table tr.proj-depleted td  { color: #8B2635; }
+  .proj-table tr.proj-accum td:first-child { color: #2D6A4F; }
+  .proj-table tr.proj-draw td:first-child   { color: var(--muted); }
+
+  .proj-badge {
+    display: inline-block;
+    font-size: 0.55rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .proj-badge.now    { background: rgba(45,106,79,0.15); color: #1E5C3A; border: 1px solid rgba(45,106,79,0.25); }
+  .proj-badge.retire { background: rgba(184,149,90,0.15); color: #8A6A30; border: 1px solid rgba(184,149,90,0.3); }
+  .proj-badge.ss     { background: rgba(44,74,124,0.12); color: #2C4A7C; border: 1px solid rgba(44,74,124,0.2); }
+
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
@@ -2035,6 +2301,10 @@
   <header>
     <h1>Luxview Financial Planner</h1>
     <p>Retirement · Cash Flow · Debt · Tax-Optimized · Monte Carlo</p>
+    <p style="margin-top:0.6rem;font-family:DM Mono,monospace;font-size:0.6rem;
+              letter-spacing:0.08em;color:var(--muted)">
+      🔒 Private by design &nbsp;·&nbsp; No account required &nbsp;·&nbsp; No data leaves your device
+    </p>
   </header>
   <!-- ── Quick Start ──────────────────────────────────── -->
   <div class="qs-wrap" id="qs-module">
@@ -2230,13 +2500,21 @@
       <!-- SIMPLE MODE -->
       <div id="gtn-simple">
         <div class="gtn-section">
-          <div class="gtn-section-title">Household Income</div>
+          <div class="gtn-section-title">Household Income — 3 Numbers from Your Pay Stub</div>
           <div class="gtn-row">
             <div class="gtn-label">Combined Gross Annual Income<small>Before any deductions or taxes</small></div>
             <input class="gtn-input" type="number" id="gtn-gross-simple" placeholder="e.g. 280000" oninput="calcSimple()">
           </div>
           <div class="gtn-row">
-            <div class="gtn-label">Filing Status</div>
+            <div class="gtn-label">Total Annual Retirement Savings<small>401k + Roth 401k + IRA + HSA — all accounts combined</small></div>
+            <input class="gtn-input" type="number" id="gtn-retirement-simple" placeholder="e.g. 58000" oninput="calcSimple()">
+          </div>
+          <div class="gtn-row">
+            <div class="gtn-label">Actual Monthly Take-Home<small>What lands in your bank account after everything</small></div>
+            <input class="gtn-input" type="number" id="gtn-takehome-simple" placeholder="e.g. 12300" oninput="calcSimple()">
+          </div>
+          <div class="gtn-row">
+            <div class="gtn-label">Filing Status<small>Used for marginal rate insight only</small></div>
             <select class="gtn-select" id="gtn-filing-simple" onchange="calcSimple()">
               <option value="mfj">Married Filing Jointly</option>
               <option value="single">Single</option>
@@ -2244,7 +2522,7 @@
             </select>
           </div>
           <div class="gtn-row">
-            <div class="gtn-label">State</div>
+            <div class="gtn-label">State<small>Used for marginal rate insight only</small></div>
             <select class="gtn-select" id="gtn-state-simple" onchange="calcSimple()">
               <option value="AK">AK (0.0%)</option>
 <option value="AL">AL (5.0%)</option>
@@ -2298,10 +2576,6 @@
 <option value="WV">WV (4.82%)</option>
 <option value="WY">WY (0.0%)</option>
             </select>
-          </div>
-          <div class="gtn-row">
-            <div class="gtn-label">Pre-tax 401k/403b (annual, combined)<small>Already coming out of gross payroll</small></div>
-            <input class="gtn-input" type="number" id="gtn-pretax-simple" placeholder="e.g. 49000" oninput="calcSimple()">
           </div>
         </div>
         <div id="gtn-simple-result"></div>
@@ -2831,6 +3105,8 @@
 
   <div class="disclaimer">
     For illustrative purposes only · Not financial advice · Returns vary · Consult a CFP
+    <br>
+    <span style="color:var(--green)">🔒 No data collected · Runs entirely in your browser · Nothing is stored or transmitted</span>
   </div>
 
   <!-- ── Planning Checklist ────────────────────────── -->
@@ -3113,105 +3389,264 @@ function calculate() {
       ssAge, ssDelayFromRetire, lifeExp, fourPctSS,
       partnerRetireFirst, yearsToFullRetire, label: null,
       accumReturn: accumReturnPct, distReturn: distReturnPct,
-      savingsPhase2Pct, inflationPct
+      savingsPhase2Pct, inflationPct,
+      savings: savings
     });
     return;
   }
 }
 
 function renderSingleScenario(p) {
-  const phaseColor = (phase) => phase === 'BOTH SAVING' ? 'var(--green)' : phase === 'YOU SAVING' ? 'var(--gold)' : 'var(--muted)';
-  const html = `
-    <div id="res-inner">
-      <div class="verdict-bar ${p.isOnTrack ? 'success' : 'danger'} animate">
-        <div>
-          <div class="verdict-label">${p.isOnTrack ? `✓ On track — Partner retires ${p.partnerRetirementAge}, You retire ${p.retirementAge}` : `⚠ Gap — Partner retires ${p.partnerRetirementAge}, You retire ${p.retirementAge}`}</div>
-          <div class="verdict-value ${p.gap >= 0 ? 'pos' : 'neg'}">${p.gap >= 0 ? '+' : ''}${fmt(p.gap)}</div>
-          <div style="font-family:DM Mono,monospace;font-size:0.7rem;color:var(--muted);margin-top:0.3rem">
-            Today's savings vs. required <strong style="color:var(--gold-light)">${fmt(p.todayNeed)}</strong> needed now
-          </div>
-        </div>
-        <span class="verdict-badge ${p.isOnTrack ? 'success' : 'danger'}">${p.isOnTrack ? 'Funded' : 'Underfunded'}</span>
-      </div>
-      <div class="stats-grid animate">
-        <div class="stat-box"><div class="stat-label">True Number at Retirement</div><div class="stat-value">${fmt(p.trueNumber)}</div></div>
-        <div class="stat-box"><div class="stat-label">Projected at Age ${p.fullRetireAge}</div><div class="stat-value" style="color:${p.retirementGap>=0?'var(--green)':'var(--red)'}">${fmt(p.portfolioAtRetirement)}</div></div>
-        <div class="stat-box"><div class="stat-label">Retirement Gap</div><div class="stat-value" style="color:${p.retirementGap>=0?'var(--green)':'var(--red)'}">${p.retirementGap>=0?'+':''}${fmt(p.retirementGap)}</div></div>
-        <div class="stat-box"><div class="stat-label">Partner Retires</div><div class="stat-value">Age ${p.partnerRetirementAge}</div></div>
-        <div class="stat-box"><div class="stat-label">You Retire</div><div class="stat-value">Age ${p.retirementAge}</div></div>
-        <div class="stat-box"><div class="stat-label">Net Annual (post-SS)</div><div class="stat-value">${fmt(p.annualNetPostSS)}</div></div>
-      </div>
+  // ── Verdict ────────────────────────────────────────────
+  const pct     = p.successPct;
+  const target  = Math.round(p.targetSuccess * 100);
+  const isGreen = pct >= target;
+  const isAmber = pct >= target - 10 && pct < target;
+  const vcClass = isGreen ? 'vc-green' : isAmber ? 'vc-amber' : 'vc-red';
+  const vcIcon  = isGreen ? '✓' : isAmber ? '◎' : '⚠';
+  const vcLine  = isGreen
+    ? 'You are on track'
+    : isAmber ? 'Close — small adjustments needed'
+    : 'Action needed — significant gap to close';
 
-      <!-- Charts -->
-      <div class="chart-section animate">
-        <div class="chart-title">📈 Portfolio Growth — Accumulation &amp; Drawdown</div>
-        <canvas id="chart-portfolio" height="200"></canvas>
-        <div class="chart-legend" id="chart-portfolio-legend"></div>
-      </div>
+  function fmtV(n) {
+    if (Math.abs(n) >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+    if (Math.abs(n) >= 1e3) return '$' + Math.round(n/1000) + 'k';
+    return '$' + Math.round(n).toLocaleString();
+  }
 
-      <div class="chart-grid animate">
-        <div class="chart-section" style="margin-bottom:0">
-          <div class="chart-title">🥧 Retirement Income Mix</div>
-          <canvas id="chart-income" height="200"></canvas>
-          <div class="chart-legend" id="chart-income-legend"></div>
-        </div>
-        <div class="chart-section" style="margin-bottom:0">
-          <div class="chart-title">🎲 Monte Carlo Outcomes</div>
-          <canvas id="chart-mc" height="200"></canvas>
-          <div class="chart-legend" id="chart-mc-legend"></div>
-        </div>
-      </div>
+  const gapColor = p.retirementGap >= 0 ? 'vc-good' : 'vc-bad';
+  const gapText  = p.retirementGap >= 0
+    ? '✓ ' + fmtV(p.retirementGap) + ' surplus'
+    : '⚠ ' + fmtV(Math.abs(p.retirementGap)) + ' short';
+  const yearsTo  = Math.round(p.fullRetireAge - p.currentAge);
 
-      <div class="mc-section animate">
-        <div class="mc-title">Monte Carlo Success Rate · 3000 Simulations · Antithetic Variates · ${(p.distReturn*100).toFixed(1)}% Mean · 10% Std Dev · Age ${p.fullRetireAge}</div>
-        <div class="mc-rate">${p.successPct}%</div>
-        <div class="mc-bar-wrap">
-          <div class="mc-bar-fill ${p.successPct >= p.targetSuccess * 100 ? 'success' : 'danger'}" style="width:0%"></div>
-          <div class="mc-threshold-line" style="left:${p.targetSuccess * 100}%"></div>
-        </div>
-        <div class="mc-meta">
-          <span>${p.successPct}% of simulations survive to age ${p.lifeExp}</span>
-          <span>Target: ${Math.round(p.targetSuccess * 100)}% <span style="color:var(--gold)">│</span></span>
-        </div>
-      </div>
-      <div class="insight animate">
-        ${p.partnerRetireFirst ? `<strong>Three-phase plan modeled.</strong> Partner retires at <strong>${p.partnerRetirementAge}</strong> — savings drop to <strong>${Math.round(p.savingsPhase2Pct*100)}%</strong> of full rate (${fmt(p.annualSavings * p.savingsPhase2Pct)}/yr) while your income continues through age <strong>${p.retirementAge}</strong>. ` : ''}
-        ${p.isOnTrack
-          ? `Portfolio projects to <strong>${fmt(p.portfolioAtRetirement)}</strong> at full retirement — <strong>${fmt(p.retirementGap)} above</strong> your true number of ${fmt(p.trueNumber)}. MC success rate: <strong>${p.successPct}%</strong> ${p.successPct >= Math.round(p.targetSuccess*100) ? '✓ meets' : '— approaches'} your ${Math.round(p.targetSuccess*100)}% target.`
-          : `Portfolio projects to <strong>${fmt(p.portfolioAtRetirement)}</strong> — <strong>${fmt(Math.abs(p.retirementGap))} short</strong> of the ${fmt(p.trueNumber)} needed.`
-        }
-        <br><br>
-        <strong>Key window:</strong> Ages ${p.fullRetireAge}–${p.ssAge} are your most vulnerable — <strong>${fmt(p.annualBudget)}/yr</strong> fully from portfolio. Once SS starts, net draw drops to <strong>${fmt(p.annualNetPostSS)}/yr</strong>${incomeStreams.length>0?` plus <strong>${incomeStreams.length} other income stream(s)</strong> further reducing withdrawals`:""} — a ${Math.round((1-p.annualNetPostSS/p.annualBudget)*100)}% reduction.
-      </div>
-      <div class="projection-section animate">
-        <div class="projection-header">Full Portfolio Projection — ${(p.accumReturn*100).toFixed(1)}% Accum · ${(p.distReturn*100).toFixed(1)}% Distribution (Median)</div>
-        <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table>
-          <thead><tr><th>Age (You)</th><th>Phase</th><th>Portfolio Value</th><th>Annual Flow</th><th>SS + Other Income</th></tr></thead>
-          <tbody>
-            ${p.projRows.map(r => `
-              <tr class="${(r.isYourRetire || r.isPartnerRetire) ? 'highlight' : ''} ${r.p < 0 ? 'depleted' : ''}">
-                <td>${Math.round(r.age*2)/2}${r.isPartnerRetire?' <span class="tag ss">PARTNER RETIRES</span>':''}${r.isYourRetire?' <span class="tag now">YOU RETIRE</span>':''}${Math.abs(r.age-p.currentAge)<0.6?' <span class="tag now">NOW</span>':''}</td>
-                <td style="color:${phaseColor(r.phase)};font-size:0.65rem">${r.phase}</td>
-                <td>${r.p<0?'⚠ DEPLETED':fmt(r.p)}</td>
-                <td style="color:${r.inAccum?'var(--green)':'var(--muted)'}">${r.inAccum?'+'+fmt(r.contribution):r.spending>0?'-'+fmt(r.spending):'—'}</td>
-                <td>${(()=>{ const oi=getOtherIncomeAtAge(r.age); const tot=(r.ssIncome||0)+oi; return tot>0 ? fmt(r.ssIncome||0)+(r.ssIncome>0?' <span class="tag ss">SS</span>':'') + (oi>0?' <span class="tag retire">+'+fmt(oi)+'</span>':'') : '—'; })()}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table></div>
-      </div>
-      <div class="insight animate">
-        <strong>4% Rule Cross-Check:</strong> Gross need without SS = <strong>${fmt(p.annualBudget/0.04)}</strong>. With SS offsetting ~50% of late-retirement spend, effective number ≈ <strong>${fmt(p.fourPctSS)}</strong> — Monte Carlo gives <strong>${fmt(p.trueNumber)}</strong>.
-      </div>
-    </div>`;
+  const verdictCard = '<div class="verdict-card animate">'
+    + '<div class="verdict-card-header ' + vcClass + '">'
+    + '<div class="verdict-card-icon">' + vcIcon + '</div>'
+    + '<div class="verdict-card-text">'
+    + '<div class="verdict-card-headline">' + vcLine + '</div>'
+    + '<div class="verdict-card-sub">Monte Carlo · 3,000 simulations · target ' + target + '%</div>'
+    + '</div>'
+    + '<div>'
+    + '<div class="verdict-card-rate">' + pct + '%</div>'
+    + '<div class="verdict-card-rate-label">success rate</div>'
+    + '</div>'
+    + '</div>'
+    + '<div class="verdict-card-stats">'
+    + '<div class="verdict-card-stat"><div class="verdict-card-stat-label">True Number</div><div class="verdict-card-stat-value">' + fmtV(p.trueNumber) + '</div></div>'
+    + '<div class="verdict-card-stat"><div class="verdict-card-stat-label">Projected at ' + p.fullRetireAge + '</div><div class="verdict-card-stat-value ' + (p.retirementGap >= 0 ? 'vc-good' : 'vc-bad') + '">' + fmtV(p.portfolioAtRetirement) + '</div></div>'
+    + '<div class="verdict-card-stat"><div class="verdict-card-stat-label">Gap at Retirement</div><div class="verdict-card-stat-value ' + gapColor + '">' + gapText + '</div></div>'
+    + '<div class="verdict-card-stat"><div class="verdict-card-stat-label">Retire In</div><div class="verdict-card-stat-value">' + yearsTo + ' years (age ' + p.fullRetireAge + ')</div></div>'
+    + '</div>'
+    + '</div>';
+
+  // ── Action Levers ──────────────────────────────────────
+  const _extraSavings  = 0;
+  const _retireAdj     = 0;
+  const _spendAdj      = 0;
+
+  const leversSection = '<div class="levers-section animate" id="levers-section">'
+    + '<div class="levers-title">⚡ What-If Levers — Adjust to see impact on success rate</div>'
+    + '<div class="levers-rate-display" id="levers-rate-display">'
+    + '<span id="levers-pct" style="color:' + (isGreen ? '#2D6A4F' : isAmber ? '#B8955A' : '#8B2635') + '">' + pct + '%</span>'
+    + '<span>success rate with current settings</span>'
+    + '</div>'
+    + '<div class="lever-row">'
+    + '<div class="lever-label-row"><span class="lever-label">💰 Extra Monthly Savings (pre-retirement)</span><span class="lever-value" id="lever-save-val">+$0/mo</span></div>'
+    + '<input type="range" class="lever-input" id="lever-save" min="0" max="3000" step="100" value="0" oninput="updateLevers()">'
+    + '<div class="lever-hint"><span>$0</span><span>+$3,000/mo</span></div>'
+    + '</div>'
+    + '<div class="lever-row">'
+    + '<div class="lever-label-row"><span class="lever-label">📅 Adjust Retirement Age</span><span class="lever-value" id="lever-age-val">Age ' + p.fullRetireAge + '</span></div>'
+    + '<input type="range" class="lever-input" id="lever-age" min="-5" max="5" step="1" value="0" oninput="updateLevers()">'
+    + '<div class="lever-hint"><span>5 years earlier</span><span>5 years later</span></div>'
+    + '</div>'
+    + '<div class="lever-row">'
+    + '<div class="lever-label-row"><span class="lever-label">🏠 Adjust Retirement Spending</span><span class="lever-value" id="lever-spend-val">$' + Math.round(p.annualBudget/12).toLocaleString() + '/mo</span></div>'
+    + '<input type="range" class="lever-input" id="lever-spend" min="-30" max="30" step="5" value="0" oninput="updateLevers()">'
+    + '<div class="lever-hint"><span>-30%</span><span>+30%</span></div>'
+    + '</div>'
+    + '</div>';
+
+  // ── Charts ─────────────────────────────────────────────
+  const chartsHtml = '<div class="chart-section animate">'
+    + '<div class="chart-title">📈 Portfolio Growth — Accumulation & Drawdown</div>'
+    + '<canvas id="chart-portfolio" height="200"></canvas>'
+    + '<div class="chart-legend" id="chart-portfolio-legend"></div>'
+    + '</div>'
+    + '<div class="chart-grid animate">'
+    + '<div class="chart-section" style="margin-bottom:0">'
+    + '<div class="chart-title">🥧 Retirement Income Mix</div>'
+    + '<canvas id="chart-income" height="200"></canvas>'
+    + '<div class="chart-legend" id="chart-income-legend"></div>'
+    + '</div>'
+    + '<div class="chart-section" style="margin-bottom:0">'
+    + '<div class="chart-title">🎲 Outcome Range — 500 Scenarios</div>'
+    + '<canvas id="chart-mc" height="200"></canvas>'
+    + '<div class="chart-legend" id="chart-mc-legend"></div>'
+    + '</div>'
+    + '</div>';
+
+  // ── MC Bar ─────────────────────────────────────────────
+  const mcBar = '<div class="mc-section animate">'
+    + '<div class="mc-title">Monte Carlo · 3,000 Simulations · Antithetic Variates · ' + (p.distReturn*100).toFixed(1) + '% Mean · 10% Std Dev</div>'
+    + '<div class="mc-rate">' + pct + '%</div>'
+    + '<div class="mc-bar-wrap">'
+    + '<div class="mc-bar-fill ' + (pct >= target ? 'success' : 'danger') + '" style="width:0%"></div>'
+    + '<div class="mc-threshold-line" style="left:' + target + '%"></div>'
+    + '</div>'
+    + '<div class="mc-meta">'
+    + '<span>' + pct + '% of simulations survive to age ' + p.lifeExp + '</span>'
+    + '<span>Target: ' + target + '% <span style="color:var(--gold)">│</span></span>'
+    + '</div>'
+    + '</div>';
+
+  // ── Insight ────────────────────────────────────────────
+  const insight = '<div class="insight animate">'
+    + (p.partnerRetireFirst ? '<strong>Three-phase plan modeled.</strong> Partner retires at <strong>' + p.partnerRetirementAge + '</strong> — savings drop to <strong>' + Math.round(p.savingsPhase2Pct*100) + '%</strong> of full rate (' + fmtV(p.annualSavings * p.savingsPhase2Pct) + '/yr). ' : '')
+    + (p.isOnTrack
+      ? 'Portfolio projects to <strong>' + fmtV(p.portfolioAtRetirement) + '</strong> at retirement — <strong>' + fmtV(p.retirementGap) + ' above</strong> your true number. MC success: <strong>' + pct + '%</strong>.'
+      : 'Portfolio projects to <strong>' + fmtV(p.portfolioAtRetirement) + '</strong> — <strong>' + fmtV(Math.abs(p.retirementGap)) + ' short</strong> of the ' + fmtV(p.trueNumber) + ' needed.')
+    + '<br><br><strong>Key window:</strong> Ages ' + p.fullRetireAge + '–' + p.ssAge + ' are your most vulnerable — <strong>' + fmtV(p.annualBudget) + '/yr</strong> fully from portfolio. Once SS starts, net draw drops to <strong>' + fmtV(p.annualNetPostSS) + '/yr</strong>'
+    + (incomeStreams.length > 0 ? ' plus <strong>' + incomeStreams.length + ' other income stream(s)</strong>' : '')
+    + ' — a ' + Math.round((1 - p.annualNetPostSS/p.annualBudget)*100) + '% reduction.'
+    + '</div>';
+
+  // ── Projection Table — 5-year increments + milestones ──
+  const phaseColor = (inAccum) => inAccum ? '#2D6A4F' : 'var(--muted)';
+
+  const projTableHtml = '<div class="projection-section animate">'
+    + '<div class="projection-header">Portfolio Projection — ' + (p.accumReturn*100).toFixed(1) + '% Accum · ' + (p.distReturn*100).toFixed(1) + '% Distribution &nbsp;·&nbsp; <span style="font-size:0.7em;color:var(--muted)">All figures in future (nominal) dollars</span></div>'
+    + '<div class="proj-table-wrap">'
+    + '<table class="proj-table">'
+    + '<thead><tr>'
+    + '<th>Age</th>'
+    + '<th>Portfolio Value</th>'
+    + '<th>Annual Withdrawal</th>'
+    + '<th>SS Income</th>'
+    + '<th>Year-End Balance</th>'
+    + '</tr></thead>'
+    + '<tbody>'
+    + p.projRows.map(function(r) {
+        const isMilestone = r.isYourRetire || r.isPartnerRetire || Math.abs(r.age - p.ssAge) < 0.6;
+        const rowClass = r.p < 0 ? 'proj-depleted' : isMilestone ? 'proj-milestone' : r.inAccum ? 'proj-accum' : 'proj-draw';
+        const ageCell = Math.round(r.age*2)/2
+          + (Math.abs(r.age - p.currentAge) < 0.6 ? '<span class="proj-badge now">NOW</span>' : '')
+          + (r.isPartnerRetire ? '<span class="proj-badge retire">PARTNER RETIRES</span>' : '')
+          + (r.isYourRetire    ? '<span class="proj-badge retire">YOU RETIRE</span>' : '')
+          + (Math.abs(r.age - p.ssAge) < 0.6 && !r.inAccum ? '<span class="proj-badge ss">SS STARTS</span>' : '');
+        const portfolioCell = r.p < 0 ? '⚠ DEPLETED' : fmtV(r.p);
+        const withdrawalCell = r.inAccum
+          ? '<span style="color:#2D6A4F">+' + fmtV(r.contribution) + '</span>'
+          : r.spending > 0 ? fmtV(r.spending) : '—';
+        const ssCell = r.ssIncome > 0 ? fmtV(r.ssIncome) : '—';
+        const balanceColor = r.p < 0 ? '#8B2635' : r.p < p.trueNumber && !r.inAccum ? '#B8955A' : 'inherit';
+        return '<tr class="' + rowClass + '">'
+          + '<td>' + ageCell + '</td>'
+          + '<td>' + portfolioCell + '</td>'
+          + '<td>' + withdrawalCell + '</td>'
+          + '<td>' + ssCell + '</td>'
+          + '<td style="color:' + balanceColor + '">' + portfolioCell + '</td>'
+          + '</tr>';
+      }).join('')
+    + '</tbody>'
+    + '</table>'
+    + '</div>'
+    + '</div>';
+
+  // ── 4% Crosscheck ──────────────────────────────────────
+  const crosscheck = '<div class="insight animate">'
+    + '<strong>4% Rule Cross-Check:</strong> Gross need without SS = <strong>' + fmtV(p.annualBudget/0.04) + '</strong>. With SS offsetting ~50%, effective number ≈ <strong>' + fmtV(p.fourPctSS) + '</strong> — Monte Carlo gives <strong>' + fmtV(p.trueNumber) + '</strong>.'
+    + '</div>';
+
+  // ── Assemble ───────────────────────────────────────────
+  const html = verdictCard + leversSection + chartsHtml + mcBar + insight + projTableHtml + crosscheck;
+
   const el = document.getElementById('results');
   el.style.display = 'block';
-  // Add dollar convention note
+  el.innerHTML = html;
 
-  var futureNote = "<div style='font-family:DM Mono,monospace;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;text-align:right'>All figures in future (nominal) dollars</div>";
-  el.innerHTML = futureNote + html;
-  setTimeout(() => { const f = document.querySelector('.mc-bar-fill'); if(f) f.style.width = Math.min(100, p.successPct)+'%'; }, 100);
-  setTimeout(() => renderCharts(p), 150);
+  // Animate MC bar
+  setTimeout(function() {
+    const f = document.querySelector('.mc-bar-fill');
+    if (f) f.style.width = Math.min(100, pct) + '%';
+  }, 100);
+
+  // Store scenario params for lever recalc
+  el._scenarioParams = p;
+
+  setTimeout(function() { renderCharts(p); }, 150);
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Lever update function ──────────────────────────────────
+function updateLevers() {
+  const el = document.getElementById('results');
+  if (!el || !el._scenarioParams) return;
+  const p = el._scenarioParams;
+
+  const extraSave  = parseFloat(document.getElementById('lever-save').value)  || 0;
+  const ageAdj     = parseFloat(document.getElementById('lever-age').value)   || 0;
+  const spendAdj   = parseFloat(document.getElementById('lever-spend').value) || 0;
+
+  // Update labels
+  document.getElementById('lever-save-val').textContent  = extraSave > 0 ? '+$' + extraSave.toLocaleString() + '/mo' : '$0/mo';
+  document.getElementById('lever-age-val').textContent   = 'Age ' + (p.fullRetireAge + ageAdj) + (ageAdj !== 0 ? ' (' + (ageAdj > 0 ? '+' : '') + ageAdj + ' yrs)' : '');
+  document.getElementById('lever-spend-val').textContent = '$' + Math.round(p.annualBudget * (1 + spendAdj/100) / 12).toLocaleString() + '/mo (' + (spendAdj >= 0 ? '+' : '') + spendAdj + '%)';
+
+  // Recalc with adjustments
+  const adjRetireAge    = p.fullRetireAge + ageAdj;
+  const adjYearsInRetire = p.lifeExp - adjRetireAge;
+  const adjAnnualBudget = p.annualBudget * (1 + spendAdj / 100);
+  const adjAnnualSavings = p.annualSavings + extraSave * 12;
+
+  // Project adjusted portfolio
+  const adjYearsToRetire = adjRetireAge - p.currentAge;
+  const r = p.accumReturn;
+  const fvS = p.portfolioAtRetirement / Math.pow(1 + r, p.yearsToFullRetire || (p.fullRetireAge - p.currentAge));
+  // Use approximate adjusted portfolio
+  const fvContribAdj = adjAnnualSavings > 0
+    ? adjAnnualSavings * (Math.pow(1 + r, adjYearsToRetire) - 1) / r
+    : 0;
+  const fvSavingsAdj  = (el._scenarioParams.savings || 0) * Math.pow(1 + r, adjYearsToRetire);
+  const adjPortfolio  = fvSavingsAdj + fvContribAdj;
+
+  if (adjYearsInRetire <= 0) return;
+
+  // Quick MC (500 sims for speed)
+  const adjSSDelay = Math.max(0, p.ssDelayFromRetire - ageAdj);
+  const newRate = runMonteCarlo(
+    adjPortfolio,
+    adjAnnualBudget,
+    p.annualSS || 0,
+    adjSSDelay,
+    adjYearsInRetire,
+    p.inflationPct || 0.03,
+    500,
+    p.distReturn || 0.055,
+    0.10,
+    null
+  );
+  const newPct = Math.round(newRate * 100);
+  const target = Math.round(p.targetSuccess * 100);
+  const isGreen = newPct >= target;
+  const isAmber = newPct >= target - 10 && newPct < target;
+  const color   = isGreen ? '#2D6A4F' : isAmber ? '#B8955A' : '#8B2635';
+
+  const rateEl = document.getElementById('levers-pct');
+  if (rateEl) {
+    rateEl.textContent = newPct + '%';
+    rateEl.style.color = color;
+  }
+  const dispEl = document.getElementById('levers-rate-display');
+  if (dispEl) {
+    const spans = dispEl.querySelectorAll('span');
+    if (spans[1]) {
+      const delta = newPct - p.successPct;
+      spans[1].textContent = (delta >= 0 ? '+' + delta : delta) + '% vs base · ' + (newPct >= target ? '✓ target met' : 'target ' + target + '%');
+    }
+  }
 }
 
 
@@ -4298,62 +4733,76 @@ function fmtMo(n) {
 
 // ── Simple Mode ───────────────────────────────────────────
 function calcSimple() {
-  const gross    = parseFloat(document.getElementById('gtn-gross-simple').value) || 0;
-  const filing   = document.getElementById('gtn-filing-simple').value;
-  const state    = document.getElementById('gtn-state-simple').value;
-  const pretax   = parseFloat(document.getElementById('gtn-pretax-simple').value) || 0;
-  if (gross < 1000) { document.getElementById('gtn-simple-result').innerHTML = ''; return; }
+  const gross      = parseFloat(document.getElementById('gtn-gross-simple').value)      || 0;
+  const retirement = parseFloat(document.getElementById('gtn-retirement-simple').value) || 0;
+  const takeHomeMo = parseFloat(document.getElementById('gtn-takehome-simple').value)   || 0;
+  const filing     = document.getElementById('gtn-filing-simple').value;
+  const state      = document.getElementById('gtn-state-simple').value;
 
-  const r = calcHouseholdTax(gross, pretax, 0, 0, 0, 0, filing, state);
-  gtnTakeHome = r.takeHome / 12;
-  gtnPretax401k = pretax;
+  if (gross < 1000 || takeHomeMo < 100) {
+    document.getElementById('gtn-simple-result').innerHTML = '';
+    return;
+  }
 
-  const marginalCostOf1k401k = 1000 * (1 - r.marginal - (STATE_RATES_JS[state] || 0) / 100);
+  const takeHomeAnnual = takeHomeMo * 12;
 
-  document.getElementById('gtn-simple-result').innerHTML = `
-    <div class="gtn-waterfall">
-      <div class="gtn-wf-row gross">
-        <span class="gtn-wf-label">Gross Annual Income</span>
-        <span class="gtn-wf-amount blue">${fmtD(gross)}</span>
-      </div>
-      <div class="gtn-wf-row">
-        <span class="gtn-wf-label">Pre-tax 401k/403b<small>Already deducted from gross</small></span>
-        <span class="gtn-wf-amount neg">− ${fmtD(pretax)}</span>
-      </div>
-      <div class="gtn-wf-row">
-        <span class="gtn-wf-label">Federal Income Tax<small>${(r.effectiveRate*100).toFixed(1)}% effective · ${(r.marginal*100).toFixed(0)}% marginal</small></span>
-        <span class="gtn-wf-amount neg">− ${fmtD(r.fedTax)}</span>
-      </div>
-      <div class="gtn-wf-row">
-        <span class="gtn-wf-label">FICA (Social Security + Medicare)</span>
-        <span class="gtn-wf-amount neg">− ${fmtD(r.fica)}</span>
-      </div>
-      <div class="gtn-wf-row">
-        <span class="gtn-wf-label">State Income Tax (${state})</span>
-        <span class="gtn-wf-amount neg">− ${fmtD(r.stateTax)}</span>
-      </div>
-      <div class="gtn-wf-row takehome">
-        <span class="gtn-wf-label"><strong>Estimated Annual Take-Home</strong></span>
-        <span class="gtn-wf-amount pos">${fmtD(r.takeHome)}</span>
-      </div>
-    </div>
-    <div class="gtn-takehome-big">${fmtMo(r.takeHome)}</div>
-    <div style="font-family:DM Mono,monospace;font-size:0.65rem;color:var(--muted);text-align:center;margin-bottom:0.8rem">
-      estimated monthly take-home · marginal bracket: <strong style="color:#2C4A7C">${(r.marginal*100).toFixed(0)}%</strong>
-      <span class="gtn-bracket-badge">${filing.toUpperCase()}</span>
-    </div>
-    <div class="insight" style="border-left-color:#2C4A7C;margin-bottom:0.5rem">
-      <strong>Pre-tax contribution insight:</strong> At your ${(r.marginal*100).toFixed(0)}% marginal rate, every $1,000 contributed pre-tax to your 401k only reduces take-home by <strong>~${fmtD(marginalCostOf1k401k)}</strong> — the government subsidizes the rest. This makes maintaining pre-tax retirement contributions much cheaper than stopping them to pay off debt.
-    </div>
-    <div style="font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);margin-bottom:0.5rem">
-      Want per-person breakdown and payroll optimization? → <span onclick="setGTNMode('detail')" style="color:#2C4A7C;cursor:pointer;text-decoration:underline">Switch to Detailed Mode</span>
-    </div>
-  `;
+  // "Everything else" = taxes + insurance + benefits + all other deductions
+  // This is what we can't see but the user's pay stub already accounts for
+  const everythingElse = Math.max(0, gross - retirement - takeHomeAnnual);
 
-  document.getElementById('gtn-summary').textContent = fmtMo(r.takeHome) + ' take-home';
+  // Run tax calc in background for marginal rate insight only
+  // Use retirement as pre-tax estimate (may include Roth but close enough for marginal rate)
+  const r = calcHouseholdTax(gross, Math.min(retirement, TAX_2026.limit401k * 2), 0, 0, 0, 0, filing, state);
+  const marginal   = r ? r.marginal : 0.22;
+  const stateRate  = STATE_RATES_JS[state] || 0;
+  const marginalCostOf1k = 1000 * (1 - marginal - stateRate / 100);
+  const effRate = gross > 0 ? (everythingElse / gross * 100).toFixed(1) : 0;
+
+  // Set globals for CFA
+  gtnTakeHome   = takeHomeMo;
+  gtnPretax401k = retirement;
+
+  document.getElementById('gtn-simple-result').innerHTML =
+    '<div class="gtn-waterfall">'
+    + '<div class="gtn-wf-row gross">'
+    + '<span class="gtn-wf-label">Gross Annual Income</span>'
+    + '<span class="gtn-wf-amount blue">' + fmtD(gross) + '</span>'
+    + '</div>'
+    + '<div class="gtn-wf-row">'
+    + '<span class="gtn-wf-label">Retirement Savings<small>401k · Roth 401k · IRA · HSA — all accounts</small></span>'
+    + '<span class="gtn-wf-amount neg">− ' + fmtD(retirement) + '</span>'
+    + '</div>'
+    + '<div class="gtn-wf-row">'
+    + '<span class="gtn-wf-label">Taxes & Benefits<small>Federal · State · FICA · Insurance · FSA · everything else</small></span>'
+    + '<span class="gtn-wf-amount neg">− ' + fmtD(everythingElse) + ' <span style="font-size:0.6rem;opacity:0.6">(' + effRate + '% of gross)</span></span>'
+    + '</div>'
+    + '<div class="gtn-wf-row takehome">'
+    + '<span class="gtn-wf-label"><strong>Monthly Take-Home</strong></span>'
+    + '<span class="gtn-wf-amount pos">' + fmtD(takeHomeAnnual) + ' &nbsp;' + fmtMo(takeHomeAnnual) + '</span>'
+    + '</div>'
+    + '</div>'
+    + '<div class="gtn-takehome-big">' + fmtMo(takeHomeAnnual) + '</div>'
+    + '<div style="font-family:DM Mono,monospace;font-size:0.65rem;color:var(--muted);text-align:center;margin-bottom:0.8rem">'
+    + 'actual monthly take-home · marginal bracket: <strong style="color:#2C4A7C">' + (marginal*100).toFixed(0) + '%</strong>'
+    + '<span class="gtn-bracket-badge">' + filing.toUpperCase() + '</span>'
+    + '</div>'
+    + (everythingElse < 0
+      ? '<div style="background:#FDE8EB;border:1px solid #8B2635;border-left:3px solid #8B2635;border-radius:0 6px 6px 0;padding:0.7rem 1rem;font-family:DM Sans,sans-serif;font-size:0.75rem;color:#5A0F1A;margin-bottom:0.75rem">'
+        + '<strong>⚠ Check your numbers</strong> — retirement savings + take-home exceed gross income. Please verify the amounts entered.'
+        + '</div>'
+      : '<div class="insight" style="border-left-color:#2C4A7C;margin-bottom:0.5rem">'
+        + '<strong>Pre-tax insight:</strong> At your ' + (marginal*100).toFixed(0) + '% marginal rate, every $1,000 of pre-tax 401k only reduces take-home by <strong>~' + fmtD(marginalCostOf1k) + '</strong> — the government subsidizes the rest. '
+        + 'Your taxes & benefits total <strong>' + fmtD(everythingElse) + '/yr</strong> (' + effRate + '% of gross).'
+        + '</div>')
+    + '<div style="font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);margin-bottom:0.5rem">'
+    + 'Want full per-person breakdown and payroll optimization? → <span onclick="setGTNMode(&quot;detail&quot;)" style="color:#2C4A7C;cursor:pointer;text-decoration:underline">Switch to Detailed Mode</span>'
+    + '</div>';
+
+  document.getElementById('gtn-summary').textContent = fmtMo(takeHomeAnnual) + ' take-home';
   document.getElementById('gtn-summary').style.color = 'rgba(255,255,255,0.92)';
   showCFA();
 }
+
 
 // ── Detailed Mode ─────────────────────────────────────────
 function set401k(person, preset) {
@@ -4726,7 +5175,7 @@ function clearGTN() {
   document.getElementById('optimizer-results').innerHTML = '';
   document.getElementById('gtn-summary').textContent = 'Enter income to optimize';
   document.getElementById('gtn-summary').style.color = 'rgba(255,255,255,0.6)';
-  ['gtn-gross-simple','gtn-pretax-simple',
+  ['gtn-gross-simple','gtn-retirement-simple','gtn-takehome-simple',
    'd-p1-gross','d-p1-age','d-p1-401k','d-p1-match','d-p1-hsa','d-p1-ins','d-p1-roth401k','d-p1-other',
    'd-p2-gross','d-p2-age','d-p2-401k','d-p2-match','d-p2-hsa','d-p2-ins','d-p2-roth401k','d-p2-other',
    'd-above-payroll','cfa-expenses','cfa-debt-min','cfa-debt-extra','cfa-savings','cfa-emergency','cfa-other'
@@ -4779,61 +5228,62 @@ function runQuickStart() {
   const lifeExpect     = 90;
   const yearsInRetire  = lifeExpect - retireAge;
   const inflationRate  = 0.03;
-  const returnRate     = 0.050;  // 5% — moderate balanced allocation for long retirement
-  const distRate       = 0.045;
-  const annualSavings  = monthlyInvest * 12;  // direct — no tax estimation needed
+  const accumRate      = 0.060;   // matches main calculator default
+  const mcReturnRate   = 0.055;   // matches main calculator default
+  const mcStdReturn    = 0.10;
+  const targetSuccess  = 0.85;    // matches main calculator default (85%)
+  const annualSavings  = monthlyInvest * 12;
 
-  // ── Deflator: converts future dollars → today's purchasing power ──
-  const inflationFactor = Math.pow(1 + inflationRate, yearsToRetire);
-  const deflate = (futureVal) => futureVal / inflationFactor;
+  // SS delay — same logic as main calculator
+  const ssClaimAge     = 67;      // default to FRA
+  const ssDelayYears   = Math.max(0, ssClaimAge - retireAge);
 
-  // 1. Project portfolio to retirement (nominal future dollars)
-  const r = returnRate;
-  const fvSavings  = saved * Math.pow(1 + r, yearsToRetire);
-  const fvContribs = annualSavings > 0
+  // 1. Project portfolio to retirement (future dollars, 6% accumulation)
+  //    Identical to main calculator accumulation logic
+  const r = accumRate;
+  const fvSavings      = saved * Math.pow(1 + r, yearsToRetire);
+  const fvContribs     = annualSavings > 0
     ? annualSavings * (Math.pow(1 + r, yearsToRetire) - 1) / r
     : 0;
-  const projectedFuture    = fvSavings + fvContribs;
-  const projectedPortfolio = Math.round(deflate(projectedFuture)); // today's $
+  const projectedPortfolio = Math.round(fvSavings + fvContribs);
 
-  // 2. True number — what portfolio you need at retirement in today's $
-  //    Retirement spend = today's spend × 75% replacement (no inflation adjustment
-  //    needed since we want today's dollars throughout)
-  const monthlySpendRetire = spend * 0.75;               // today's $
-  const annualSpendRetire  = monthlySpendRetire * 12;    // today's $
-  const annualSS           = ss * 12;                    // today's $ (user entered today's estimate)
-  const netNeed            = Math.max(0, annualSpendRetire - annualSS);
-  const trueNumber         = Math.round(netNeed / distRate); // today's $
+  // 2. Retirement budget — matches what gets pre-filled into main calculator
+  const monthlySpendRetire = spend * 0.75;       // 75% replacement ratio
+  const annualBudget       = monthlySpendRetire * 12;
+  const annualSS           = ss * 12;
 
-  // 3. Monthly retirement income in today's dollars
-  //    projectedFuture × withdrawal rate + SS, deflated back to today's $
-  const monthlyRetireIncome = Math.round(
-    (projectedFuture * distRate / 12 + ss) / inflationFactor
-  );
+  // 3. True number — MC binary search, IDENTICAL to main calculator
+  //    Finds smallest portfolio where MC success >= 85%
+  //    Uses same return rate, inflation, SS delay, years as main calc
+  function qsSolveForTrueNumber() {
+    var lo = 50000, hi = 20000000;
+    for (var i = 0; i < 30; i++) {
+      var mid  = (lo + hi) / 2;
+      var rate = runMonteCarlo(
+        mid, annualBudget, annualSS, ssDelayYears,
+        yearsInRetire, inflationRate,
+        200,           // 200 sims × 30 iterations = fast but accurate
+        mcReturnRate, mcStdReturn, null
+      );
+      if (rate >= targetSuccess) hi = mid; else lo = mid;
+    }
+    return Math.round((lo + hi) / 2);
+  }
+  const trueNumber = qsSolveForTrueNumber();
 
-  // 4. Monte Carlo — must use FUTURE dollar amounts for accuracy
-  //    Re-inflate spending for MC simulation
-  const annualSpendFuture = annualSpendRetire * inflationFactor;
-  const annualSSFuture    = annualSS;  // SS is indexed to inflation, stays real
-
+  // 4. Success rate for the actual projected portfolio
   const successRate = runMonteCarlo(
-    projectedFuture,       // start portfolio in future $
-    annualSpendFuture,     // annual spend in future $
-    annualSSFuture,        // annual SS
-    0,
-    yearsInRetire,
-    inflationRate,
-    500,
-    returnRate,
-    0.10,
-    null
+    projectedPortfolio, annualBudget, annualSS, ssDelayYears,
+    yearsInRetire, inflationRate,
+    1000, mcReturnRate, mcStdReturn, null
   );
   const successPct = Math.round(successRate * 100);
 
-  // 5. Gap in today's dollars
-  const gap         = Math.max(0, trueNumber - projectedPortfolio);
-  const extraNeeded = gap > 0 && yearsToRetire > 0
-    ? gap * inflationFactor / ((Math.pow(1 + r, yearsToRetire) - 1) / r) / 12
+  // 5. Gap and monthly income
+  const gap                = Math.max(0, trueNumber - projectedPortfolio);
+  const monthlyRetireIncome = Math.round(projectedPortfolio * mcReturnRate / 12 + ss);
+  const extraNeeded         = gap > 0 && annualSavings > 0
+    ? gap / ((Math.pow(1 + r, yearsToRetire) - 1) / r) / 12
     : 0;
 
   // SS timing warning
@@ -4851,7 +5301,7 @@ function runQuickStart() {
     : '';
 
   // Verdict
-  let verdictClass, verdictIcon, verdictHeadline, verdictSub;
+  var verdictClass, verdictIcon, verdictHeadline, verdictSub;
   if (successPct >= 80) {
     verdictClass    = 'on-track';
     verdictIcon     = '✓';
@@ -4869,70 +5319,61 @@ function runQuickStart() {
     verdictSub      = successPct + '% success rate · significant gap to close';
   }
 
-  function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+  function fmt(n)  { return '$' + Math.round(n).toLocaleString(); }
   function fmtK(n) {
-    if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M';
+    if (n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
     if (n >= 1000)    return '$' + Math.round(n/1000) + 'k';
     return '$' + Math.round(n);
   }
 
-  // Levers — what would get to 85%?
-  const targetPct = 85;
-  let levers = '';
-  if (successPct < targetPct) {
-    const saveMore   = extraNeeded > 0 ? fmt(Math.round(extraNeeded)) + '/mo more in savings' : null;
-    const extraYears  = gap > 0 && annualSavings > 0
-    const retireLater = yearsToRetire < 30 && extraYears > 0
-      ? 'retire at age ' + (retireAge + Math.ceil(extraYears / 12)) + ' instead of ' + retireAge
-      : null;
-    const spendLess  = netNeed > 0 ? fmt(Math.round(netNeed * 0.1 / 12)) + '/mo less in retirement' : null;
-    const options = [saveMore, retireLater ? retireLater : null, spendLess].filter(Boolean);
+  // Levers
+  var levers = '';
+  if (successPct < Math.round(targetSuccess * 100)) {
+    var saveMore  = extraNeeded > 0 ? fmt(Math.round(extraNeeded)) + '/mo more in savings' : null;
+    var spendLess = annualBudget > annualSS ? fmt(Math.round((annualBudget - annualSS) * 0.1 / 12)) + '/mo less in retirement' : null;
+    var laterAge  = retireAge < 70 ? 'retire at age ' + (retireAge + 2) + ' instead of ' + retireAge : null;
+    var options   = [saveMore, laterAge, spendLess].filter(Boolean);
     if (options.length > 0) {
       levers = '<div style="margin-top:0.8rem;padding:0.8rem 1rem;background:#FBF8F3;border:1px solid var(--border);border-radius:8px">'
         + '<div style="font-family:DM Mono,monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem">To reach 85% — pick one:</div>'
-        + options.map(o => '<div style="font-family:DM Sans,sans-serif;font-size:0.78rem;color:var(--text);padding:0.2rem 0">· ' + o + '</div>').join('')
+        + options.map(function(o) { return '<div style="font-family:DM Sans,sans-serif;font-size:0.78rem;color:var(--text);padding:0.2rem 0">· ' + o + '</div>'; }).join('')
         + '</div>';
     }
   }
 
-  const resultHTML = '<div class="qs-verdict ' + verdictClass + '">'
+  var resultHTML = '<div class="qs-verdict ' + verdictClass + '">'
     + '<div class="qs-verdict-icon">' + verdictIcon + '</div>'
     + '<div class="qs-verdict-text">'
     + '<div class="qs-verdict-headline">' + verdictHeadline + '</div>'
     + '<div class="qs-verdict-sub">' + verdictSub + '</div>'
     + '</div></div>'
-    + '<div style="font-family:DM Mono,monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">All figures in today&#39;s dollars</div><div class="qs-stats">'
+    + '<div style="font-family:DM Mono,monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">All figures in future (nominal) dollars</div>'
+    + '<div class="qs-stats">'
     + '<div class="qs-stat"><div class="qs-stat-label">True Number</div><div class="qs-stat-value">' + fmtK(trueNumber) + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Projected at Retirement</div><div class="qs-stat-value ' + (projectedPortfolio >= trueNumber ? 'good' : 'bad') + '">' + fmtK(projectedPortfolio) + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Gap</div><div class="qs-stat-value ' + (gap > 0 ? 'bad' : 'good') + '">' + (gap > 0 ? fmtK(gap) : '✓ Funded') + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Years to Retire</div><div class="qs-stat-value">' + yearsToRetire + '</div></div>'
-    + '<div class="qs-stat"><div class="qs-stat-label">Est. Monthly Income in Retirement</div><div class="qs-stat-value good">' + fmt(monthlyRetireIncome) + '/mo</div></div>'
-    + '<div class="qs-stat"><div class="qs-stat-label">Est. Retirement Spend</div><div class="qs-stat-value">' + fmt(Math.round(monthlySpendRetire)) + '/mo</div></div>'
+    + '<div class="qs-stat"><div class="qs-stat-label">Est. Monthly Income</div><div class="qs-stat-value good">' + fmt(monthlyRetireIncome) + '/mo</div></div>'
+    + '<div class="qs-stat"><div class="qs-stat-label">Retirement Spend (75%)</div><div class="qs-stat-value">' + fmt(monthlySpendRetire) + '/mo</div></div>'
     + '</div>'
     + ssWarning
     + '<div class="qs-next">'
     + levers
-    + '<div style="margin-top:0.8rem"><strong>Want a more precise picture?</strong> Your answers have been pre-filled in the sections below. Open any module to refine — income, debts, detailed spending, Social Security, and more.</div>'
+    + '<div style="margin-top:0.8rem"><strong>Want a more precise picture?</strong> Your answers have been pre-filled in the sections below. Open any module to refine.</div>'
     + '<div style="margin-top:0.5rem;font-size:0.72rem;color:var(--muted);line-height:1.6">'
-    + 'All figures in today&#39;s purchasing power · Retirement spend at 75% of current · '
+    + 'All figures in future (nominal) dollars · Retirement spend at 75% of current · '
     + '<strong style="color:var(--text)">Assumptions:</strong> '
-    + Math.round(returnRate * 100) + '% annual return · '
-    + Math.round(inflationRate * 100) + '% inflation · '
-    + distRate * 100 + '% withdrawal rate · '
-    + 'Life expectancy ' + lifeExpect + ' · '
-    + 'SS starts at retirement age'
+    + (accumRate*100) + '% accum / ' + (mcReturnRate*100) + '% dist · '
+    + '3% inflation · 85% target success · SS starts age 67 · life expectancy ' + lifeExpect
     + '</div>'
     + '<button class="qs-refine-btn" onclick="qsRefineAndScroll()">Refine My Numbers →</button>'
     + '</div>';
 
-  const resultEl = document.getElementById('qs-result');
+  var resultEl = document.getElementById('qs-result');
   resultEl.innerHTML = resultHTML;
   resultEl.style.display = 'block';
-
-  // Scroll to result
   resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  // Pre-fill all the detailed modules
   qsPrefill(age, partnerAge, retireAge, saved, monthlyInvest, spend, ss, filing);
 }
 
@@ -4946,6 +5387,8 @@ function qsPrefill(age, partnerAge, retireAge, saved, monthlyInvest, spend, ss, 
   setVal('retirementAge', retireAge);
   setVal('savings', saved);
   setVal('monthlyBudget', Math.round(spend * 0.75));
+  var budgetNote = document.getElementById('budget-source-note');
+  if (budgetNote) budgetNote.textContent = 'Quick Start estimate: 75% of $' + Math.round(spend).toLocaleString() + '/mo current spend. Open Spending Planner and adjust Phase 3 to refine.';
   setVal('socialSecurity', ss || '');
   setVal('ssAge', 67);
   setVal('annualSavings', Math.round(monthlyInvest * 12));
@@ -4963,7 +5406,7 @@ function qsPrefill(age, partnerAge, retireAge, saved, monthlyInvest, spend, ss, 
       housing: 0.28, utilities: 0.07, food: 0.13, transport: 0.08,
       automaint: 0.02, health: 0.05, insurance: 0.04, kids: 0,
       college: 0, pets: 0.01, travel: 0.05, entertain: 0.04,
-      subscript: 0.02, clothing: 0.03, giving: 0.03, misc: 0.05
+      subscript: 0.02, clothing: 0.03, giving: 0.03, misc: 0.15
     };
     // Update SPEND_CATEGORIES and re-render
     SPEND_CATEGORIES.forEach(function(c) {
