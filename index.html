@@ -2391,7 +2391,10 @@
     </div>
     <div class="field">
       <label>Monthly Spending Budget ($) <span class="hint-wrap"><span class="hint-icon" tabindex="0">?</span><span class="hint-tip">How much you plan to spend each month in retirement, in today's dollars. Include everything: housing, food, travel, healthcare. Use the Spending Planner below to build this number.</span></span></label>
-      <input type="number" id="monthlyBudget" value="" placeholder="e.g. 10000">
+      <input type="number" id="monthlyBudget" value="" placeholder="e.g. 10000"
+      oninput="var n=document.getElementById('budget-source-note');if(n){n.textContent='Manually edited - will resync when Spending Planner is open';n.style.color='var(--gold)';}"
+      >
+      <div id="budget-source-note" style="font-family:DM Mono,monospace;font-size:0.58rem;color:var(--green);margin-top:0.25rem">Auto-syncs from Spending Planner Phase 3</div>
     </div>
     <div class="field">
       <label>Inflation Rate (%) <span class="hint-wrap"><span class="hint-icon" tabindex="0">?</span><span class="hint-tip">The annual rate at which prices rise. 3% is the historical US average. This means $10,000 today costs ~$18,000 in 20 years. Your spending target grows by this amount each year in retirement.</span></span></label>
@@ -3020,7 +3023,7 @@
       </div>
 
       <div class="spend-footer">
-        <span id="spend-budget-note">💡 Apply pushes Phase 3 spend to the retirement engine · Re-apply anytime after updating</span>
+        <span id="spend-budget-note">↕ Monthly Budget in Retirement Engine syncs live from Phase 3 · Recalculate to update results</span>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
           <button class="spend-apply-btn" onclick="applySpending()">→ Apply Phase 3 to Retirement</button>
           <button class="spend-apply-btn" onclick="applySpendingToCFA()"
@@ -3330,12 +3333,12 @@ function calculate() {
     const reducedSavings = yearlySavings * savingsPhase2Pct;
     for (let yr = 1; yr <= totalYears; yr++) {
       const age = currentAge + yr;
-      const inAccum = age <= fullRetireAge;
+      const inAccum = age < fullRetireAge;  // retirement year = first drawing year
       const inPhase2 = partnerRetireFirst && age > partnerRetirementAge && age <= retirementAge;
       const activeSavings = inPhase2 ? reducedSavings : yearlySavings;
       let phase;
       if (age <= partnerRetirementAge && partnerRetireFirst) phase = 'BOTH SAVING';
-      else if (age <= fullRetireAge) phase = partnerRetireFirst ? 'YOU SAVING' : 'SAVING';
+      else if (age < fullRetireAge) phase = partnerRetireFirst ? 'YOU SAVING' : 'SAVING';
       else phase = 'DRAWING';
       if (inAccum) {
         p = p * (1 + accumReturn) + activeSavings;
@@ -5353,7 +5356,7 @@ function runQuickStart() {
     + '<div class="qs-stat"><div class="qs-stat-label">Projected at Retirement</div><div class="qs-stat-value ' + (projectedPortfolio >= trueNumber ? 'good' : 'bad') + '">' + fmtK(projectedPortfolio) + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Gap</div><div class="qs-stat-value ' + (gap > 0 ? 'bad' : 'good') + '">' + (gap > 0 ? fmtK(gap) : '✓ Funded') + '</div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Years to Retire</div><div class="qs-stat-value">' + yearsToRetire + '</div></div>'
-    + '<div class="qs-stat"><div class="qs-stat-label">Est. Monthly Income</div><div class="qs-stat-value good">' + fmt(monthlyRetireIncome) + '/mo</div></div>'
+    + '<div class="qs-stat"><div class="qs-stat-label">Sustainable Monthly Income</div><div class="qs-stat-value good">' + fmt(monthlyRetireIncome) + '/mo<div style=\'font-family:DM Mono,monospace;font-size:0.55rem;color:rgba(30,92,58,0.7);margin-top:0.15rem\'>before tax · withdrawals + SS</div></div></div>'
     + '<div class="qs-stat"><div class="qs-stat-label">Retirement Spend (75%)</div><div class="qs-stat-value">' + fmt(monthlySpendRetire) + '/mo</div></div>'
     + '</div>'
     + ssWarning
@@ -5365,6 +5368,7 @@ function runQuickStart() {
     + '<strong style="color:var(--text)">Assumptions:</strong> '
     + (accumRate*100) + '% accum / ' + (mcReturnRate*100) + '% dist · '
     + '3% inflation · 85% target success · SS starts age 67 · life expectancy ' + lifeExpect
+    + ' · <strong style="color:var(--text)">Note:</strong> Income figures are pre-tax. Retirement withdrawals and SS are taxable — consult a tax advisor for net income.'
     + '</div>'
     + '<button class="qs-refine-btn" onclick="qsRefineAndScroll()">Refine My Numbers →</button>'
     + '</div>';
@@ -5388,7 +5392,8 @@ function qsPrefill(age, partnerAge, retireAge, saved, monthlyInvest, spend, ss, 
   setVal('savings', saved);
   setVal('monthlyBudget', Math.round(spend * 0.75));
   var budgetNote = document.getElementById('budget-source-note');
-  if (budgetNote) budgetNote.textContent = 'Quick Start estimate: 75% of $' + Math.round(spend).toLocaleString() + '/mo current spend. Open Spending Planner and adjust Phase 3 to refine.';
+  if (budgetNote) budgetNote.style.color = 'var(--gold)';
+  budgetNote.textContent = 'Set by Quick Start (75% of $' + Math.round(spend).toLocaleString() + '/mo). Will resync from Spending Planner Phase 3 when open.';
   setVal('socialSecurity', ss || '');
   setVal('ssAge', 67);
   setVal('annualSavings', Math.round(monthlyInvest * 12));
@@ -5751,6 +5756,16 @@ function recalcTotals() {
   document.getElementById('phase1-total').textContent = fmtM(t1) + '/mo';
   document.getElementById('phase2-total').textContent = fmtM(t2) + '/mo';
   document.getElementById('phase3-total').textContent = fmtM(t3) + '/mo';
+  // Auto-sync Phase 3 -> Monthly Budget
+  if (t3 > 0) {
+    var _mb = document.getElementById('monthlyBudget');
+    var _mn = document.getElementById('budget-source-note');
+    if (_mb) _mb.value = Math.round(t3);
+    if (_mn) {
+      _mn.textContent = 'Synced from Spending Planner Phase 3: ' + fmtM(t3) + '/mo - recalculate when done.';
+      _mn.style.color = 'var(--green)';
+    }
+  }
   // Header summary
   document.getElementById('spend-summary').textContent = fmtM(t1) + ' / mo';
   document.getElementById('spend-summary').style.color = 'rgba(255,255,255,0.92)';
